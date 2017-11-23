@@ -107,7 +107,7 @@ Bool_t CTreeConverter::Init (){
    inputTree_->SetBranchAddress("nTofHitsCut", &nTofHitsCut, &b_nTofHitsCut);
    inputTree_->SetBranchAddress("trigInd", trigInd, &b_trigInd);
    inputTree_->SetBranchAddress("runId", &runId, &b_runId);
-   inputTree_->SetBranchAddress("nWallHitsTot", &nWallHitsTot, &b_nWallHitsTot)
+   inputTree_->SetBranchAddress("nWallHitsTot", &nWallHitsTot, &b_nWallHitsTot);
    inputTree_->SetBranchAddress("cuts", cuts, &b_cuts);
    inputTree_->SetBranchAddress("wallModuleIndex", wallModuleIndex, &b_wallModuleIndex);
    inputTree_->SetBranchAddress("wallHitTime", wallHitTime, &b_wallHitTime);
@@ -150,7 +150,7 @@ Float_t CTreeConverter::GetCentralityClass (Int_t mh) {
  Float_t centClassWidth = 0.05;
 	if (mh >= centClassLimits [0]) return centClassWidth * 0.5;
 	for (Int_t i = 0; i < nCentClasses + 1; i++) {
-    if (mh < centClassLimits [i] && mh >= centClassLimits [i+1]) return centClassWidth * ((i + 0.5);}
+    if (mh < centClassLimits [i] && mh >= centClassLimits [i+1]) return centClassWidth * (i + 0.5);}
 	return -1.0;
 }
 
@@ -226,8 +226,8 @@ Bool_t CTreeConverter::ConvertTree () {
 		if (mh_cut < 10) continue;
 
     //centrality classes - ToF+RPC
-		if (centMethod_ == 1) cent = GetCentralityClass (nRpcClustCut[jentry]+nTofHitsCut[jentry]);
-		if (centMethod_ == 2) cent = GetCentralityClass (fEveto);
+		if (centMethod_ == 1) cent = GetCentralityClass (nRpcClustCut+nTofHitsCut);
+		//if (centMethod_ == 2) cent = GetCentralityClass (fEveto);
 		if (cent < centMin_ || cent > centMax_) continue;
 		trackIndex = 0;
 
