@@ -18,7 +18,7 @@ Float_t GetCentralityClass (Int_t mh) {
  Float_t centClassWidth = 0.05;
 	if (mh >= centClassLimits [0]) return centClassWidth * 0.5;
 	for (Int_t i = 0; i < nCentClasses + 1; i++) {
-    if (mh < centClassLimits [i] && mh >= centClassLimits [i+1]) return centClassWidth * ((i + 0.5);}
+    if (mh < centClassLimits [i] && mh >= centClassLimits [i+1]) return centClassWidth * (i + 0.5);}
 	return -1.0;
 }
 
