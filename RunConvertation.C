@@ -6,8 +6,8 @@ void RunConvertation (TString inputFileName = "../Source", TString outputFileNam
 	clock_t begin = clock();
 //	inputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_data/3154";
 //	outputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_conv/3154";
-	inputFileName = "Data/3154";
-	outputFileName = "Converted/3154";
+	inputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Nov_23_12_08/AuAu_1_23AGev_gen8_108.list/tree_12108160806";
+	outputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Nov_23_12_08/AuAu_1_23AGev_gen8_108.list/Converted/tree_12108160806";
 
     Int_t dEdxSource = 3;
     Int_t centMethod = 1;
@@ -20,15 +20,15 @@ void RunConvertation (TString inputFileName = "../Source", TString outputFileNam
 	CTreeConverter treeConverter;
 	treeConverter.SetInputFileName (inputFileName);
 	treeConverter.SetOutputFileName (outputFileName + "_" + source + "_" + method);
-	treeConverter.SetInputTreeName ("data");
+	treeConverter.SetInputTreeName ("tree");
 	treeConverter.SetdEdxSource (dEdxSource);
 	treeConverter.SetCentralityMethod (centMethod);  // 1 - multiplicity, 2 - Eveto
 
-	treeConverter.SetSNN (8.8); // GeV
-	treeConverter.SetNbinsMh (510);
-	treeConverter.SetMhRange (10, 520);
-	treeConverter.SetNbinsCent (20);
-	treeConverter.SetCentRange (0.0, 100.0);
+	treeConverter.SetSNN (1.23); // GeV
+	treeConverter.SetNbinsMh (100);
+	treeConverter.SetMhRange (10, 250);
+	treeConverter.SetNbinsCent (8);
+	treeConverter.SetCentRange (0.0, 40.0);
 
 
     TStopwatch timer;
