@@ -189,8 +189,8 @@ Float_t* CEvent::GetEveto () {
 
 
 CTrack* CEvent::GetTrack (Int_t n) const {
-	if (n < 0 || n > mh) {
-		cout << endl << Form ("Error getting track: %i < 0 or %i > mh!", n, n) << endl;
+	if (n < 0 || n > nTracks) {
+		cout << endl << Form ("Error getting track: %i < 0 or %i > nTracks(all)!", nTracks, nTracks) << endl;
 		return 0;
 	}
 	return ((CTrack*) tracks -> AddrAt(n - 1));
