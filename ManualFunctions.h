@@ -12,7 +12,7 @@
 using namespace std;
 
 Float_t GetCentralityClass (Int_t mh) {
-//   static const Int_t nCentClasses = 8;
+	static const Int_t nCentClasses = 8;
  Float_t centClassLimits [nCentClasses+1] = {250, 182, 160, 140, 121, 104, 88,
                                            74, 60};
  Float_t centClassWidth = 0.05;
