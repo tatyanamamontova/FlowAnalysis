@@ -151,7 +151,6 @@ Float_t CTreeConverter::GetCentralityClass (Int_t mh) {
 	if (mh >= centClassLimits [0]) return centClassWidth * 0.5;
 	for (Int_t i = 0; i < nCentClasses + 1; i++) {
     if (mh < centClassLimits [i] && mh >= centClassLimits [i+1]) return centClassWidth * ((i + 0.5);}
-	  if (mh < centClassLimits [nCentClasses + 1]) return 0.4;
 	return -1.0;
 }
 
