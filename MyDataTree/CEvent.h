@@ -17,6 +17,7 @@ public:
 	void SetPsi_n (Int_t n, Float_t psi_n);
 	void SetCent (Float_t cent);
 	void SetNrun (Int_t nRun);
+	void SetMh (Int_t mh_);
 	void SetEvetoFull (Float_t EvetoFull);
 	void SetEveto (Float_t Eveto [4]);
 	void SetXa (Int_t n, Float_t Xa_);

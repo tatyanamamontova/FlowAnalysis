@@ -44,7 +44,10 @@ void CEvent::SetCent (Float_t cent_) {
 
 void CEvent::AddTrack (Float_t pt, Float_t eta, Float_t phi, Int_t charge, Int_t pid) {
 	new ((*tracks)[mh]) CTrack (pt, eta, phi, charge, pid);
-	mh += 1;
+}
+
+void CEvent::SetMh(Int_t mh_){
+	mh = mh_;
 }
 
 void CEvent::Clear () {
