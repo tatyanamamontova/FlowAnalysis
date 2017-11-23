@@ -38,8 +38,8 @@ private:
 	Int_t mhMin_, mhMax_;
 	Float_t centMin_, centMax_;
 	Int_t dEdxSource_;
-    Int_t centMethod_;
-    Float_t sNN_;
+   Int_t centMethod_;
+   Float_t sNN_;
 
 
 	static const Int_t mhMax = 5000;
@@ -49,34 +49,34 @@ private:
    const Short_t maxNTracks = 200; 
 
 	// Declaration of leaf types
-   Int_t nRpcClustCut;                      //number of RPC hits with time cut
-   Int_t nTofHitsCut;                       //number of TOF hits with time cut
-   Bool_t          trigInd[nTrigger];
+   Int_t           nRpcClustCut;                      
+   Int_t           nTofHitsCut;                       
+   Bool_t          trigInd[4];
    Short_t         runId;
    Short_t         nWallHitsTot;
-   Bool_t          cuts[nCuts];
-   Short_t         wallModuleIndex[maxNWallHits];
-   Short_t         wallHitTime[maxNWallHits];
-   Short_t         wallHitCharge[maxNWallHits];
-   Short_t         wallHitDistance[maxNWallHits];
-   Short_t         wallHitRing[maxNWallHits];
-   Short_t         wallHitPhi[maxNWallHits];
-   Short_t         isWallHitOk[maxNWallHits];
+   Bool_t          cuts[8];
+   Short_t         wallModuleIndex[200];
+   Short_t         wallHitTime[200];
+   Short_t         wallHitCharge[200];
+   Short_t         wallHitDistance[200];
+   Short_t         wallHitRing[200];
+   Short_t         wallHitPhi[200];
+   Short_t         isWallHitOk[200];
    Short_t         nTracks;
    Float_t         vZ;
-   Short_t         pid[maxNTracks];   
-   Float_t         phi[maxNTracks];   
-   Float_t         theta[maxNTracks];   
-   Float_t         pt[maxNTracks];   
-   Float_t         rapidity[maxNTracks];
-   Float_t         eta[maxNTracks];  
-   Float_t         beta[maxNTracks];   
-   Float_t         mass[maxNTracks];   
-   Short_t         charge[maxNTracks];   
-   Float_t         rToBeam[maxNTracks];   
-   Float_t         zToBeam[maxNTracks];   
-   Float_t         pt_corr[maxNTracks];   
-   Float_t         p[maxNTracks];
+   Short_t         pid[200];   
+   Float_t         phi[200];   
+   Float_t         theta[200];   
+   Float_t         pt[200];   
+   Float_t         rapidity[200];
+   Float_t         eta[200];  
+   Float_t         beta[200];   
+   Float_t         mass[200];   
+   Short_t         charge[200];   
+   Float_t         rToBeam[200];   
+   Float_t         zToBeam[200];   
+   Float_t         pt_corr[200];   
+   Float_t         p[200];
 
    // List of branches
    TBranch        *b_nRpcClustCut;   
