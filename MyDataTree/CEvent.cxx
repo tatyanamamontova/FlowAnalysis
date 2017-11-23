@@ -57,6 +57,7 @@ void CEvent::Clear () {
 	nHarmonics = 0;
 	mh = 0;
 	cent = 0.0;
+	nTracks = 0;
 }
 
 
