@@ -146,7 +146,7 @@ Bool_t CTreeConverter::CheckEventCuts () {
 Float_t CTreeConverter::GetCentralityClass (Int_t mh) {
  static const Int_t nCentClasses = 8;
  Float_t centClassLimits [nCentClasses+1] = {250, 182, 160, 140, 121, 104, 88,
-                                           74, 60}
+                                           74, 60};
  Float_t centClassWidth = 0.05;
 	if (mh >= centClassLimits [0]) return centClassWidth * 0.5;
 	for (Int_t i = 0; i < nCentClasses + 1; i++) {
