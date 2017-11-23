@@ -7,7 +7,7 @@
 
 using namespace std;
 
-CEvent::CEvent () : TObject(), mh (0), tracks (new TClonesArray ("CTrack")) {
+CEvent::CEvent () : TObject(), mh (0), tracks (new TClonesArray ("CTrack")), nTracks(0) {
     SetNrun (0);
 	for (Int_t i = 0; i < MAXNHARMONICS; i++) {
 		psi [i] = 0.0;
@@ -43,7 +43,8 @@ void CEvent::SetCent (Float_t cent_) {
 
 
 void CEvent::AddTrack (Float_t pt, Float_t eta, Float_t phi, Int_t charge, Int_t pid) {
-	new ((*tracks)[mh]) CTrack (pt, eta, phi, charge, pid);
+	new ((*tracks)[nTracks]) CTrack (pt, eta, phi, charge, pid);
+	nTracks++;
 }
 
 void CEvent::SetMh(Int_t mh_){

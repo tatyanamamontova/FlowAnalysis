@@ -49,6 +49,7 @@ private:
 	Int_t nHarmonics;
 	Int_t nRun;
 	Int_t mh;
+	Int_t nTracks;
 	Float_t EvetoFull;
 	Float_t Eveto [4];
 	Float_t cent;
