@@ -45,56 +45,68 @@ private:
 	static const Int_t mhMax = 5000;
    const Short_t nCuts = 8;
    const Short_t nTrigger = 4;
+   const Short_t maxNWallHits = 200;
+   const Short_t maxNTracks = 200; 
 
 	// Declaration of leaf types
+   Int_t nRpcClustCut;                      //number of RPC hits with time cut
+   Int_t nTofHitsCut;                       //number of TOF hits with time cut
    Bool_t          trigInd[nTrigger];
    Short_t         runId;
+   Short_t         nWallHitsTot;
    Bool_t          cuts[nCuts];
-   Short_t         wallModuleIndex[200];
-   Short_t         wallHitTime[200];
-   Short_t         wallHitCharge[200];
-   Short_t         wallHitDistance[200];
-   Short_t         wallHitRing[200];
-   Short_t         wallHitPhi[200];
-   Short_t         isWallHitOk[200];
+   Short_t         wallModuleIndex[maxNWallHits];
+   Short_t         wallHitTime[maxNWallHits];
+   Short_t         wallHitCharge[maxNWallHits];
+   Short_t         wallHitDistance[maxNWallHits];
+   Short_t         wallHitRing[maxNWallHits];
+   Short_t         wallHitPhi[maxNWallHits];
+   Short_t         isWallHitOk[maxNWallHits];
    Short_t         nTracks;
    Float_t         vZ;
-   Short_t         pid[105];   //[nTracks]
-   Float_t         phi[105];   //[nTracks]
-   Float_t         theta[105];   //[nTracks]
-   Float_t         pt[105];   //[nTracks]
-   Float_t         rapidity[105];   //[nTracks]
-   Float_t         beta[105];   //[nTracks]
-   Float_t         mass[105];   //[nTracks]
-   Short_t         charge[105];   //[nTracks]
-   Float_t         rToBeam[105];   //[nTracks]
-   Float_t         zToBeam[105];   //[nTracks]
-   Float_t         pt_corr[105];   //[nTracks]
+   Short_t         pid[maxNTracks];   
+   Float_t         phi[maxNTracks];   
+   Float_t         theta[maxNTracks];   
+   Float_t         pt[maxNTracks];   
+   Float_t         rapidity[maxNTracks];
+   Float_t         eta[maxNTracks];  
+   Float_t         beta[maxNTracks];   
+   Float_t         mass[maxNTracks];   
+   Short_t         charge[maxNTracks];   
+   Float_t         rToBeam[maxNTracks];   
+   Float_t         zToBeam[maxNTracks];   
+   Float_t         pt_corr[maxNTracks];   
+   Float_t         p[maxNTracks];
 
    // List of branches
-   TBranch        *b_trigInd;   //!
-   TBranch        *b_runId;   //!
-   TBranch        *b_cuts;   //!
-   TBranch        *b_wallModuleIndex;   //!
-   TBranch        *b_wallHitTime;   //!
-   TBranch        *b_wallHitCharge;   //!
-   TBranch        *b_wallHitDistance;   //!
-   TBranch        *b_wallHitRing;   //!
-   TBranch        *b_wallHitPhi;   //!
-   TBranch        *b_isWallHitOk;   //!
-   TBranch        *b_nTracks;   //!
-   TBranch        *b_vZ;   //!
-   TBranch        *b_pid;   //!
-   TBranch        *b_phi;   //!
-   TBranch        *b_theta;   //!
-   TBranch        *b_pt;   //!
-   TBranch        *b_rapidity;   //!
-   TBranch        *b_beta;   //!
-   TBranch        *b_mass;   //!
-   TBranch        *b_charge;   //!
-   TBranch        *b_rToBeam;   //!
-   TBranch        *b_zToBeam;   //!
-   TBranch        *b_pt_corr;   //!
+   TBranch        *b_nRpcClustCut;   
+   TBranch        *b_nTofHitsCut;   
+   TBranch        *b_trigInd;   
+   TBranch        *b_runId;   
+   TBranch        *b_cuts; 
+   TBranch        *b_nWallHitsTot;  
+   TBranch        *b_wallModuleIndex;   
+   TBranch        *b_wallHitTime;   
+   TBranch        *b_wallHitCharge;   
+   TBranch        *b_wallHitDistance;  
+   TBranch        *b_wallHitRing;   
+   TBranch        *b_wallHitPhi;   
+   TBranch        *b_isWallHitOk;   
+   TBranch        *b_nTracks;   
+   TBranch        *b_vZ;   
+   TBranch        *b_pid;   
+   TBranch        *b_phi;   
+   TBranch        *b_theta;  
+   TBranch        *b_pt;   
+   TBranch        *b_rapidity;  
+   TBranch        *b_beta;   
+   TBranch        *b_mass;   
+   TBranch        *b_charge;   
+   TBranch        *b_rToBeam;   
+   TBranch        *b_zToBeam;   
+   TBranch        *b_pt_corr;
+   TBranch        *b_p;  
+   TBranch        *b_eta; 
 
 	Bool_t SetInputFile ();
 	Bool_t SetOutputFile ();
