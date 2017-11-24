@@ -17,7 +17,6 @@ public:
 	void SetPsi_n (Int_t n, Float_t psi_n);
 	void SetCent (Float_t cent);
 	void SetNrun (Int_t nRun);
-	void SetMh (Int_t mh_);
 	void SetEvetoFull (Float_t EvetoFull);
 	void SetEveto (Float_t Eveto [4]);
 	void SetXa (Int_t n, Float_t Xa_);
@@ -33,7 +32,6 @@ public:
 	Int_t GetNHarmonics ();
 	Float_t GetPsi_n (Int_t n);
 	Int_t GetMh ();
-	Int_t GetNtracks();
 	Float_t GetCent ();
 	Float_t GetXa (Int_t n);
 	Float_t GetXb (Int_t n);
@@ -50,7 +48,6 @@ private:
 	Int_t nHarmonics;
 	Int_t nRun;
 	Int_t mh;
-	Int_t nTracks;
 	Float_t EvetoFull;
 	Float_t Eveto [4];
 	Float_t cent;
