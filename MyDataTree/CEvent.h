@@ -33,6 +33,7 @@ public:
 	Int_t GetNHarmonics ();
 	Float_t GetPsi_n (Int_t n);
 	Int_t GetMh ();
+	Int_t GetNtracks();
 	Float_t GetCent ();
 	Float_t GetXa (Int_t n);
 	Float_t GetXb (Int_t n);

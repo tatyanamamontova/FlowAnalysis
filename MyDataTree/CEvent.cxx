@@ -175,6 +175,10 @@ Int_t CEvent::GetMh () {
 	return mh;
 }
 
+Int_t CEvent::GetNtracks(){
+	return nTracks;
+}
+
 Float_t CEvent::GetCent (){
 	return cent;
 }
