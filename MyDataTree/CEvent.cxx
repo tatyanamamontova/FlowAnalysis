@@ -7,7 +7,7 @@
 
 using namespace std;
 
-CEvent::CEvent () : TObject(), mh (0), tracks (new TClonesArray ("CTrack")), nTracks(0) {
+CEvent::CEvent () : TObject(), mh (0), tracks (new TClonesArray ("CTrack")) {
     SetNrun (0);
 	for (Int_t i = 0; i < MAXNHARMONICS; i++) {
 		psi [i] = 0.0;
@@ -43,12 +43,8 @@ void CEvent::SetCent (Float_t cent_) {
 
 
 void CEvent::AddTrack (Float_t pt, Float_t eta, Float_t phi, Int_t charge, Int_t pid) {
-	new ((*tracks)[nTracks]) CTrack (pt, eta, phi, charge, pid);
-	nTracks++;
-}
-
-void CEvent::SetMh(Int_t mh_){
-	mh = mh_;
+	new ((*tracks)[mh]) CTrack (pt, eta, phi, charge, pid);
+	mh += 1;
 }
 
 void CEvent::Clear () {
@@ -57,7 +53,6 @@ void CEvent::Clear () {
 	nHarmonics = 0;
 	mh = 0;
 	cent = 0.0;
-	nTracks = 0;
 }
 
 
@@ -175,10 +170,6 @@ Int_t CEvent::GetMh () {
 	return mh;
 }
 
-Int_t CEvent::GetNtracks(){
-	return nTracks;
-}
-
 Float_t CEvent::GetCent (){
 	return cent;
 }
@@ -193,8 +184,8 @@ Float_t* CEvent::GetEveto () {
 
 
 CTrack* CEvent::GetTrack (Int_t n) const {
-	if (n < 0 || n > nTracks) {
-		cout << endl << Form ("Error getting track: %i < 0 or %i > nTracks(all)!", nTracks, nTracks) << endl;
+	if (n < 0 || n > mh) {
+		cout << endl << Form ("Error getting track: %i < 0 or %i > mh!", n, n) << endl;
 		return 0;
 	}
 	return ((CTrack*) tracks -> AddrAt(n - 1));
