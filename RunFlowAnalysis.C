@@ -8,11 +8,10 @@
 using namespace std;
 
 int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString nonUniformInputFileName = "", TString uniformInputFileName = "") {
-// options: "corelations", "flow", "all"
+// options: "correlations", "flow", "all"
 // histFileName: route to files with histograms without ".root"
 // nonUniformInputFileName: route to file with data without ".root"
 // nonUniformInputFileName: route to file with simulations without ".root"
-
 //    nonUniformInputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_conv/3154_full_mh"; // NA49
 //    histFileName = "/u/ogolosov/NA49_flow/3154"; // NA49
 //    nonUniformInputFileName = "Converted/3154_full_mh"; // NA49
@@ -174,3 +173,10 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
     cout << "Tada!\n";
     return 0;
 }
+
+# ifndef __CINT__
+int main (int argc, char *argv []) {
+    RunFlowAnalysis ();
+    return 0;
+}
+# endif
