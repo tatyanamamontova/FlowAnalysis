@@ -220,7 +220,7 @@ Bool_t CTreeConverter::ConvertTree () {
 		    if (!CheckTrackCuts (itrack)) continue;
             mh_cut++;
 		}
-		std::cout<<"multiplicity"<< mh_cut<<std::endl;
+		//std::cout<<"multiplicity"<< mh_cut<<std::endl;
 		if (mh_cut < 10) continue;
 
     //centrality classes - ToF+RPC
@@ -241,7 +241,7 @@ Bool_t CTreeConverter::ConvertTree () {
 		for (Int_t itrack = 0; itrack < mh; itrack++) {
 		    if (!CheckTrackCuts (itrack)) continue; 
 		  	trackIndex++;
-			std::cout << trackIndex <<std::endl;
+			//std::cout << trackIndex <<std::endl;
 		    if (phi[itrack] > PI) phi[itrack] -= 2 * PI;
 		    pid_ = GetTrackPid (itrack);
 
