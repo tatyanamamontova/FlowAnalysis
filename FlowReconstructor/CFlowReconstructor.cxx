@@ -1443,7 +1443,7 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
 				for (UInt_t j = 0; j < resParticles [i][2].size(); j++) {
                     if (resMethod_ == kRandomSubevent) break;
                     if (pid == resParticles [i][2][j]) {
-                        if (eta > etaLim_ [i][4] && eta < etaLim_ [i][5] && pt > ptLim_ [i][4] && pt < ptLim_ [i][5]) {
+                        //if (eta > etaLim_ [i][4] && eta < etaLim_ [i][5] && pt > ptLim_ [i][4] && pt < ptLim_ [i][5]) {
                             if (n == 1 && pid == kProton) phi += TMath::Pi (); // patch
                             QnMan -> AddDataVector (kNDetectors * i + kDetector1C, phi, weight);
                             subeventFlag [i][itrack - 1] = 3;
@@ -1452,7 +1452,7 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
                             pPtEtaC [i] -> Fill (eta, pt);
                             pPtCentC [i] -> Fill (cent, pt, eta);
                             break;
-                        }
+                       // }
                     }
 				}
 			}
