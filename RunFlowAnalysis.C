@@ -53,9 +53,9 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 	flowReconstructor.ExcludeRun (3161);
 
 	flowReconstructor.SetMhRange (10, 200);
-	flowReconstructor.SetNbinsMh (190);
+	flowReconstructor.SetNbinsMh (10);
 	flowReconstructor.SetCentRange (10, 200);
-	flowReconstructor.SetNbinsCent (190);
+	flowReconstructor.SetNbinsCent (10);
 	flowReconstructor.SetCentRangeForFlow (10, 50);
 	flowReconstructor.SetMhRangeForFlow (10, 50);
 
