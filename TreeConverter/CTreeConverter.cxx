@@ -246,7 +246,7 @@ Bool_t CTreeConverter::ConvertTree () {
 		    pid_ = GetTrackPid (itrack);
 
         event_ -> AddTrack (pt[itrack]/1000., eta[itrack], phi[itrack], charge[itrack], pid_);
-        event_ -> GetTrack (trackIndex) -> SetP (p[itrack])/1000.;
+        event_ -> GetTrack (trackIndex) -> SetP (p[itrack]/1000.);
         event_ -> GetTrack (trackIndex) -> SetRap (rapidity[itrack]);
       }
 	   //END track loop;
