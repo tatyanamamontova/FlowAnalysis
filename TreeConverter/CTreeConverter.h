@@ -43,10 +43,10 @@ private:
 
 
 	static const Int_t mhMax = 5000;
-   const Short_t nCuts = 8;
-   const Short_t nTrigger = 4;
-   const Short_t maxNWallHits = 200;
-   const Short_t maxNTracks = 200; 
+  static const Short_t nCuts = 8;
+  static const Short_t nTrigger = 4;
+  static  const Short_t maxNWallHits = 200;
+  static const Short_t maxNTracks = 200; 
 
 	// Declaration of leaf types
    Int_t           nRpcClustCut;                      

@@ -222,17 +222,17 @@ Bool_t CTreeConverter::ConvertTree () {
 		    if (!CheckTrackCuts (itrack)) continue;
             mh_cut++;
 		}
-
+		std::cout<<"multiplicity"<< mh_cut<<std::endl;
 		if (mh_cut < 10) continue;
 
     //centrality classes - ToF+RPC
-		if (centMethod_ == 1) cent = GetCentralityClass (nRpcClustCut+nTofHitsCut);
+		//if (centMethod_ == 1) cent = GetCentralityClass (nRpcClustCut+nTofHitsCut);
 		//if (centMethod_ == 2) cent = GetCentralityClass (fEveto);
-		if (cent < centMin_ || cent > centMax_) continue;
+		//if (cent < centMin_ || cent > centMax_) continue;
 		trackIndex = 0;
 
     //!still dont have run number
-		nRun = 0;
+		nRun = 10;
 
 		event_ -> SetNrun (nRun);
     //Dont have centrality yet
@@ -240,9 +240,10 @@ Bool_t CTreeConverter::ConvertTree () {
 		//event_ -> SetEvetoFull (fEveto);
 		//event_ -> SetEveto (fVeto_fAdcHadron);
 
-		for (Int_t itrack = 0; itrack < mh; itrack++) {
-		    if (!CheckTrackCuts (itrack)) continue;
-		    trackIndex++;
+		for (Int_t itrack = 0; itrack < mh_cut; itrack++) {
+		    if (!CheckTrackCuts (itrack)) continue; 
+		  trackIndex++;
+std::cout << trackIndex <<std::endl;
 		    if (phi[itrack] > PI) phi[itrack] -= 2 * PI;
 		    pid_ = GetTrackPid (itrack);
 
