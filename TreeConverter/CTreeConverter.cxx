@@ -237,7 +237,6 @@ Bool_t CTreeConverter::ConvertTree () {
 		event_ -> SetNrun (nRun);
     //Dont have centrality yet
 		event_ -> SetCent (mh_cut);
-    event_ -> SetMh(mh_cut);
 		//event_ -> SetEvetoFull (fEveto);
 		//event_ -> SetEveto (fVeto_fAdcHadron);
 
