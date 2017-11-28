@@ -125,11 +125,11 @@ Bool_t CTreeConverter::Init (){
    inputTree_->SetBranchAddress("eta", eta, &b_eta);
    inputTree_->SetBranchAddress("pt", pt, &b_pt);
    inputTree_->SetBranchAddress("rapidity", rapidity, &b_rapidity);
-   inputTree_->SetBranchAddress("beta", beta, &b_beta);
-   inputTree_->SetBranchAddress("mass", mass, &b_mass);
+   inputTree_->SetBranchAddress("metaBeta", beta, &b_beta);
+   inputTree_->SetBranchAddress("metaMass", mass, &b_mass);
    inputTree_->SetBranchAddress("charge", charge, &b_charge);
-   inputTree_->SetBranchAddress("rToBeam", rToBeam, &b_rToBeam);
-   inputTree_->SetBranchAddress("zToBeam", zToBeam, &b_zToBeam);
+   inputTree_->SetBranchAddress("DCAxy", rToBeam, &b_rToBeam);
+   inputTree_->SetBranchAddress("DCAz", zToBeam, &b_zToBeam);
    inputTree_->SetBranchAddress("pt_corr", pt_corr, &b_pt_corr);
 
 	return 1;
@@ -185,8 +185,8 @@ Float_t CTreeConverter::GetRapidity (Float_t pt, Float_t eta, Int_t pid) {
 Bool_t CTreeConverter::CheckTrackCuts (Int_t itrack) {
   //Kardan's cuts for tracks
     if ( pid[itrack]==14 && pt_corr[itrack]>250 && pt_corr[itrack]<1700 &&
-                 TMath::Abs(zToBeam[itrack]-vZ)<15. && TMath::Abs(rToBeam[itrack])<15. &&
-                 beta[itrack]<1 && mass[itrack]>600 && mass[itrack]<1200) return 1;
+                 TMath::Abs(DCAz[itrack]-vZ)<15. && TMath::Abs(DCAxy[itrack])<15. &&
+                 metaBeta[itrack]<1 && metaMass[itrack]>600 && metaMass[itrack]<1200) return 1;
     return 0;
 }
 

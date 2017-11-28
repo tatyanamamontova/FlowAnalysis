@@ -70,11 +70,11 @@ private:
    Float_t         pt[200];   
    Float_t         rapidity[200];
    Float_t         eta[200];  
-   Float_t         beta[200];   
-   Float_t         mass[200];   
+   Float_t         metaBeta[200];   
+   Float_t         metaMass[200];   
    Short_t         charge[200];   
-   Float_t         rToBeam[200];   
-   Float_t         zToBeam[200];   
+   Float_t         DCAxy[200];   
+   Float_t         DCAz[200];   
    Float_t         pt_corr[200];   
    Float_t         p[200];
 
@@ -99,11 +99,11 @@ private:
    TBranch        *b_theta;  
    TBranch        *b_pt;   
    TBranch        *b_rapidity;  
-   TBranch        *b_beta;   
-   TBranch        *b_mass;   
+   TBranch        *b_metaBeta;   
+   TBranch        *b_metaMass;   
    TBranch        *b_charge;   
-   TBranch        *b_rToBeam;   
-   TBranch        *b_zToBeam;   
+   TBranch        *b_DCAxy;   
+   TBranch        *b_DCAz;   
    TBranch        *b_pt_corr;
    TBranch        *b_p;  
    TBranch        *b_eta; 
