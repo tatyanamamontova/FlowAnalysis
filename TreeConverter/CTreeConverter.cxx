@@ -137,10 +137,8 @@ Bool_t CTreeConverter::Init (){
 
 
 Bool_t CTreeConverter::CheckEventCuts () {
-    for (Int_t i = 0; i < nCuts; i++){
-      if (!cuts[i]) return 0;
-    }
-    return 1;
+    if (cuts[0]&&cuts[1]&&cuts[2]&&cuts[3]&&cuts[4]&&cuts[5]&&cuts[6]&&cuts[7]) return 1;
+    return 0;
 }
 
 Float_t CTreeConverter::GetCentralityClass (Int_t mh) {
@@ -240,15 +238,15 @@ Bool_t CTreeConverter::ConvertTree () {
 		//event_ -> SetEvetoFull (fEveto);
 		//event_ -> SetEveto (fVeto_fAdcHadron);
 
-		for (Int_t itrack = 0; itrack < mh_cut; itrack++) {
+		for (Int_t itrack = 0; itrack < mh; itrack++) {
 		    if (!CheckTrackCuts (itrack)) continue; 
-		  trackIndex++;
-std::cout << trackIndex <<std::endl;
+		  	trackIndex++;
+			std::cout << trackIndex <<std::endl;
 		    if (phi[itrack] > PI) phi[itrack] -= 2 * PI;
 		    pid_ = GetTrackPid (itrack);
 
-        event_ -> AddTrack (pt[itrack], eta[itrack], phi[itrack], charge[itrack], pid_);
-        event_ -> GetTrack (trackIndex) -> SetP (p[itrack]);
+        event_ -> AddTrack (pt[itrack]/1000., eta[itrack], phi[itrack], charge[itrack], pid_);
+        event_ -> GetTrack (trackIndex) -> SetP (p[itrack])/1000.;
         event_ -> GetTrack (trackIndex) -> SetRap (rapidity[itrack]);
       }
 	   //END track loop;
