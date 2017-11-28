@@ -182,9 +182,8 @@ Float_t CTreeConverter::GetRapidity (Float_t pt, Float_t eta, Int_t pid) {
 
 Bool_t CTreeConverter::CheckTrackCuts (Int_t itrack) {
   //Kardan's cuts for tracks
-    if ( pid[itrack]==14 && pt_corr[itrack]>250 && pt_corr[itrack]<1700 &&
-                 TMath::Abs(DCAz[itrack]-vZ)<15. && TMath::Abs(DCAxy[itrack])<15. &&
-                 metaBeta[itrack]<1 && metaMass[itrack]>600 && metaMass[itrack]<1200) return 1;
+    if (TMath::Abs(DCAz[itrack]-vZ)<15. && TMath::Abs(DCAxy[itrack])<15. &&
+                 metaBeta[itrack]<1) return 1;
     return 0;
 }
 
