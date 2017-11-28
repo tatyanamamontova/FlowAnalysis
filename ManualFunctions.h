@@ -6,9 +6,8 @@
 #include <TRandom3.h>
 #include <TMath.h>
 #include <TF1.h>
-#include "./MyDataTree/CTrack.h"
-
-#include "defines.h"
+include "MyDataTree/CTrack.h"
+#include "config.h"
 
 using namespace std;
 
@@ -23,7 +22,6 @@ Float_t GetCentralityClass (Int_t mh) {
     if (mh < centClassLimits [i] && mh >= centClassLimits [i+1]) return centClassWidth * (i + 0.5);}
 	return -1.0;
 }
-
 
 void GetPsi (map <TString, Float_t> &variables) {
 	Float_t psi = gRandom -> Rndm () * 2 * PI;
