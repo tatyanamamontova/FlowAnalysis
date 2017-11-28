@@ -25,10 +25,10 @@ void RunConvertation (TString inputFileName = "../Source", TString outputFileNam
 	treeConverter.SetCentralityMethod (centMethod);  // 1 - multiplicity, 2 - Eveto
 
 	treeConverter.SetSNN (1.23); // GeV
-	treeConverter.SetNbinsMh (100);
-	treeConverter.SetMhRange (10, 250);
-	treeConverter.SetNbinsCent (8);
-	treeConverter.SetCentRange (0.0, 40.0);
+	treeConverter.SetNbinsMh (190);
+	treeConverter.SetMhRange (10, 200);
+	treeConverter.SetNbinsCent (190);
+	treeConverter.SetCentRange (10, 200);
 
 
     TStopwatch timer;
