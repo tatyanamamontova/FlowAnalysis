@@ -17,7 +17,7 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 //    histFileName = "/u/ogolosov/NA49_flow/3154"; // NA49
 //    nonUniformInputFileName = "Converted/3154_full_mh"; // NA49
 //    histFileName = "Flow/3154"; // NA49
-	nonUniformInputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Nov_28_9_41/AuAu_1_23AGev_gen9_108.list/Converted/tree_12108160806";
+	nonUniformInputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Nov_28_9_41/AuAu_1_23AGev_gen9_108.list/Converted/tree_12108160806_full_mh";
 	histFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Nov_28_9_41/AuAu_1_23AGev_gen9_108.list/Converted/12108160806_flow";
 
 	CFlowReconstructor flowReconstructor;
