@@ -125,11 +125,11 @@ Bool_t CTreeConverter::Init (){
    inputTree_->SetBranchAddress("eta", eta, &b_eta);
    inputTree_->SetBranchAddress("pt", pt, &b_pt);
    inputTree_->SetBranchAddress("rapidity", rapidity, &b_rapidity);
-   inputTree_->SetBranchAddress("metaBeta", beta, &b_beta);
-   inputTree_->SetBranchAddress("metaMass", mass, &b_mass);
+   inputTree_->SetBranchAddress("metaBeta", metaBeta, &b_metaBeta);
+   inputTree_->SetBranchAddress("metaMass", metaMass, &b_metaMass);
    inputTree_->SetBranchAddress("charge", charge, &b_charge);
-   inputTree_->SetBranchAddress("DCAxy", rToBeam, &b_rToBeam);
-   inputTree_->SetBranchAddress("DCAz", zToBeam, &b_zToBeam);
+   inputTree_->SetBranchAddress("DCAxy", DCAxy, &b_DCAxy);
+   inputTree_->SetBranchAddress("DCAz", DCAz, &b_DCAz);
    inputTree_->SetBranchAddress("pt_corr", pt_corr, &b_pt_corr);
 
 	return 1;
