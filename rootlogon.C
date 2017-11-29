@@ -7,7 +7,7 @@ using std::endl;
 
 void rootlogon () {
     TString location = gSystem -> WorkingDirectory ();
-	location = "/home/basov/ovgol/FlowAnalysis"; // explicit
+	//location = "/home/basov/ovgol/FlowAnalysis"; // explicit
     location += "/";
     std::cout << location << std::endl;
 
