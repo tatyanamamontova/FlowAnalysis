@@ -56,12 +56,12 @@ private:
    Short_t         nWallHitsTot;
    Bool_t          cuts[8];
    Short_t         wallModuleIndex[200];
-   Short_t         wallHitTime[200];
-   Short_t         wallHitCharge[200];
-   Short_t         wallHitDistance[200];
+   Float_t          wallHitTime[200];
+   Float_t          wallHitCharge[200];
+   Float_t          wallHitDistance[200];
    Short_t         wallHitRing[200];
-   Short_t         wallHitPhi[200];
-   Short_t         isWallHitOk[200];
+   Float_t          wallHitPhi[200];
+   Bool_t          isWallHitOk[200];
    Short_t         nTracks;
    Float_t         vZ;
    Short_t         pid[200];   
