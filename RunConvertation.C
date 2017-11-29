@@ -19,7 +19,7 @@ void RunConvertation (TString inputFileName = "../Source", TString outputFileNam
 
 	CTreeConverter treeConverter;
 	treeConverter.SetInputFileName (inputFileName);
-	treeConverter.SetOutputFileName (outputFileName + "_" + source + "_" + method);
+//	treeConverter.SetOutputFileName (outputFileName + "_" + source + "_" + method);
 	treeConverter.SetInputTreeName ("tree");
 	treeConverter.SetdEdxSource (dEdxSource);
 	treeConverter.SetCentralityMethod (centMethod);  // 1 - multiplicity, 2 - Eveto

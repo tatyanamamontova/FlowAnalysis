@@ -207,7 +207,8 @@ Bool_t CTreeConverter::ConvertTree () {
 	Float_t cent;
 
     cout << "Converting Tree: " << inputFileName_ << endl;
-	Long64_t nentries = inputTree_ -> GetEntries ();
+//	Long64_t nentries = inputTree_ -> GetEntries ();
+	Long64_t nentries = 10000;
 	for (Long64_t jentry = 0; jentry < nentries; jentry++) {
 		cout << "\rEvent " << jentry + 1 << " from " << nentries;
 		inputTree_ -> GetEntry (jentry);
@@ -252,6 +253,7 @@ Bool_t CTreeConverter::ConvertTree () {
 
     for (Int_t j = 0; j < nWallHitsTot; j++){
       trackIndex++;
+	if( wallHitPhi[j] > PI) wallHitPhi[j] -= 2*PI;
       event_ -> AddTrack (wallHitTime[j], wallHitRing[j], wallHitPhi[j], wallHitCharge[j], kFW);
       event_ -> GetTrack(trackIndex) ->SetRap(wallHitDistance[j]);
     }
