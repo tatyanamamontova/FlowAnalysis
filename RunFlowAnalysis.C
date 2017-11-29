@@ -16,8 +16,8 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 //    histFileName = "/u/ogolosov/NA49_flow/3154"; // NA49
 //    nonUniformInputFileName = "Converted/3154_full_mh"; // NA49
 //    histFileName = "Flow/3154"; // NA49
-	nonUniformInputFileName = "/u/tmamont/root_results/Converted/test";
-	histFileName = "/u/tmamont/root_results/Converted/test";
+	nonUniformInputFileName = "/lustre/nyx/hades/users/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
+	histFileName = "/lustre/nyx/hades/users/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
 
 	CFlowReconstructor flowReconstructor;
 	flowReconstructor.SetNonUniformInputFileName (nonUniformInputFileName);
