@@ -13,11 +13,11 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 // nonUniformInputFileName: route to file with data without ".root"
 // nonUniformInputFileName: route to file with simulations without ".root"
 //    nonUniformInputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_conv/3154_full_mh"; // NA49
-//    histFileName = "/u/ogolosov/NA49_flow/3154"; // NA49
+    histFileName = "/u/tmamont/flow_test/test"; // NA49
 //    nonUniformInputFileName = "Converted/3154_full_mh"; // NA49
 //    histFileName = "Flow/3154"; // NA49
-	nonUniformInputFileName = "/lustre/nyx/hades/users/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
-	histFileName = "/lustre/nyx/hades/users/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
+	nonUniformInputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
+//	histFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
 
 	CFlowReconstructor flowReconstructor;
 	flowReconstructor.SetNonUniformInputFileName (nonUniformInputFileName);
@@ -52,12 +52,12 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 	flowReconstructor.ExcludeRun (3014);
 	flowReconstructor.ExcludeRun (3161);
 
-	flowReconstructor.SetMhRange (10, 200);
-	flowReconstructor.SetNbinsMh (10);
-	flowReconstructor.SetCentRange (10, 200);
-	flowReconstructor.SetNbinsCent (10);
-	flowReconstructor.SetCentRangeForFlow (10, 50);
-	flowReconstructor.SetMhRangeForFlow (10, 50);
+	flowReconstructor.SetMhRange (10, 120);
+	flowReconstructor.SetNbinsMh (110);
+	flowReconstructor.SetCentRange (10, 120);
+	flowReconstructor.SetNbinsCent (110);
+	flowReconstructor.SetCentRangeForFlow (30, 80);
+	flowReconstructor.SetMhRangeForFlow (30, 80);
 
 	flowReconstructor.SetPtRange (0.0, 2.5);
 	flowReconstructor.SetNbinsPt (10);

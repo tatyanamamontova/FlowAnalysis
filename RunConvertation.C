@@ -6,8 +6,8 @@ void RunConvertation (TString inputFileName = "../Source", TString outputFileNam
 	clock_t begin = clock();
 //	inputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_data/3154";
 //	outputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_conv/3154";
-	inputFileName = "/lustre/nyx/hades/users/tmamont/gitDir/HADES/treeMaker/output/test_tree";
-	outputFileName = "/lustre/nyx/hades/users/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
+	inputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/test_tree";
+	outputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
 
     Int_t dEdxSource = 3;
     Int_t centMethod = 1;
@@ -19,7 +19,7 @@ void RunConvertation (TString inputFileName = "../Source", TString outputFileNam
 
 	CTreeConverter treeConverter;
 	treeConverter.SetInputFileName (inputFileName);
-//	treeConverter.SetOutputFileName (outputFileName + "_" + source + "_" + method);
+	treeConverter.SetOutputFileName (outputFileName);// + "_" + source + "_" + method);
 	treeConverter.SetInputTreeName ("tree");
 	treeConverter.SetdEdxSource (dEdxSource);
 	treeConverter.SetCentralityMethod (centMethod);  // 1 - multiplicity, 2 - Eveto

@@ -252,8 +252,10 @@ Bool_t CTreeConverter::ConvertTree () {
 	   //END track loop;
 
     for (Int_t j = 0; j < nWallHitsTot; j++){
-      trackIndex++;
-	if( wallHitPhi[j] > PI) wallHitPhi[j] -= 2*PI;
+	if (wallHitPhi[j] > PI) wallHitPhi[j] -= 2*PI;
+	if (wallHitCharge[j] < 85 || wallHitCharge[j] >120) continue;
+	if (wallHitTime[j] < 20 || wallHitTime[j] >35) continue;
+	trackIndex++;
       event_ -> AddTrack (wallHitTime[j], wallHitRing[j], wallHitPhi[j], wallHitCharge[j], kFW);
       event_ -> GetTrack(trackIndex) ->SetRap(wallHitDistance[j]);
     }
