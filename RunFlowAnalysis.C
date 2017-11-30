@@ -13,10 +13,10 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 // nonUniformInputFileName: route to file with data without ".root"
 // nonUniformInputFileName: route to file with simulations without ".root"
 //    nonUniformInputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_conv/3154_full_mh"; // NA49
-    histFileName = "/u/tmamont/flow_test/test"; // NA49
+    histFileName = "/u/tmamont/flow_full_tree/test"; // NA49
 //    nonUniformInputFileName = "Converted/3154_full_mh"; // NA49
 //    histFileName = "Flow/3154"; // NA49
-	nonUniformInputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
+	nonUniformInputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/tree_1210823565";
 //	histFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
 
 	CFlowReconstructor flowReconstructor;
@@ -53,9 +53,9 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 	flowReconstructor.ExcludeRun (3161);
 
 	flowReconstructor.SetMhRange (10, 120);
-	flowReconstructor.SetNbinsMh (110);
+	flowReconstructor.SetNbinsMh (10);
 	flowReconstructor.SetCentRange (10, 120);
-	flowReconstructor.SetNbinsCent (110);
+	flowReconstructor.SetNbinsCent (10);
 	flowReconstructor.SetCentRangeForFlow (30, 80);
 	flowReconstructor.SetMhRangeForFlow (30, 80);
 
@@ -83,8 +83,8 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 	flowReconstructor.AddFlowParticle (kProton);
 	flowReconstructor.SetPtAveragingRange (1, 0.1, 3.0);
 	flowReconstructor.SetPtAveragingRange (2, 0.1, 2.0);
-	flowReconstructor.SetEtaAveragingRange (1, 0.0, 1.0);
-	flowReconstructor.SetEtaAveragingRange (2, 0.0, 0.5);
+	flowReconstructor.SetEtaAveragingRange (1, -0.5, 1.0);
+	flowReconstructor.SetEtaAveragingRange (2, -0.5, 1.0);
    flowReconstructor.SetResolutionSigns(1, -1, -1, -1);
    flowReconstructor.SetResolutionSigns(2, 1, 1, 1);
 //END THREE SUBEVENT

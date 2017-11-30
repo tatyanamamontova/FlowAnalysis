@@ -6,8 +6,8 @@ void RunConvertation (TString inputFileName = "../Source", TString outputFileNam
 	clock_t begin = clock();
 //	inputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_data/3154";
 //	outputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_conv/3154";
-	inputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/test_tree";
-	outputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
+	inputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/tree_1210823565";
+	outputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/tree_1210823565";
 
     Int_t dEdxSource = 3;
     Int_t centMethod = 1;

@@ -6,14 +6,14 @@ currentDir=$(pwd)
 
 jobScript=${currentDir}/convertTree.sh
 input=${1}
-output=${2}
+outputdir=${1}/Convert
 
-ls $input/*.root>$OUTPUT/filelist.txt
-filelist=$OUTPUT/filelist.txt
-logdir=$output/log
+ls $input/*.root>$outputdir/filelist.txt
+filelist=$outputdir/filelist.txt
+logdir=$outputdir/log
 echo "$filelist is created"
 
-env = ${currentDir}/env.sh
+env=/cvmfs/hades.gsi.de/install/5.34.34/hydra2-4.9u/defall.sh
 
 
 if [ "$#" -ne "3" ]
@@ -32,10 +32,10 @@ fi
 
 if [ ! -d $outputdir ]
 then
-   echo "===> CREATE OUTPUTDIR : $output"
-   mkdir -p $output
+   echo "===> CREATE OUTPUTDIR : $outputdir"
+   mkdir -p $outputdir
 else
-   echo "===> USE OUTPUTDIR : $output"
+   echo "===> USE OUTPUTDIR : $outputdir"
 fi
 
 if [ ! -d $logdir ]

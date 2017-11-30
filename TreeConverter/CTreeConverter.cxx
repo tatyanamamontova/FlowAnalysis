@@ -207,8 +207,8 @@ Bool_t CTreeConverter::ConvertTree () {
 	Float_t cent;
 
     cout << "Converting Tree: " << inputFileName_ << endl;
-//	Long64_t nentries = inputTree_ -> GetEntries ();
-	Long64_t nentries = 10000;
+	Long64_t nentries = inputTree_ -> GetEntries ();
+//	Long64_t nentries = 10000;
 	for (Long64_t jentry = 0; jentry < nentries; jentry++) {
 		cout << "\rEvent " << jentry + 1 << " from " << nentries;
 		inputTree_ -> GetEntry (jentry);
