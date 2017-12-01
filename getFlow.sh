@@ -15,7 +15,7 @@ echo "==> running enironment script ${par1}"
 . $1
 
 echo "==> root"
-root.exe -b -l -q 'RunFlowAnalysis.C++("correlations","'$2'","'$3'")'
+root.exe -b -l -q 'RunFlowAnalysis.C("correlations","'$2'","'$3'")'
 status=$?
 
 if [ $status -ne 0 ]

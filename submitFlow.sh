@@ -15,6 +15,8 @@ echo "$filelist is created"
 
 env=/cvmfs/hades.gsi.de/install/5.34.34/hydra2-4.9u/defall.sh
 
+. ${env}
+root -l -b -q 'compileLib_flow.C'
 
 if [ "$#" -ne "3" ]
 then
