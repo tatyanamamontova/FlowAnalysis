@@ -118,6 +118,9 @@ Bool_t CTreeConverter::Init (){
    inputTree_->SetBranchAddress("isWallHitOk", isWallHitOk, &b_isWallHitOk);
    inputTree_->SetBranchAddress("nTracks", &nTracks, &b_nTracks);
    inputTree_->SetBranchAddress("vZ", &vZ, &b_vZ);
+   inputTree_->SetBranchAddress("vX", &vX, &b_vX);
+   inputTree_->SetBranchAddress("vY", &vY, &b_vY);
+   inputTree_->SetBranchAddress("vCi2", &vChi2, &b_vChi2);
    inputTree_->SetBranchAddress("pid", pid, &b_pid);
    inputTree_->SetBranchAddress("p", p, &b_p);
    inputTree_->SetBranchAddress("phi", phi, &b_phi);
@@ -131,21 +134,27 @@ Bool_t CTreeConverter::Init (){
    inputTree_->SetBranchAddress("DCAxy", DCAxy, &b_DCAxy);
    inputTree_->SetBranchAddress("DCAz", DCAz, &b_DCAz);
    inputTree_->SetBranchAddress("pt_corr", pt_corr, &b_pt_corr);
+   inputTree_->SetBranchAddress("pCorr", pCorr, &b_pCorr);
 
 	return 1;
 }
 
 
 Bool_t CTreeConverter::CheckEventCuts () {
-    if (cuts[0]&&cuts[1]&&cuts[2]&&cuts[3]&&cuts[4]&&cuts[5]&&cuts[6]&&cuts[7]) return 1;
-    return 0;
+    for (Int_t i = 0; i < 8; i++){
+    	if (!cuts[i]) return 0;
+    }
+    if (vZ<0 || vZ > 60) return 0;
+    if(vChi2 < 0.5 || vChi2 > 40) return 0;
+    if (TMath::Sqrt(vX*vX+vY*vY))>3) return 0;
+    return 1;
 }
 
 Float_t CTreeConverter::GetCentralityClass (Int_t mh) {
- static const Int_t nCentClasses = 8;
- Float_t centClassLimits [nCentClasses+1] = {250, 182, 160, 140, 121, 104, 88,
-                                           74, 60};
- Float_t centClassWidth = 0.05;
+//Kardan centrality classes
+ static const Int_t nCentClasses = 10;
+ Float_t centClassLimits [nCentClasses] = {250,182,160,140,121,104,88,74,60,39};
+ Float_t centClassWidth = 5;
 	if (mh >= centClassLimits [0]) return centClassWidth * 0.5;
 	for (Int_t i = 0; i < nCentClasses + 1; i++) {
     if (mh < centClassLimits [i] && mh >= centClassLimits [i+1]) return centClassWidth * (i + 0.5);}
@@ -226,15 +235,14 @@ Bool_t CTreeConverter::ConvertTree () {
     //centrality classes - ToF+RPC
 		//if (centMethod_ == 1) cent = GetCentralityClass (nRpcClustCut+nTofHitsCut);
 		//if (centMethod_ == 2) cent = GetCentralityClass (fEveto);
-		//if (cent < centMin_ || cent > centMax_) continue;
+		cent = GetCentralityClass(nRpcClustCut+nTofHitsCut);
+		if (cent < centMin_ || cent > centMax_) continue;
 		trackIndex = 0;
 
-    //!still dont have run number
 		nRun = TMath::Abs(runId);
 
 		event_ -> SetNrun (nRun);
-    //Dont have centrality yet
-		event_ -> SetCent (mh_cut);
+		event_ -> SetCent (cent);
 		//event_ -> SetEvetoFull (fEveto);
 		//event_ -> SetEveto (fVeto_fAdcHadron);
 

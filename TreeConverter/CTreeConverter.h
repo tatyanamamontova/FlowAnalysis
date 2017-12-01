@@ -56,14 +56,17 @@ private:
    Short_t         nWallHitsTot;
    Bool_t          cuts[8];
    Short_t         wallModuleIndex[200];
-   Float_t          wallHitTime[200];
-   Float_t          wallHitCharge[200];
-   Float_t          wallHitDistance[200];
+   Float_t         wallHitTime[200];
+   Float_t         wallHitCharge[200];
+   Float_t         wallHitDistance[200];
    Short_t         wallHitRing[200];
-   Float_t          wallHitPhi[200];
+   Float_t         wallHitPhi[200];
    Bool_t          isWallHitOk[200];
    Short_t         nTracks;
+   Float_t         vX;
+   Float_t         vY;
    Float_t         vZ;
+   Float_t         vChi2;
    Short_t         pid[200];   
    Float_t         phi[200];   
    Float_t         theta[200];   
@@ -77,6 +80,7 @@ private:
    Float_t         DCAz[200];   
    Float_t         pt_corr[200];   
    Float_t         p[200];
+   Float_t         pCorr[200];
 
    // List of branches
    TBranch        *b_nRpcClustCut;   
@@ -92,8 +96,11 @@ private:
    TBranch        *b_wallHitRing;   
    TBranch        *b_wallHitPhi;   
    TBranch        *b_isWallHitOk;   
-   TBranch        *b_nTracks;   
-   TBranch        *b_vZ;   
+   TBranch        *b_nTracks; 
+   TBranch        *b_vX; 
+   TBranch        *b_vY; 
+   TBranch        *b_vZ;
+   TBranch        *b_vChi2;    
    TBranch        *b_pid;   
    TBranch        *b_phi;   
    TBranch        *b_theta;  
@@ -106,7 +113,8 @@ private:
    TBranch        *b_DCAz;   
    TBranch        *b_pt_corr;
    TBranch        *b_p;  
-   TBranch        *b_eta; 
+   TBranch        *b_eta;
+   TBranch        *b_pCorr; 
 
 	Bool_t SetInputFile ();
 	Bool_t SetOutputFile ();
