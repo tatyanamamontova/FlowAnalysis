@@ -230,7 +230,7 @@ Bool_t CTreeConverter::ConvertTree () {
 		trackIndex = 0;
 
     //!still dont have run number
-		nRun = 10;
+		nRun = TMath::Abs(runId);
 
 		event_ -> SetNrun (nRun);
     //Dont have centrality yet

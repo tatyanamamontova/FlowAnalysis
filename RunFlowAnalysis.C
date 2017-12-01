@@ -13,10 +13,10 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 // nonUniformInputFileName: route to file with data without ".root"
 // nonUniformInputFileName: route to file with simulations without ".root"
 //    nonUniformInputFileName = "/lustre/nyx/cbm/users/ogolosov/NA49_conv/3154_full_mh"; // NA49
-    histFileName = "/u/tmamont/flow_full_tree/test"; // NA49
+//    histFileName = "/u/tmamont/flow_full_tree/test"; // NA49
 //    nonUniformInputFileName = "Converted/3154_full_mh"; // NA49
 //    histFileName = "Flow/3154"; // NA49
-	nonUniformInputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/tree_1210823565";
+//	nonUniformInputFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/tree_1210823565";
 //	histFileName = "/lustre/nyx/hades/user/tmamont/gitDir/HADES/treeMaker/output/Converted/test";
 
 	CFlowReconstructor flowReconstructor;
@@ -24,7 +24,7 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 //	flowReconstructor.SetUniformInputFileName (uniformInputFileName);
 	flowReconstructor.SetHistFileName (histFileName);
 	flowReconstructor.UseZeroSubevents (0); // do not touch
-//	flowReconstructor.SetSamplingMethod (kBootStrapping);
+	flowReconstructor.SetSamplingMethod (kBootStrapping);
 	flowReconstructor.SetSamplingMethod (kSubsampling);
 	flowReconstructor.PropagateResolutionSign ();
     flowReconstructor.SetNsteps (kTwistAndRescale);
@@ -43,14 +43,14 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 //    flowReconstructor.SetMhRange (0, 1000); // gen
 //    flowReconstructor.AddFlowParticle (kNID); // gen
 
-	flowReconstructor.SetNrunRange (0, 3166);
-	flowReconstructor.ExcludeRun (3141);
-	flowReconstructor.ExcludeRun (3010);
-	flowReconstructor.ExcludeRun (3030);
-	flowReconstructor.ExcludeRun (3134);
-	flowReconstructor.ExcludeRun (3159);
-	flowReconstructor.ExcludeRun (3014);
-	flowReconstructor.ExcludeRun (3161);
+	flowReconstructor.SetNrunRange (0, 10000);
+//	flowReconstructor.ExcludeRun (3141);
+//	flowReconstructor.ExcludeRun (3010);
+//	flowReconstructor.ExcludeRun (3030);
+//	flowReconstructor.ExcludeRun (3134);
+//	flowReconstructor.ExcludeRun (3159);
+//	flowReconstructor.ExcludeRun (3014);
+//	flowReconstructor.ExcludeRun (3161);
 
 	flowReconstructor.SetMhRange (10, 120);
 	flowReconstructor.SetNbinsMh (10);

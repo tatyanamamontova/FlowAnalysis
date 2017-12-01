@@ -4,7 +4,7 @@
 user=$(whoami)   
 currentDir=$(pwd)
 
-jobScript=${currentDir}/convertTree.sh
+jobscript=${currentDir}/convertTree.sh
 input=${1}
 outputdir=${1}/Convert
 
@@ -53,11 +53,11 @@ do
     runnumber=$(echo $file | sort| sed -r 's/.*\/tree_//'| sed -r 's/.root//')
     log_err=${logdir}/${runnumber}.err
     log_out=${logdir}/${runnumber}.out
-    command="sbatch --error=${log_err} --output=${log_out} ${jobscript} ${env} ${file} ${outputdir}/tree_${runnumber}.root"
+    command="sbatch --error=${log_err} --output=${log_out} ${jobscript} ${env} ${file} ${outputdir}/tree_${runnumber}"
     echo " "
     echo "sbatch"
     echo "-error=${log_err} --output=${log_out}"
-    echo "${jobscript} ${env} ${exe}"
+    echo "${jobscript} ${env}"
     echo "${runnumber}"
     echo "${outputdir}/tree_${runnumber}.root -1"
     $command
