@@ -63,27 +63,27 @@ using namespace std;
 
 
 CFlowReconstructor::CFlowReconstructor () {
-	nHarmonics = 0;
-	SetNbinsMh (10);
-	SetNbinsCent (10);
-	SetNbinsPt (10);
-	SetNbinsEta (10);
-	SetNonUniformInputFileName ("../Acceptance");
-	SetComment ("");
-	SetNbinsEtaRefl (0);
-	SetNrunRange (0, 0);
-	harmonicFunctionSet = 0;
-	uniformSet = 0;
-	useAutoHistRanges_ = 0;
-	useZeroSubevents_ = 0;
-	SetVariable ();
-	resChargeSet = 0;
-	mhRangeForFlowSet_ = 0;
-	centRangeForFlowSet_ = 0;
-	propagateResolutionSign_ = 0;
-	samplingMethod_ = kNoSampling;
-	SetResolutionMethod (kThreeSubevents);
-	SetNsteps (3);
+    nHarmonics = 0;
+    SetNbinsMh (10);
+    SetNbinsCent (10);
+    SetNbinsPt (10);
+    SetNbinsEta (10);
+    SetNonUniformInputFileName ("../Acceptance");
+    SetComment ("");
+    SetNbinsEtaRefl (0);
+    SetNrunRange (0, 0);
+    harmonicFunctionSet = 0;
+    uniformSet = 0;
+    useAutoHistRanges_ = 0;
+    useZeroSubevents_ = 0;
+    SetVariable ();
+    resChargeSet = 0;
+    mhRangeForFlowSet_ = 0;
+    centRangeForFlowSet_ = 0;
+    propagateResolutionSign_ = 0;
+    samplingMethod_ = kNoSampling;
+    SetResolutionMethod (kThreeSubevents);
+    SetNsteps (3);
 }
 
 void CFlowReconstructor::SetHistFileName (TString histFileName) {
@@ -99,28 +99,28 @@ void CFlowReconstructor::SetComment (TString comment) {
 }
 
 bool CFlowReconstructor::AddHarmonic (Int_t n) {
-	Int_t* temp;
-	temp = harmonicsMap;
-	harmonicsMap = new Int_t [nHarmonics + 1];
-	for (int i = 0; i < nHarmonics; i++) {
+    Int_t* temp;
+    temp = harmonicsMap;
+    harmonicsMap = new Int_t [nHarmonics + 1];
+    for (int i = 0; i < nHarmonics; i++) {
         if (temp [i] == n) {
             cout << "Harmonic was already added!";
             return 0;
         }
-		harmonicsMap [i] = temp [i];
-	}
-	harmonicsMap [nHarmonics] = n;
-	nHarmonics++;
-	//delete [] temp; // HELP!!!
-	etaLim_.push_back (new Float_t [6]);
-	ptLim_.push_back (new Float_t [6]);
-	resSign_.push_back (new Int_t [3]);
-	SetResolutionSigns(n, 1, 1, 1);
+        harmonicsMap [i] = temp [i];
+    }
+    harmonicsMap [nHarmonics] = n;
+    nHarmonics++;
+    //delete [] temp; // HELP!!!
+    etaLim_.push_back (new Float_t [6]);
+    ptLim_.push_back (new Float_t [6]);
+    resSign_.push_back (new Int_t [3]);
+    SetResolutionSigns(n, 1, 1, 1);
     resParticles.push_back (new vector <int> [3]);
-	etaAveragingRange_.push_back (new Float_t [2]);
-	ptAveragingRange_.push_back (new Float_t [2]);
-	SetReferenceOption (n, "");
-	return 1;
+    etaAveragingRange_.push_back (new Float_t [2]);
+    ptAveragingRange_.push_back (new Float_t [2]);
+    SetReferenceOption (n, "");
+    return 1;
 }
 
 void CFlowReconstructor::SetVariable (TString var) {
@@ -236,31 +236,31 @@ void CFlowReconstructor::SetNbinsBS (Int_t nBinsBS) {
 void CFlowReconstructor::BuildSampleTree (TTree *inputTree) {
     cout << "Building sample tree!\n";
     TRandom3 r (0);
-	Long64_t n, nEvents;
-	Int_t W [1000];
-	nEvents = inputTree -> GetEntries ();
-	vector <Int_t*> events;
+    Long64_t n, nEvents;
+    Int_t W [1000];
+    nEvents = inputTree -> GetEntries ();
+    vector <Int_t*> events;
 
-	TFile *sampleFile = new TFile (histFileName_ + "_sample.root", "RECREATE");
-	TH2F *h2nEventSampleWeight = new TH2F ("h2nEventSampleWeight", "Event weights in samples;Nevent;Sample", nEvents, 0, nEvents, nBinsBS_, 0, nBinsBS_);
+    TFile *sampleFile = new TFile (histFileName_ + "_sample.root", "RECREATE");
+    TH2F *h2nEventSampleWeight = new TH2F ("h2nEventSampleWeight", "Event weights in samples;Nevent;Sample", nEvents, 0, nEvents, nBinsBS_, 0, nBinsBS_);
     TTree *sampleTree = new TTree ("samples", "samples");
     sampleTree -> Branch ("W", &W, "W[1000]/I");
 
-	for (Long64_t i = 0; i < nEvents; i++) { // initialize with zeroes
+    for (Long64_t i = 0; i < nEvents; i++) { // initialize with zeroes
         events.push_back (new Int_t [1000]);
         for (Long64_t j = 0; j < 1000; j++) {
             events [i][j] = 0;
         }
-	}
+    }
 
     for (Int_t i = 0; i < nBinsBS_; i++) { // fill matrix
         for (Long64_t j = 0; j < nEvents; j++) {
             n = r.Rndm () * nEvents;
             events [n][i] ++;
         }
-	}
+    }
 
-	for (Long64_t i = 0; i < nEvents; i++) { // fill tree
+    for (Long64_t i = 0; i < nEvents; i++) { // fill tree
         for (Int_t j = 0; j < 1000; j++) {
             W [j] = events [i][j];
         }
@@ -268,286 +268,286 @@ void CFlowReconstructor::BuildSampleTree (TTree *inputTree) {
             h2nEventSampleWeight -> Fill (i, j, W [j]);
         }
         sampleTree -> Fill ();
-	}
+    }
 
-	sampleFile -> Write ();
-	sampleFile -> Close ();
-	cout << "Finished building sample tree!\n";
+    sampleFile -> Write ();
+    sampleFile -> Close ();
+    cout << "Finished building sample tree!\n";
 }
 
 void CFlowReconstructor::AnalyzeTree () {
-//	Int_t mh, n, sign [nHarmonics][nBinsEta_], *flagPtEta, *flagPt, *flagEta, currFlagPtEta, currFlagPt, currFlagEta;
-//	Int_t pid, charge;
-//	Float_t cent, pt, eta, phi, x, y, X, Y;
-//	TH1F *hMh, *hCent, *hPt, *hEta, *hPhi, *hMhPt, *hMhEta;
-//	TH2F *h2PtEta, *h2MhPtEta, *h2PidCharge;
-//	TH1F *hXnPt [nHarmonics], *hXnEta [nHarmonics], *hYnPt [nHarmonics], *hYnEta [nHarmonics];
-//	TProfile *pxnXnPt [nHarmonics], *pynYnPt [nHarmonics], *pxnXnEta [nHarmonics], *pynYnEta [nHarmonics];
-//	TH2F *h2XnPtEta [nHarmonics], *h2YnPtEta [nHarmonics];
-//	TProfile2D *p2xnXnPtEta [nHarmonics], *p2ynYnPtEta [nHarmonics];
+//  Int_t mh, n, sign [nHarmonics][nBinsEta_], *flagPtEta, *flagPt, *flagEta, currFlagPtEta, currFlagPt, currFlagEta;
+//  Int_t pid, charge;
+//  Float_t cent, pt, eta, phi, x, y, X, Y;
+//  TH1F *hMh, *hCent, *hPt, *hEta, *hPhi, *hMhPt, *hMhEta;
+//  TH2F *h2PtEta, *h2MhPtEta, *h2PidCharge;
+//  TH1F *hXnPt [nHarmonics], *hXnEta [nHarmonics], *hYnPt [nHarmonics], *hYnEta [nHarmonics];
+//  TProfile *pxnXnPt [nHarmonics], *pynYnPt [nHarmonics], *pxnXnEta [nHarmonics], *pynYnEta [nHarmonics];
+//  TH2F *h2XnPtEta [nHarmonics], *h2YnPtEta [nHarmonics];
+//  TProfile2D *p2xnXnPtEta [nHarmonics], *p2ynYnPtEta [nHarmonics];
 //
-//	event = new CEvent;
-//	inputFile = new TFile (nonUniformInputFileName + ".root", "READ");
-//	inputTree = (TTree*) inputFile -> Get ("Tree");
-//	inputTree -> SetBranchAddress ("Event", &event);
-//	histFile = new TFile (histFileName_ + "_distr.root", "RECREATE");
-//	GetVariableRanges ();
+//  event = new CEvent;
+//  inputFile = new TFile (nonUniformInputFileName + ".root", "READ");
+//  inputTree = (TTree*) inputFile -> Get ("Tree");
+//  inputTree -> SetBranchAddress ("Event", &event);
+//  histFile = new TFile (histFileName_ + "_distr.root", "RECREATE");
+//  GetVariableRanges ();
 //
-//	hMh = new TH1F ("hMh", "Multiplicity distribution; mh; nEvents", mhMax_, mhMin_, mhMax_);
-//	hCent = new TH1F ("hCent", "Centrality distribution; cent; nEvents", 13, 0.0, 0.65); // temporarily to be configured manually!!!
-//	hPt = new TH1F ("hPt", "P_{T} distribution; P_{T}[GeV]; nTracks", 100, ptMin_, ptMax_);
-//	hEta = new TH1F ("hEta", varName_ + " distribution; " + varName_ + "; nTracks", 100, etaMin_, etaMax_);
-//	h2PtEta = new TH2F ("h2PtEta", "P_{T} vs " + varName_ + " distribution; P_{T}[GeV]; " + varName_ + "; nTracks", 100, ptMin_, ptMax_, 100, etaMin_, etaMax_);
-//	hPhi = new TH1F ("hPhi", "#phi distribution; #phi; nTracks", 100, 0.0, 2 * PI);
-//	hMhPt = new TH1F ("hMhPt", "Multiplicity distribution versus P_{T}; P_{T}[GeV]; mh", nBinsPt_, ptMin_, ptMax_);
-//	hMhEta = new TH1F ("hMhEta", "Multiplicity distribution versus " + varName_ + "; " + varName_ + "; mh", nBinsEta_, etaMin_, etaMax_);
-//	h2MhPtEta = new TH2F ("h2MhPtEta", "Multiplicity distribution versus P_{T} and " + varName_ + "; P_{T}[GeV]; " + varName_ + "; mh", nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
-//	h2PidCharge = new TH2F ("h2PidCharge", "Particle ID vs charge; pID; charge", kNPartTypes, -0.5, kNPartTypes - 0.5, 3, -1.5, 1.5);
-//	for (int i = 0; i < nHarmonics; i++) {
-//		n = harmonicsMap [i];
-//		pxnXnPt [i] = new TProfile (Form ("px%iX%iPt", n, n), Form ("x_{%i}X_{%i} versus P_{T}; P_{T}[GeV]", n, n), nBinsPt_, ptMin_, ptMax_);
-//		pynYnPt [i] = new TProfile (Form ("py%iY%iPt", n, n), Form ("y_{%i}Y_{%i} versus P_{T}; P_{T}[GeV]", n, n), nBinsPt_, ptMin_, ptMax_);
-//		pxnXnEta [i] = new TProfile (Form ("px%iX%iEta", n, n), Form ("x_{%i}X_{%i} versus ", n, n) + varName_ + "; " + varName_, nBinsEta_, etaMin_, etaMax_);
-//		pynYnEta [i] = new TProfile (Form ("py%iY%iEta", n, n), Form ("y_{%i}Y_{%i} versus ", n, n) + varName_ + "; " + varName_, nBinsEta_, etaMin_, etaMax_);
-//		p2xnXnPtEta [i] = new TProfile2D (Form ("p2x%iX%iPtEta", n, n), Form ("x_{%i}X_{%i} versus P_{T} and ", n, n) + varName_ + "; P_{T}[GeV]; " + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
-//		p2ynYnPtEta [i] = new TProfile2D (Form ("p2y%iY%iPtEta", n, n), Form ("y_{%i}Y_{%i} versus P_{T} and ", n, n) + varName_ + "; P_{T}[GeV]; " + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
-//		h2XnPtEta [i] = new TH2F (Form ("h2X%iPtEta", n), Form ("X_{%i} versus P_{T} and ", n) + varName_ + "; P_{T}[GeV]; " + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
-//		h2YnPtEta [i] = new TH2F (Form ("h2Y%iPtEta", n), Form ("Y_{%i} versus P_{T} and ", n) + varName_ + "; P_{T}[GeV]; " + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
-//		hXnPt [i] = new TH1F (Form ("hX%iPt", n), Form ("X_{%i} versus P_{T}; P_{T}[GeV]; X_{%i}", n, n), nBinsPt_, ptMin_, ptMax_);
-//		hYnPt [i] = new TH1F (Form ("hY%iPt", n), Form ("Y_{%i} versus P_{T}; P_{T}[GeV]; Y_{%i}", n, n), nBinsPt_, ptMin_, ptMax_);
-//		hXnEta [i] = new TH1F (Form ("hX%iEta", n), Form ("X_{%i} versus ", n) + varName_ + "; " + varName_ + Form ("; X_{%i}", n), nBinsEta_, etaMin_, etaMax_);
-//		hYnEta [i] = new TH1F (Form ("hY%iEta", n), Form ("Y_{%i} versus ", n) + varName_ + "; " + varName_ + Form ("; Y_{%i}", n), nBinsEta_, etaMin_, etaMax_);
-//	}
+//  hMh = new TH1F ("hMh", "Multiplicity distribution; mh; nEvents", mhMax_, mhMin_, mhMax_);
+//  hCent = new TH1F ("hCent", "Centrality distribution; cent; nEvents", 13, 0.0, 0.65); // temporarily to be configured manually!!!
+//  hPt = new TH1F ("hPt", "P_{T} distribution; P_{T}[GeV]; nTracks", 100, ptMin_, ptMax_);
+//  hEta = new TH1F ("hEta", varName_ + " distribution; " + varName_ + "; nTracks", 100, etaMin_, etaMax_);
+//  h2PtEta = new TH2F ("h2PtEta", "P_{T} vs " + varName_ + " distribution; P_{T}[GeV]; " + varName_ + "; nTracks", 100, ptMin_, ptMax_, 100, etaMin_, etaMax_);
+//  hPhi = new TH1F ("hPhi", "#phi distribution; #phi; nTracks", 100, 0.0, 2 * PI);
+//  hMhPt = new TH1F ("hMhPt", "Multiplicity distribution versus P_{T}; P_{T}[GeV]; mh", nBinsPt_, ptMin_, ptMax_);
+//  hMhEta = new TH1F ("hMhEta", "Multiplicity distribution versus " + varName_ + "; " + varName_ + "; mh", nBinsEta_, etaMin_, etaMax_);
+//  h2MhPtEta = new TH2F ("h2MhPtEta", "Multiplicity distribution versus P_{T} and " + varName_ + "; P_{T}[GeV]; " + varName_ + "; mh", nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
+//  h2PidCharge = new TH2F ("h2PidCharge", "Particle ID vs charge; pID; charge", kNPartTypes, -0.5, kNPartTypes - 0.5, 3, -1.5, 1.5);
+//  for (int i = 0; i < nHarmonics; i++) {
+//      n = harmonicsMap [i];
+//      pxnXnPt [i] = new TProfile (Form ("px%iX%iPt", n, n), Form ("x_{%i}X_{%i} versus P_{T}; P_{T}[GeV]", n, n), nBinsPt_, ptMin_, ptMax_);
+//      pynYnPt [i] = new TProfile (Form ("py%iY%iPt", n, n), Form ("y_{%i}Y_{%i} versus P_{T}; P_{T}[GeV]", n, n), nBinsPt_, ptMin_, ptMax_);
+//      pxnXnEta [i] = new TProfile (Form ("px%iX%iEta", n, n), Form ("x_{%i}X_{%i} versus ", n, n) + varName_ + "; " + varName_, nBinsEta_, etaMin_, etaMax_);
+//      pynYnEta [i] = new TProfile (Form ("py%iY%iEta", n, n), Form ("y_{%i}Y_{%i} versus ", n, n) + varName_ + "; " + varName_, nBinsEta_, etaMin_, etaMax_);
+//      p2xnXnPtEta [i] = new TProfile2D (Form ("p2x%iX%iPtEta", n, n), Form ("x_{%i}X_{%i} versus P_{T} and ", n, n) + varName_ + "; P_{T}[GeV]; " + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
+//      p2ynYnPtEta [i] = new TProfile2D (Form ("p2y%iY%iPtEta", n, n), Form ("y_{%i}Y_{%i} versus P_{T} and ", n, n) + varName_ + "; P_{T}[GeV]; " + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
+//      h2XnPtEta [i] = new TH2F (Form ("h2X%iPtEta", n), Form ("X_{%i} versus P_{T} and ", n) + varName_ + "; P_{T}[GeV]; " + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
+//      h2YnPtEta [i] = new TH2F (Form ("h2Y%iPtEta", n), Form ("Y_{%i} versus P_{T} and ", n) + varName_ + "; P_{T}[GeV]; " + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
+//      hXnPt [i] = new TH1F (Form ("hX%iPt", n), Form ("X_{%i} versus P_{T}; P_{T}[GeV]; X_{%i}", n, n), nBinsPt_, ptMin_, ptMax_);
+//      hYnPt [i] = new TH1F (Form ("hY%iPt", n), Form ("Y_{%i} versus P_{T}; P_{T}[GeV]; Y_{%i}", n, n), nBinsPt_, ptMin_, ptMax_);
+//      hXnEta [i] = new TH1F (Form ("hX%iEta", n), Form ("X_{%i} versus ", n) + varName_ + "; " + varName_ + Form ("; X_{%i}", n), nBinsEta_, etaMin_, etaMax_);
+//      hYnEta [i] = new TH1F (Form ("hY%iEta", n), Form ("Y_{%i} versus ", n) + varName_ + "; " + varName_ + Form ("; Y_{%i}", n), nBinsEta_, etaMin_, etaMax_);
+//  }
 //
-//	flagPtEta = new Int_t [mhMax_];
-//	flagPt = new Int_t [mhMax_];
-//	flagEta = new Int_t [mhMax_];
+//  flagPtEta = new Int_t [mhMax_];
+//  flagPt = new Int_t [mhMax_];
+//  flagEta = new Int_t [mhMax_];
 //
-//	Float_t h = (etaMax_ - etaMin_) / nBinsEta_;
-//	eta = etaMin_ + 0.5 * h;
-//	for (Int_t i = 0; i < nHarmonics; i++) {
-//		for (Int_t k = 0; k < nBinsEta_; k++) {
-//			sign [i][k] = fabs (eta) / eta;
-//			eta += h;
-//		}
-//	}
+//  Float_t h = (etaMax_ - etaMin_) / nBinsEta_;
+//  eta = etaMin_ + 0.5 * h;
+//  for (Int_t i = 0; i < nHarmonics; i++) {
+//      for (Int_t k = 0; k < nBinsEta_; k++) {
+//          sign [i][k] = fabs (eta) / eta;
+//          eta += h;
+//      }
+//  }
 //
 //    cout << endl;
 //
-//	Long64_t nEvents = inputTree -> GetEntries ();
-//	for (Long64_t jentry = 0; jentry < nEvents; jentry++) {
-//		inputTree -> GetEntry (jentry);
-//		cout << "\rEvent " << jentry + 1 << " from " << nEvents;
-//		mh = event -> GetMh ();
-//		cent = event -> GetCent ();
-//		hMh -> Fill (mh);
-//		hCent -> Fill (cent);
+//  Long64_t nEvents = inputTree -> GetEntries ();
+//  for (Long64_t jentry = 0; jentry < nEvents; jentry++) {
+//      inputTree -> GetEntry (jentry);
+//      cout << "\rEvent " << jentry + 1 << " from " << nEvents;
+//      mh = event -> GetMh ();
+//      cent = event -> GetCent ();
+//      hMh -> Fill (mh);
+//      hCent -> Fill (cent);
 //
-//		for (Int_t itrack = 1; itrack <= mh; itrack++) {
-//			track = event -> GetTrack (itrack);
-//			pt = track -> GetPt ();
-//			eta = track -> GetEta ();
-//			phi = track -> GetPhi ();
-//			charge = track -> GetCharge ();
-//			pid = track -> GetPid ();
-//			flagPtEta [itrack - 1] = h2XnPtEta [0] -> FindBin (pt, eta);
-//			flagPt [itrack - 1] = hXnPt [0] -> FindBin (pt);
-//			flagEta [itrack - 1] = hXnEta [0] -> FindBin (eta);
+//      for (Int_t itrack = 1; itrack <= mh; itrack++) {
+//          track = event -> GetTrack (itrack);
+//          pt = track -> GetPt ();
+//          eta = track -> GetEta ();
+//          phi = track -> GetPhi ();
+//          charge = track -> GetCharge ();
+//          pid = track -> GetPid ();
+//          flagPtEta [itrack - 1] = h2XnPtEta [0] -> FindBin (pt, eta);
+//          flagPt [itrack - 1] = hXnPt [0] -> FindBin (pt);
+//          flagEta [itrack - 1] = hXnEta [0] -> FindBin (eta);
 //
 //            hPt -> Fill (pt);
 //            hEta -> Fill (eta);
-//			h2PtEta -> Fill (pt, eta);
+//          h2PtEta -> Fill (pt, eta);
 //            hPhi -> Fill (phi);
-//			hMhPt -> Fill (pt);
-//			hMhEta -> Fill (eta);
-//			h2MhPtEta -> Fill (pt, eta);
+//          hMhPt -> Fill (pt);
+//          hMhEta -> Fill (eta);
+//          h2MhPtEta -> Fill (pt, eta);
 //            h2PidCharge -> Fill (pid, charge);
 //
-//			for (Int_t i = 0; i < nHarmonics; i++) {
-//				n = harmonicsMap [i];
-//				x = TMath::Cos (n * phi);
-//				y = TMath::Sin (n * phi);
-//				h2XnPtEta [i] -> Fill (pt, eta, x);
-//				h2YnPtEta [i] -> Fill (pt, eta, y);
-//				hXnPt [i] -> Fill (pt, x);
-//				hYnPt [i] -> Fill (pt, y);
-//				hXnEta [i] -> Fill (eta, x);
-//				hYnEta [i] -> Fill (eta, y);
-//			}
-//		}
+//          for (Int_t i = 0; i < nHarmonics; i++) {
+//              n = harmonicsMap [i];
+//              x = TMath::Cos (n * phi);
+//              y = TMath::Sin (n * phi);
+//              h2XnPtEta [i] -> Fill (pt, eta, x);
+//              h2YnPtEta [i] -> Fill (pt, eta, y);
+//              hXnPt [i] -> Fill (pt, x);
+//              hYnPt [i] -> Fill (pt, y);
+//              hXnEta [i] -> Fill (eta, x);
+//              hYnEta [i] -> Fill (eta, y);
+//          }
+//      }
 //
-//		for (Int_t i = 0; i < nHarmonics; i++) {
-//			n = harmonicsMap [i];
+//      for (Int_t i = 0; i < nHarmonics; i++) {
+//          n = harmonicsMap [i];
 //
-//			for (Int_t j = 1; j <= nBinsPt_; j++) {
-//				for (Int_t k = 1; k <= nBinsEta_; k++) {
-//					X = h2XnPtEta [i] -> GetBinContent (j, k);
-//					Y = h2YnPtEta [i] -> GetBinContent (j, k);
-//					currFlagPtEta = h2XnPtEta [i] -> GetBin (j, k);
-//					for (Int_t itrack = 1; itrack <= mh; itrack++) {
-//						track = event -> GetTrack (itrack);
-//						pt = track -> GetPt ();
-//						eta = track -> GetEta ();
-//						phi = track -> GetPhi ();
-//						x = TMath::Cos (n * phi);
-//						y = TMath::Sin (n * phi);
-//						if (flagPtEta [itrack - 1] == currFlagPtEta) {
-//							p2xnXnPtEta [i] -> Fill (pt, eta, sign [i][k] * x * (X - x));
-//							p2ynYnPtEta [i] -> Fill (pt, eta, sign [i][k] * y * (Y - y));
-//						}
-//						else {
-//							p2xnXnPtEta [i] -> Fill (pt, eta, sign [i][k] * x * X);
-//							p2ynYnPtEta [i] -> Fill (pt, eta, sign [i][k] * y * Y);
-//						}
-//					}
-//				}
-//			}
+//          for (Int_t j = 1; j <= nBinsPt_; j++) {
+//              for (Int_t k = 1; k <= nBinsEta_; k++) {
+//                  X = h2XnPtEta [i] -> GetBinContent (j, k);
+//                  Y = h2YnPtEta [i] -> GetBinContent (j, k);
+//                  currFlagPtEta = h2XnPtEta [i] -> GetBin (j, k);
+//                  for (Int_t itrack = 1; itrack <= mh; itrack++) {
+//                      track = event -> GetTrack (itrack);
+//                      pt = track -> GetPt ();
+//                      eta = track -> GetEta ();
+//                      phi = track -> GetPhi ();
+//                      x = TMath::Cos (n * phi);
+//                      y = TMath::Sin (n * phi);
+//                      if (flagPtEta [itrack - 1] == currFlagPtEta) {
+//                          p2xnXnPtEta [i] -> Fill (pt, eta, sign [i][k] * x * (X - x));
+//                          p2ynYnPtEta [i] -> Fill (pt, eta, sign [i][k] * y * (Y - y));
+//                      }
+//                      else {
+//                          p2xnXnPtEta [i] -> Fill (pt, eta, sign [i][k] * x * X);
+//                          p2ynYnPtEta [i] -> Fill (pt, eta, sign [i][k] * y * Y);
+//                      }
+//                  }
+//              }
+//          }
 //
-//			for (Int_t j = 1; j <= nBinsPt_; j++) {
-//				X = hXnPt [i] -> GetBinContent (j);
-//				Y = hYnPt [i] -> GetBinContent (j);
-//				currFlagPt = hXnPt [i] -> GetBin (j);
-//				for (Int_t itrack = 1; itrack <= mh; itrack++) {
-//					track = event -> GetTrack (itrack);
-//					pt = track -> GetPt ();
-//					eta = track -> GetEta ();
-//					phi = track -> GetPhi ();
-//					x = TMath::Cos (n * phi);
-//					y = TMath::Sin (n * phi);
-//					if (flagPt [itrack - 1] == currFlagPt) {
-//						pxnXnPt [i] -> Fill (pt, x * (X - x));
-//						pynYnPt [i] -> Fill (pt, y * (Y - y));
-//					}
-//					else {
-//						pxnXnPt [i] -> Fill (pt, x * X);
-//						pynYnPt [i] -> Fill (pt, y * Y);
-//					}
-//				}
-//			}
+//          for (Int_t j = 1; j <= nBinsPt_; j++) {
+//              X = hXnPt [i] -> GetBinContent (j);
+//              Y = hYnPt [i] -> GetBinContent (j);
+//              currFlagPt = hXnPt [i] -> GetBin (j);
+//              for (Int_t itrack = 1; itrack <= mh; itrack++) {
+//                  track = event -> GetTrack (itrack);
+//                  pt = track -> GetPt ();
+//                  eta = track -> GetEta ();
+//                  phi = track -> GetPhi ();
+//                  x = TMath::Cos (n * phi);
+//                  y = TMath::Sin (n * phi);
+//                  if (flagPt [itrack - 1] == currFlagPt) {
+//                      pxnXnPt [i] -> Fill (pt, x * (X - x));
+//                      pynYnPt [i] -> Fill (pt, y * (Y - y));
+//                  }
+//                  else {
+//                      pxnXnPt [i] -> Fill (pt, x * X);
+//                      pynYnPt [i] -> Fill (pt, y * Y);
+//                  }
+//              }
+//          }
 //
-//			for (Int_t k = 1; k <= nBinsEta_; k++) {
-//				X = hXnEta [i] -> GetBinContent (k);
-//				Y = hYnEta [i] -> GetBinContent (k);
-//				currFlagEta = hXnEta [i] -> GetBin (k);
-//				for (Int_t itrack = 1; itrack <= mh; itrack++) {
-//					track = event -> GetTrack (itrack);
-//					pt = track -> GetPt ();
-//					eta = track -> GetEta ();
-//					phi = track -> GetPhi ();
-//					x = TMath::Cos (n * phi);
-//					y = TMath::Sin (n * phi);
-//					if (flagEta [itrack - 1] == currFlagEta) {
-//						pxnXnEta [i] -> Fill (eta, sign [i][k] * x * (X - x));
-//						pynYnEta [i] -> Fill (eta, sign [i][k] * y * (Y - y));
-//					}
-//					else {
-//						pxnXnEta [i] -> Fill (eta, sign [i][k] * x * X);
-//						pynYnEta [i] -> Fill (eta, sign [i][k] * y * Y);
-//					}
-//				}
-//			}
-//			h2XnPtEta [i] -> Reset ("ICESM");
-//			h2YnPtEta [i] -> Reset ("ICESM");
-//			hXnPt [i] -> Reset ("ICESM");
-//			hYnPt [i] -> Reset ("ICESM");
-//			hXnEta [i] -> Reset ("ICESM");
-//			hYnEta [i] -> Reset ("ICESM");
-//		}
-//	}
+//          for (Int_t k = 1; k <= nBinsEta_; k++) {
+//              X = hXnEta [i] -> GetBinContent (k);
+//              Y = hYnEta [i] -> GetBinContent (k);
+//              currFlagEta = hXnEta [i] -> GetBin (k);
+//              for (Int_t itrack = 1; itrack <= mh; itrack++) {
+//                  track = event -> GetTrack (itrack);
+//                  pt = track -> GetPt ();
+//                  eta = track -> GetEta ();
+//                  phi = track -> GetPhi ();
+//                  x = TMath::Cos (n * phi);
+//                  y = TMath::Sin (n * phi);
+//                  if (flagEta [itrack - 1] == currFlagEta) {
+//                      pxnXnEta [i] -> Fill (eta, sign [i][k] * x * (X - x));
+//                      pynYnEta [i] -> Fill (eta, sign [i][k] * y * (Y - y));
+//                  }
+//                  else {
+//                      pxnXnEta [i] -> Fill (eta, sign [i][k] * x * X);
+//                      pynYnEta [i] -> Fill (eta, sign [i][k] * y * Y);
+//                  }
+//              }
+//          }
+//          h2XnPtEta [i] -> Reset ("ICESM");
+//          h2YnPtEta [i] -> Reset ("ICESM");
+//          hXnPt [i] -> Reset ("ICESM");
+//          hYnPt [i] -> Reset ("ICESM");
+//          hXnEta [i] -> Reset ("ICESM");
+//          hYnEta [i] -> Reset ("ICESM");
+//      }
+//  }
 //
-//	for (Int_t i = 0; i < nHarmonics; i++) {
-//		delete h2XnPtEta [i];
-//		delete h2YnPtEta [i];
-//		delete hXnPt [i];
-//		delete hYnPt [i];
-//		delete hXnEta [i];
-//		delete hYnEta [i];
-//	}
-//	histFile -> Write ();
-//	histFile -> Close ();
-//	delete [] flagPtEta;
-//	delete [] flagPt;
-//	delete [] flagEta;
+//  for (Int_t i = 0; i < nHarmonics; i++) {
+//      delete h2XnPtEta [i];
+//      delete h2YnPtEta [i];
+//      delete hXnPt [i];
+//      delete hYnPt [i];
+//      delete hXnEta [i];
+//      delete hYnEta [i];
+//  }
+//  histFile -> Write ();
+//  histFile -> Close ();
+//  delete [] flagPtEta;
+//  delete [] flagPt;
+//  delete [] flagEta;
 }
 
 bool CFlowReconstructor::SetEtaSubeventsLimits (Int_t harmonic, Float_t lim1, Float_t lim2, Float_t lim3, Float_t lim4, Float_t lim5, Float_t lim6) {
-	Int_t harmPointer = -1;
-	for (int i = 0; i < nHarmonics; i++) {
-		if (harmonicsMap [i] == harmonic) harmPointer = i;
-	}
-	if (harmPointer < 0) {
-		cout << harmonic << "'th harmonic was not introduced!!!\n";
-		return 0;
-	}
-	etaLim_ [harmPointer] [0] = lim1;
-	etaLim_ [harmPointer] [1] = lim2;
-	etaLim_ [harmPointer] [2] = lim3;
-	etaLim_ [harmPointer] [3] = lim4;
-	etaLim_ [harmPointer] [4] = lim5;
-	etaLim_ [harmPointer] [5] = lim6;
-	return 1;
+    Int_t harmPointer = -1;
+    for (int i = 0; i < nHarmonics; i++) {
+        if (harmonicsMap [i] == harmonic) harmPointer = i;
+    }
+    if (harmPointer < 0) {
+        cout << harmonic << "'th harmonic was not introduced!!!\n";
+        return 0;
+    }
+    etaLim_ [harmPointer] [0] = lim1;
+    etaLim_ [harmPointer] [1] = lim2;
+    etaLim_ [harmPointer] [2] = lim3;
+    etaLim_ [harmPointer] [3] = lim4;
+    etaLim_ [harmPointer] [4] = lim5;
+    etaLim_ [harmPointer] [5] = lim6;
+    return 1;
 }
 
 bool CFlowReconstructor::SetEtaAveragingRange (Int_t harmonic, Float_t etaMin, Float_t etaMax) {
-	Int_t harmPointer = -1;
-	for (int i = 0; i < nHarmonics; i++) {
-		if (harmonicsMap [i] == harmonic) harmPointer = i;
-	}
-	if (harmPointer < 0) {
-		cout << harmonic << "'th harmonic was not introduced!!!\n";
-		return 0;
-	}
-	etaAveragingRange_ [harmPointer] [0] = etaMin;
-	etaAveragingRange_ [harmPointer] [1] = etaMax;
-	return 1;
+    Int_t harmPointer = -1;
+    for (int i = 0; i < nHarmonics; i++) {
+        if (harmonicsMap [i] == harmonic) harmPointer = i;
+    }
+    if (harmPointer < 0) {
+        cout << harmonic << "'th harmonic was not introduced!!!\n";
+        return 0;
+    }
+    etaAveragingRange_ [harmPointer] [0] = etaMin;
+    etaAveragingRange_ [harmPointer] [1] = etaMax;
+    return 1;
 }
 
 bool CFlowReconstructor::SetPtSubeventsLimits (Int_t harmonic, Float_t lim1, Float_t lim2, Float_t lim3, Float_t lim4, Float_t lim5, Float_t lim6) {
-	Int_t harmPointer = -1;
-	for (int i = 0; i < nHarmonics; i++) {
-		if (harmonicsMap [i] == harmonic) harmPointer = i;
-	}
-	if (harmPointer < 0) {
-		cout << harmonic << "'th harmonic was not introduced!!!\n";
-		return 0;
-	}
-	ptLim_ [harmPointer] [0] = lim1;
-	ptLim_ [harmPointer] [1] = lim2;
-	ptLim_ [harmPointer] [2] = lim3;
-	ptLim_ [harmPointer] [3] = lim4;
-	ptLim_ [harmPointer] [4] = lim5;
-	ptLim_ [harmPointer] [5] = lim6;
-	return 1;
+    Int_t harmPointer = -1;
+    for (int i = 0; i < nHarmonics; i++) {
+        if (harmonicsMap [i] == harmonic) harmPointer = i;
+    }
+    if (harmPointer < 0) {
+        cout << harmonic << "'th harmonic was not introduced!!!\n";
+        return 0;
+    }
+    ptLim_ [harmPointer] [0] = lim1;
+    ptLim_ [harmPointer] [1] = lim2;
+    ptLim_ [harmPointer] [2] = lim3;
+    ptLim_ [harmPointer] [3] = lim4;
+    ptLim_ [harmPointer] [4] = lim5;
+    ptLim_ [harmPointer] [5] = lim6;
+    return 1;
 }
 
 bool CFlowReconstructor::SetPtAveragingRange (Int_t harmonic, Float_t etaMin, Float_t etaMax) {
-	Int_t harmPointer = -1;
-	for (int i = 0; i < nHarmonics; i++) {
-		if (harmonicsMap [i] == harmonic) harmPointer = i;
-	}
-	if (harmPointer < 0) {
-		cout << harmonic << "'th harmonic was not introduced!!!\n";
-		return 0;
-	}
-	ptAveragingRange_ [harmPointer] [0] = etaMin;
-	ptAveragingRange_ [harmPointer] [1] = etaMax;
-	return 1;
+    Int_t harmPointer = -1;
+    for (int i = 0; i < nHarmonics; i++) {
+        if (harmonicsMap [i] == harmonic) harmPointer = i;
+    }
+    if (harmPointer < 0) {
+        cout << harmonic << "'th harmonic was not introduced!!!\n";
+        return 0;
+    }
+    ptAveragingRange_ [harmPointer] [0] = etaMin;
+    ptAveragingRange_ [harmPointer] [1] = etaMax;
+    return 1;
 }
 
 void CFlowReconstructor::SetNbinsMh (Int_t nBinsMh) {
-	nBinsMh_ = nBinsMh;
+    nBinsMh_ = nBinsMh;
 }
 
 void CFlowReconstructor::SetNbinsCent (Int_t nBinsCent) {
-	nBinsCent_ = nBinsCent;
+    nBinsCent_ = nBinsCent;
 }
 
 void CFlowReconstructor::SetNbinsPt (Int_t nBinsPt) {
-	nBinsPt_ = nBinsPt;
+    nBinsPt_ = nBinsPt;
 }
 
 void CFlowReconstructor::SetNbinsEta (Int_t nBinsEta) {
-	nBinsEta_ = nBinsEta;
+    nBinsEta_ = nBinsEta;
 }
 
 void CFlowReconstructor::SetNbinsEtaRefl (Int_t nBinsEtaRefl) {
@@ -555,65 +555,65 @@ void CFlowReconstructor::SetNbinsEtaRefl (Int_t nBinsEtaRefl) {
 }
 
 void CFlowReconstructor::SetHarmonicFunction (Int_t n, floatFunction func){
-	harmonicFunctions [n - 1] = func;
-	harmonicFunctionSet = 1;
+    harmonicFunctions [n - 1] = func;
+    harmonicFunctionSet = 1;
 }
 
 void CFlowReconstructor::GetVariableRanges (TTree *inputTree) {
-	mhMin_ = INT_MAX;
-	mhMax_ = 0;
-	ptMin_ = FLT_MAX;
-	ptMax_ = 0.0;
-	etaMin_ = FLT_MAX;
-	etaMax_ = -FLT_MAX;
-	centMin_ = 1.0;
-	centMax_ = 0.0;
-	Float_t cent;
-	Int_t mh;
-	Float_t pt, eta;
-	CEvent *event;
-	CTrack *track;
-	Long64_t nEvents = inputTree -> GetEntries ();
-	for (Long64_t jentry = 0; jentry < nEvents; jentry++) {
-		inputTree -> GetEntry (jentry);
-		mh = event -> GetMh ();
-		cent = event -> GetCent ();
-		if (mh > mhMax_)
-			mhMax_ = mh;
-		if (mh < mhMin_)
-			mhMin_ = mh;
-		if (cent > centMax_)
-			centMax_ = cent;
-		if (cent < centMin_)
-			centMin_ = cent;
-		for (Int_t itrack = 1; itrack <= mh; itrack++) {
-			track = event -> GetTrack (itrack);
-			pt = track -> GetPt ();
-			eta = track -> GetEta ();
-			if (pt > ptMax_)
-				ptMax_ = pt;
-			if (pt < ptMin_)
-				ptMin_ = pt;
-			if (eta > etaMax_)
-				etaMax_ = eta;
-			if (eta < etaMin_)
-				etaMin_ = eta;
-		}
-	}
-	cout << "ptMin_ = " << ptMin_ << "\tetaMin_ = " << etaMin_ << "\tptMax_ = " << ptMax_ << "\tetaMax_ = " << etaMax_ << endl;
+    mhMin_ = INT_MAX;
+    mhMax_ = 0;
+    ptMin_ = FLT_MAX;
+    ptMax_ = 0.0;
+    etaMin_ = FLT_MAX;
+    etaMax_ = -FLT_MAX;
+    centMin_ = 1.0;
+    centMax_ = 0.0;
+    Float_t cent;
+    Int_t mh;
+    Float_t pt, eta;
+    CEvent *event;
+    CTrack *track;
+    Long64_t nEvents = inputTree -> GetEntries ();
+    for (Long64_t jentry = 0; jentry < nEvents; jentry++) {
+        inputTree -> GetEntry (jentry);
+        mh = event -> GetMh ();
+        cent = event -> GetCent ();
+        if (mh > mhMax_)
+            mhMax_ = mh;
+        if (mh < mhMin_)
+            mhMin_ = mh;
+        if (cent > centMax_)
+            centMax_ = cent;
+        if (cent < centMin_)
+            centMin_ = cent;
+        for (Int_t itrack = 1; itrack <= mh; itrack++) {
+            track = event -> GetTrack (itrack);
+            pt = track -> GetPt ();
+            eta = track -> GetEta ();
+            if (pt > ptMax_)
+                ptMax_ = pt;
+            if (pt < ptMin_)
+                ptMin_ = pt;
+            if (eta > etaMax_)
+                etaMax_ = eta;
+            if (eta < etaMin_)
+                etaMin_ = eta;
+        }
+    }
+    cout << "ptMin_ = " << ptMin_ << "\tetaMin_ = " << etaMin_ << "\tptMax_ = " << ptMax_ << "\tetaMax_ = " << etaMax_ << endl;
 }
 
 void CFlowReconstructor::HistShift (TH1* h, Float_t shiftX, Float_t shiftY) {
-	Float_t xMin = h -> GetXaxis() -> GetXmin (), xMax = h -> GetXaxis() -> GetXmax ();
-	Float_t deltaX = shiftX * h -> GetBinWidth (1);
-	TF1 *f = new TF1 ("f", Form ("1 + %f * x", shiftY), xMin, xMax);
-	h -> Multiply (f, 1);
-	h -> GetXaxis () -> SetLimits (xMin + deltaX, xMax + deltaX);
+    Float_t xMin = h -> GetXaxis() -> GetXmin (), xMax = h -> GetXaxis() -> GetXmax ();
+    Float_t deltaX = shiftX * h -> GetBinWidth (1);
+    TF1 *f = new TF1 ("f", Form ("1 + %f * x", shiftY), xMin, xMax);
+    h -> Multiply (f, 1);
+    h -> GetXaxis () -> SetLimits (xMin + deltaX, xMax + deltaX);
 }
 
 void CFlowReconstructor::ShiftArray (Float_t *arr, Int_t n, Float_t shift) {
-	Float_t delta = shift * (arr [n - 1] - arr [0]);
-	for (Int_t i = 0; i < n; i++) arr [i] += delta;
+    Float_t delta = shift * (arr [n - 1] - arr [0]);
+    for (Int_t i = 0; i < n; i++) arr [i] += delta;
 }
 
 void CFlowReconstructor::SetUniformInputFileName (TString name) {
@@ -623,7 +623,7 @@ void CFlowReconstructor::SetUniformInputFileName (TString name) {
 }
 
 void CFlowReconstructor::SetNonUniformInputFileName (TString name) {
-	nonUniformInputFileName = name;
+    nonUniformInputFileName = name;
 }
 
 void CFlowReconstructor::TH2toTH1withSampling (TH2 *h2In, TH1 *hOut, TDirectory *dir) {
@@ -710,81 +710,81 @@ void CFlowReconstructor::GetCorrelations () {
 
 
 void CFlowReconstructor::SetupQnCorrectionsManager (TFile *qnInputFile, TFile *qnPtInputFile, TFile *qnEtaInputFile, QnCorrectionsManager *QnMan, QnCorrectionsManager *QnManPt, QnCorrectionsManager *QnManEta) {
-	const Int_t nEventClassesDimensions = 2;
-	Int_t n;
-	QnMan -> SetCalibrationHistogramsList (qnInputFile);
-	QnManPt -> SetCalibrationHistogramsList (qnPtInputFile);
-	QnManEta -> SetCalibrationHistogramsList (qnEtaInputFile);
-	QnCorrectionsEventClassVariablesSet *CorrEventClasses = new QnCorrectionsEventClassVariablesSet (nEventClassesDimensions);
+    const Int_t nEventClassesDimensions = 2;
+    Int_t n;
+    QnMan -> SetCalibrationHistogramsList (qnInputFile);
+    QnManPt -> SetCalibrationHistogramsList (qnPtInputFile);
+    QnManEta -> SetCalibrationHistogramsList (qnEtaInputFile);
+    QnCorrectionsEventClassVariablesSet *CorrEventClasses = new QnCorrectionsEventClassVariablesSet (nEventClassesDimensions);
     CorrEventClasses -> Add (new QnCorrectionsEventClassVariable (kNrun, VarNames [kNrun], nRuns_, nRunMin_ - 0.5, nRunMax_ + 0.5));
-	CorrEventClasses -> Add (new QnCorrectionsEventClassVariable (kCent, VarNames [kCent], nBinsCent_, centMin_, centMax_));
+    CorrEventClasses -> Add (new QnCorrectionsEventClassVariable (kCent, VarNames [kCent], nBinsCent_, centMin_, centMax_));
 
-	QnCorrectionsDetector *myDetectorOne;
+    QnCorrectionsDetector *myDetectorOne;
 
-	vector <QnCorrectionsDetector**> uDetPt, uDetEta;
-	vector <QnCorrectionsDetectorConfigurationTracks**> uDetPtConf, uDetEtaConf;
-	vector <QnCorrectionsQnVectorTwistAndRescale**> twScalePt, twScaleEta;
+    vector <QnCorrectionsDetector**> uDetPt, uDetEta;
+    vector <QnCorrectionsDetectorConfigurationTracks**> uDetPtConf, uDetEtaConf;
+    vector <QnCorrectionsQnVectorTwistAndRescale**> twScalePt, twScaleEta;
 
-	vector <QnCorrectionsDetector*> myDetectorOneA, myDetectorOneB, myDetectorOneC;
-	QnCorrectionsDetectorConfigurationTracks *myDetectorOneConf;
-	vector <QnCorrectionsDetectorConfigurationTracks*> myDetectorOneAConf, myDetectorOneBConf, myDetectorOneCConf;
-	QnCorrectionsQnVectorTwistAndRescale *twScale1;
-	vector <QnCorrectionsQnVectorTwistAndRescale*> twScale1A, twScale1B, twScale1C;
+    vector <QnCorrectionsDetector*> myDetectorOneA, myDetectorOneB, myDetectorOneC;
+    QnCorrectionsDetectorConfigurationTracks *myDetectorOneConf;
+    vector <QnCorrectionsDetectorConfigurationTracks*> myDetectorOneAConf, myDetectorOneBConf, myDetectorOneCConf;
+    QnCorrectionsQnVectorTwistAndRescale *twScale1;
+    vector <QnCorrectionsQnVectorTwistAndRescale*> twScale1A, twScale1B, twScale1C;
 
-	myDetectorOne = new QnCorrectionsDetector (DetectorNames [kDetector1], kDetector1);
-	myDetectorOneConf = new QnCorrectionsDetectorConfigurationTracks (
+    myDetectorOne = new QnCorrectionsDetector (DetectorNames [kDetector1], kDetector1);
+    myDetectorOneConf = new QnCorrectionsDetectorConfigurationTracks (
           "D1", CorrEventClasses, nHarmonics, harmonicsMap);
-	myDetectorOneConf -> SetQVectorNormalizationMethod (QnCorrectionsQnVector::QVNORM_QoverM);
-	myDetectorOneConf -> AddCorrectionOnQnVector (new QnCorrectionsQnVectorRecentering ());
-	twScale1 = new QnCorrectionsQnVectorTwistAndRescale();
-	twScale1 -> SetApplyTwist (kTRUE);
-	twScale1 -> SetApplyRescale (kTRUE);
-	twScale1 -> SetTwistAndRescaleMethod (QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
-	myDetectorOneConf -> AddCorrectionOnQnVector (twScale1);
-	myDetectorOne -> AddDetectorConfiguration (myDetectorOneConf);
-	QnMan -> AddDetector (myDetectorOne);
+    myDetectorOneConf -> SetQVectorNormalizationMethod (QnCorrectionsQnVector::QVNORM_QoverM);
+    myDetectorOneConf -> AddCorrectionOnQnVector (new QnCorrectionsQnVectorRecentering ());
+    twScale1 = new QnCorrectionsQnVectorTwistAndRescale();
+    twScale1 -> SetApplyTwist (kTRUE);
+    twScale1 -> SetApplyRescale (kTRUE);
+    twScale1 -> SetTwistAndRescaleMethod (QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
+    myDetectorOneConf -> AddCorrectionOnQnVector (twScale1);
+    myDetectorOne -> AddDetectorConfiguration (myDetectorOneConf);
+    QnMan -> AddDetector (myDetectorOne);
 
-	for (Int_t i = 0; i < nHarmonics; i++) {
-		n = harmonicsMap [i];
+    for (Int_t i = 0; i < nHarmonics; i++) {
+        n = harmonicsMap [i];
 
-		myDetectorOneA.push_back (new QnCorrectionsDetector (DetectorNames [kDetector1A] + Form ("_%i", n), kNDetectors * i + kDetector1A));
-		myDetectorOneAConf.push_back (new QnCorrectionsDetectorConfigurationTracks (
-			  Form ("D1A_%i", n), CorrEventClasses, nHarmonics, harmonicsMap));
-		myDetectorOneAConf [i] -> SetQVectorNormalizationMethod (QnCorrectionsQnVector::QVNORM_QoverM);
-		myDetectorOneAConf [i] -> AddCorrectionOnQnVector (new QnCorrectionsQnVectorRecentering ());
-		twScale1A.push_back (new QnCorrectionsQnVectorTwistAndRescale());
-		twScale1A [i] -> SetApplyTwist (kTRUE);
-		twScale1A [i] -> SetApplyRescale (kTRUE);
-		twScale1A [i] -> SetTwistAndRescaleMethod (QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
-		myDetectorOneAConf [i] -> AddCorrectionOnQnVector (twScale1A [i]);
-		myDetectorOneA [i] -> AddDetectorConfiguration (myDetectorOneAConf [i]);
-		QnMan -> AddDetector (myDetectorOneA [i]);
+        myDetectorOneA.push_back (new QnCorrectionsDetector (DetectorNames [kDetector1A] + Form ("_%i", n), kNDetectors * i + kDetector1A));
+        myDetectorOneAConf.push_back (new QnCorrectionsDetectorConfigurationTracks (
+              Form ("D1A_%i", n), CorrEventClasses, nHarmonics, harmonicsMap));
+        myDetectorOneAConf [i] -> SetQVectorNormalizationMethod (QnCorrectionsQnVector::QVNORM_QoverM);
+        myDetectorOneAConf [i] -> AddCorrectionOnQnVector (new QnCorrectionsQnVectorRecentering ());
+        twScale1A.push_back (new QnCorrectionsQnVectorTwistAndRescale());
+        twScale1A [i] -> SetApplyTwist (kTRUE);
+        twScale1A [i] -> SetApplyRescale (kTRUE);
+        twScale1A [i] -> SetTwistAndRescaleMethod (QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
+        myDetectorOneAConf [i] -> AddCorrectionOnQnVector (twScale1A [i]);
+        myDetectorOneA [i] -> AddDetectorConfiguration (myDetectorOneAConf [i]);
+        QnMan -> AddDetector (myDetectorOneA [i]);
 
-		myDetectorOneB.push_back (new QnCorrectionsDetector (DetectorNames [kDetector1B] + Form ("_%i", n), kNDetectors * i + kDetector1B));
-		myDetectorOneBConf.push_back (new QnCorrectionsDetectorConfigurationTracks (
-			  Form ("D1B_%i", n), CorrEventClasses, nHarmonics, harmonicsMap));
-		myDetectorOneBConf [i] -> SetQVectorNormalizationMethod (QnCorrectionsQnVector::QVNORM_QoverM);
-		myDetectorOneBConf [i] -> AddCorrectionOnQnVector (new QnCorrectionsQnVectorRecentering ());
-		twScale1B.push_back (new QnCorrectionsQnVectorTwistAndRescale());
-		twScale1B [i] -> SetApplyTwist (kTRUE);
-		twScale1B [i] -> SetApplyRescale (kTRUE);
-		twScale1B [i] -> SetTwistAndRescaleMethod (QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
-		myDetectorOneBConf [i] -> AddCorrectionOnQnVector (twScale1B [i]);
-		myDetectorOneB [i] -> AddDetectorConfiguration (myDetectorOneBConf [i]);
-		QnMan -> AddDetector (myDetectorOneB [i]);
+        myDetectorOneB.push_back (new QnCorrectionsDetector (DetectorNames [kDetector1B] + Form ("_%i", n), kNDetectors * i + kDetector1B));
+        myDetectorOneBConf.push_back (new QnCorrectionsDetectorConfigurationTracks (
+              Form ("D1B_%i", n), CorrEventClasses, nHarmonics, harmonicsMap));
+        myDetectorOneBConf [i] -> SetQVectorNormalizationMethod (QnCorrectionsQnVector::QVNORM_QoverM);
+        myDetectorOneBConf [i] -> AddCorrectionOnQnVector (new QnCorrectionsQnVectorRecentering ());
+        twScale1B.push_back (new QnCorrectionsQnVectorTwistAndRescale());
+        twScale1B [i] -> SetApplyTwist (kTRUE);
+        twScale1B [i] -> SetApplyRescale (kTRUE);
+        twScale1B [i] -> SetTwistAndRescaleMethod (QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
+        myDetectorOneBConf [i] -> AddCorrectionOnQnVector (twScale1B [i]);
+        myDetectorOneB [i] -> AddDetectorConfiguration (myDetectorOneBConf [i]);
+        QnMan -> AddDetector (myDetectorOneB [i]);
 
-		myDetectorOneC.push_back (new QnCorrectionsDetector (DetectorNames [kDetector1C] + Form ("_%i", n), kNDetectors * i + kDetector1C));
-		myDetectorOneCConf.push_back (new QnCorrectionsDetectorConfigurationTracks (
-			  Form ("D1C_%i", n), CorrEventClasses, nHarmonics, harmonicsMap));
-		myDetectorOneCConf [i] -> SetQVectorNormalizationMethod (QnCorrectionsQnVector::QVNORM_QoverM);
-		myDetectorOneCConf [i] -> AddCorrectionOnQnVector (new QnCorrectionsQnVectorRecentering ());
-		twScale1C.push_back (new QnCorrectionsQnVectorTwistAndRescale());
-		twScale1C [i] -> SetApplyTwist (kTRUE);
-		twScale1C [i] -> SetApplyRescale (kTRUE);
-		twScale1C [i] -> SetTwistAndRescaleMethod (QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
-		myDetectorOneCConf [i] -> AddCorrectionOnQnVector (twScale1C [i]);
-		myDetectorOneC [i] -> AddDetectorConfiguration (myDetectorOneCConf [i]);
-		QnMan -> AddDetector (myDetectorOneC [i]);
+        myDetectorOneC.push_back (new QnCorrectionsDetector (DetectorNames [kDetector1C] + Form ("_%i", n), kNDetectors * i + kDetector1C));
+        myDetectorOneCConf.push_back (new QnCorrectionsDetectorConfigurationTracks (
+              Form ("D1C_%i", n), CorrEventClasses, nHarmonics, harmonicsMap));
+        myDetectorOneCConf [i] -> SetQVectorNormalizationMethod (QnCorrectionsQnVector::QVNORM_QoverM);
+        myDetectorOneCConf [i] -> AddCorrectionOnQnVector (new QnCorrectionsQnVectorRecentering ());
+        twScale1C.push_back (new QnCorrectionsQnVectorTwistAndRescale());
+        twScale1C [i] -> SetApplyTwist (kTRUE);
+        twScale1C [i] -> SetApplyRescale (kTRUE);
+        twScale1C [i] -> SetTwistAndRescaleMethod (QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
+        myDetectorOneCConf [i] -> AddCorrectionOnQnVector (twScale1C [i]);
+        myDetectorOneC [i] -> AddDetectorConfiguration (myDetectorOneCConf [i]);
+        QnMan -> AddDetector (myDetectorOneC [i]);
 
         uDetPt.push_back (new QnCorrectionsDetector* [nBinsPt_]);
         uDetPtConf.push_back (new QnCorrectionsDetectorConfigurationTracks* [nBinsPt_]);
@@ -822,43 +822,43 @@ void CFlowReconstructor::SetupQnCorrectionsManager (TFile *qnInputFile, TFile *q
             uDetEta [i][j] -> AddDetectorConfiguration (uDetEtaConf [i][j]);
             QnManEta -> AddDetector (uDetEta [i][j]);
         }
-	}
+    }
 
-	cout << "\n================ CONFIGURED ================\n\n";
+    cout << "\n================ CONFIGURED ================\n\n";
 
-	/* order the appropriate output */
-	QnMan -> SetShouldFillQAHistograms (kTRUE);
-	QnMan -> SetShouldFillNveQAHistograms (kTRUE);
-	QnMan -> SetShouldFillOutputHistograms (kTRUE);
-	QnManPt -> SetShouldFillQAHistograms (kTRUE);
-	QnManPt -> SetShouldFillNveQAHistograms (kTRUE);
-	QnManPt -> SetShouldFillOutputHistograms (kTRUE);
-	QnManEta -> SetShouldFillQAHistograms (kTRUE);
-	QnManEta -> SetShouldFillNveQAHistograms (kTRUE);
-	QnManEta -> SetShouldFillOutputHistograms (kTRUE);
+    /* order the appropriate output */
+    QnMan -> SetShouldFillQAHistograms (kTRUE);
+    QnMan -> SetShouldFillNveQAHistograms (kTRUE);
+    QnMan -> SetShouldFillOutputHistograms (kTRUE);
+    QnManPt -> SetShouldFillQAHistograms (kTRUE);
+    QnManPt -> SetShouldFillNveQAHistograms (kTRUE);
+    QnManPt -> SetShouldFillOutputHistograms (kTRUE);
+    QnManEta -> SetShouldFillQAHistograms (kTRUE);
+    QnManEta -> SetShouldFillNveQAHistograms (kTRUE);
+    QnManEta -> SetShouldFillOutputHistograms (kTRUE);
 
-	cout << "\n================ FINISH SETUP ================\n\n";
+    cout << "\n================ FINISH SETUP ================\n\n";
 
-	QnMan -> InitializeQnCorrectionsFramework();
-	QnManPt -> InitializeQnCorrectionsFramework();
-	QnManEta -> InitializeQnCorrectionsFramework();
+    QnMan -> InitializeQnCorrectionsFramework();
+    QnManPt -> InitializeQnCorrectionsFramework();
+    QnManEta -> InitializeQnCorrectionsFramework();
 
-	cout << "\n================ INITIALIZED ================\n\n";
+    cout << "\n================ INITIALIZED ================\n\n";
 
-	QnMan -> SetCurrentProcessListName ("Qn");
-	QnManPt -> SetCurrentProcessListName ("QnPt");
-	QnManEta -> SetCurrentProcessListName ("QnEta");
+    QnMan -> SetCurrentProcessListName ("Qn");
+    QnManPt -> SetCurrentProcessListName ("QnPt");
+    QnManEta -> SetCurrentProcessListName ("QnEta");
 }
 
 void CFlowReconstructor::FinalizeQnCorrectionsManager (TFile *qnInputFile, TFile *qnOutputFile, QnCorrectionsManager *QnMan) {
-	if (qnInputFile) qnInputFile -> Close ();
-	QnMan -> FinalizeQnCorrectionsFramework ();
-	qnOutputFile -> cd ();
-	QnMan -> GetOutputHistogramsList () -> Write (QnMan -> GetOutputHistogramsList () -> GetName (), TObject::kSingleKey);
-	QnMan -> GetQAHistogramsList () -> Write (QnMan -> GetQAHistogramsList () -> GetName (), TObject::kSingleKey);
-	QnMan -> GetNveQAHistogramsList () -> Write (QnMan -> GetNveQAHistogramsList () -> GetName (), TObject::kSingleKey);
-	qnOutputFile -> Close ();
-	delete QnMan;
+    if (qnInputFile) qnInputFile -> Close ();
+    QnMan -> FinalizeQnCorrectionsFramework ();
+    qnOutputFile -> cd ();
+    QnMan -> GetOutputHistogramsList () -> Write (QnMan -> GetOutputHistogramsList () -> GetName (), TObject::kSingleKey);
+    QnMan -> GetQAHistogramsList () -> Write (QnMan -> GetQAHistogramsList () -> GetName (), TObject::kSingleKey);
+    QnMan -> GetNveQAHistogramsList () -> Write (QnMan -> GetNveQAHistogramsList () -> GetName (), TObject::kSingleKey);
+    qnOutputFile -> Close ();
+    delete QnMan;
 }
 
 
@@ -866,48 +866,48 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
     const Bool_t mhON = 0;
 
     TString option [4] = {"recreate", "update", "update", "update"};
-	TFile *inputFile = new TFile (nonUniformInputFileName + ".root", "READ");
-	if (uniformSet) inputFile = new TFile (uniformInputFileName + ".root", "READ");
-	TTree *inputTree = (TTree*) inputFile -> Get ("Tree");
-	CEvent *event = new CEvent;
-	CTrack* track;
-	inputTree -> SetBranchAddress ("Event", &event);
-	if (useAutoHistRanges_ == 1) GetVariableRanges (inputTree);
-	TFile *histFile = new TFile (histFileName_ + "_corr.root", option [step]);
-	if (samplingMethod_ == kBootStrapping && step == kNoCorrections) BuildSampleTree (inputTree);
+    TFile *inputFile = new TFile (nonUniformInputFileName + ".root", "READ");
+    if (uniformSet) inputFile = new TFile (uniformInputFileName + ".root", "READ");
+    TTree *inputTree = (TTree*) inputFile -> Get ("Tree");
+    CEvent *event = new CEvent;
+    CTrack* track;
+    inputTree -> SetBranchAddress ("Event", &event);
+    if (useAutoHistRanges_ == 1) GetVariableRanges (inputTree);
+    TFile *histFile = new TFile (histFileName_ + "_corr.root", option [step]);
+    if (samplingMethod_ == kBootStrapping && step == kNoCorrections) BuildSampleTree (inputTree);
 
-	TFile *qnInputFile = new TFile (histFileName_ + Form ("_%i.root", step), "read");
-	TFile *qnPtInputFile = new TFile (histFileName_ + Form ("Pt_%i.root", step), "read");
-	TFile *qnEtaInputFile = new TFile (histFileName_ + Form ("Eta_%i.root", step), "read");
-	if (uniformSet) {
+    TFile *qnInputFile = new TFile (histFileName_ + Form ("_%i.root", step), "read");
+    TFile *qnPtInputFile = new TFile (histFileName_ + Form ("Pt_%i.root", step), "read");
+    TFile *qnEtaInputFile = new TFile (histFileName_ + Form ("Eta_%i.root", step), "read");
+    if (uniformSet) {
         qnInputFile = new TFile (histFileName_ + Form ("_%i.root", 0), "read");
         qnPtInputFile = new TFile (histFileName_ + Form ("_%i.root", 0), "read");
         qnEtaInputFile = new TFile (histFileName_ + Form ("_%i.root", 0), "read");
     }
-	TFile *qnOutputFile = new TFile (histFileName_ + Form ("_%i.root", step + 1), "recreate");
-	TFile *qnPtOutputFile = new TFile (histFileName_ + Form ("Pt_%i.root", step + 1), "recreate");
-	TFile *qnEtaOutputFile = new TFile (histFileName_ + Form ("Eta_%i.root", step + 1), "recreate");
+    TFile *qnOutputFile = new TFile (histFileName_ + Form ("_%i.root", step + 1), "recreate");
+    TFile *qnPtOutputFile = new TFile (histFileName_ + Form ("Pt_%i.root", step + 1), "recreate");
+    TFile *qnEtaOutputFile = new TFile (histFileName_ + Form ("Eta_%i.root", step + 1), "recreate");
 
-	QnCorrectionsManager *QnMan = new QnCorrectionsManager ();
-	QnCorrectionsManager *QnManPt = new QnCorrectionsManager ();
-	QnCorrectionsManager *QnManEta = new QnCorrectionsManager ();
+    QnCorrectionsManager *QnMan = new QnCorrectionsManager ();
+    QnCorrectionsManager *QnManPt = new QnCorrectionsManager ();
+    QnCorrectionsManager *QnManEta = new QnCorrectionsManager ();
 
-	SetupQnCorrectionsManager (qnInputFile, qnPtInputFile, qnEtaInputFile, QnMan, QnManPt, QnManEta);
-	TDirectory *histDir = histFile -> mkdir (dirName [step]);
-	TDirectory *servHistDir = histDir -> mkdir ("Source Histograms");
+    SetupQnCorrectionsManager (qnInputFile, qnPtInputFile, qnEtaInputFile, QnMan, QnManPt, QnManEta);
+    TDirectory *histDir = histFile -> mkdir (dirName [step]);
+    TDirectory *servHistDir = histDir -> mkdir ("Source Histograms");
 
-	Long64_t nEvents = inputTree -> GetEntries ();
+    Long64_t nEvents = inputTree -> GetEntries ();
     Int_t centBin;
     Bool_t skipFlag;
-	Int_t *mha = new Int_t [nHarmonics], *mhb = new Int_t [nHarmonics], *mhc = new Int_t [nHarmonics];
-	Int_t **subeventFlag;
-	Int_t n, nRun, mh, charge, pid, nFlowParts = flowParticles.size (), bsIndex, sMax;
-	Float_t cent, pt, eta, phi, m, x, y, sign = 1.0, subeventIndex, weight, *Eveto, summEveto;
-//	Float_t ptAvg [nHarmonics][nBinsCent_], ptAvgA [nHarmonics][nBinsCent_], ptAvgB [nHarmonics][nBinsCent_], ptAvgC [nHarmonics][nBinsCent_];
-	TRandom3 r (0);
+    Int_t *mha = new Int_t [nHarmonics], *mhb = new Int_t [nHarmonics], *mhc = new Int_t [nHarmonics];
+    Int_t **subeventFlag;
+    Int_t n, nRun, mh, charge, pid, nFlowParts = flowParticles.size (), bsIndex, sMax;
+    Float_t cent, pt, eta, phi, m, x, y, sign = 1.0, subeventIndex, weight, *Eveto, summEveto;
+//  Float_t ptAvg [nHarmonics][nBinsCent_], ptAvgA [nHarmonics][nBinsCent_], ptAvgB [nHarmonics][nBinsCent_], ptAvgC [nHarmonics][nBinsCent_];
+    TRandom3 r (0);
 
-	TFile *sampleFile;
-	TTree *sampleTree;
+    TFile *sampleFile;
+    TTree *sampleTree;
     Int_t W [1000]; // maximum number of samples = 1000
     if (samplingMethod_ == kBootStrapping) {
         sampleFile = new TFile (histFileName_ + "_sample.root", "READ");
@@ -917,13 +917,13 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
     }
     else sMax = 1;
 
-	Float_t *X = new Float_t [nHarmonics], *Y = new Float_t [nHarmonics];
-	Float_t *Xa = new Float_t [nHarmonics], *Ya = new Float_t [nHarmonics];
-	Float_t *Xb = new Float_t [nHarmonics], *Yb = new Float_t [nHarmonics];
-	Float_t *Xc = new Float_t [nHarmonics], *Yc = new Float_t [nHarmonics];
-	Float_t *Q = new Float_t [nHarmonics], *Qa = new Float_t [nHarmonics], *Qb = new Float_t [nHarmonics], *Qc = new Float_t [nHarmonics];
-	Float_t *psiEP = new Float_t [nHarmonics], *psiEPa = new Float_t [nHarmonics], *psiEPb = new Float_t [nHarmonics], *psiEPc = new Float_t [nHarmonics];
-	Float_t *XRP = new Float_t [nHarmonics], *YRP = new Float_t [nHarmonics], *psiRP = new Float_t [nHarmonics];
+    Float_t *X = new Float_t [nHarmonics], *Y = new Float_t [nHarmonics];
+    Float_t *Xa = new Float_t [nHarmonics], *Ya = new Float_t [nHarmonics];
+    Float_t *Xb = new Float_t [nHarmonics], *Yb = new Float_t [nHarmonics];
+    Float_t *Xc = new Float_t [nHarmonics], *Yc = new Float_t [nHarmonics];
+    Float_t *Q = new Float_t [nHarmonics], *Qa = new Float_t [nHarmonics], *Qb = new Float_t [nHarmonics], *Qc = new Float_t [nHarmonics];
+    Float_t *psiEP = new Float_t [nHarmonics], *psiEPa = new Float_t [nHarmonics], *psiEPb = new Float_t [nHarmonics], *psiEPc = new Float_t [nHarmonics];
+    Float_t *XRP = new Float_t [nHarmonics], *YRP = new Float_t [nHarmonics], *psiRP = new Float_t [nHarmonics];
 
 
     // test
@@ -946,14 +946,14 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
 
     servHistDir -> cd ();
     vector <TH2F*> h2nEventSampleWeight;
-	vector <TH1F*> hMh, hMha, hMhb, hMhc;
-	vector <TProfile*> pPtCent, pPtCentA, pPtCentB, pPtCentC;
+    vector <TH1F*> hMh, hMha, hMhb, hMhc;
+    vector <TProfile*> pPtCent, pPtCentA, pPtCentB, pPtCentC;
 
-	vector <TH1F*> hNeventsBS, hNtracksBS, hNtracksBSa, hNtracksBSb, hNtracksBSc;
-	vector <TH2F*> h2mhCent, h2mhaCent, h2mhbCent, h2mhcCent;
-	vector <TH2F*> h2mhMult, h2mhaMult, h2mhbMult, h2mhcMult;
+    vector <TH1F*> hNeventsBS, hNtracksBS, hNtracksBSa, hNtracksBSb, hNtracksBSc;
+    vector <TH2F*> h2mhCent, h2mhaCent, h2mhbCent, h2mhcCent;
+    vector <TH2F*> h2mhMult, h2mhaMult, h2mhbMult, h2mhcMult;
     vector <TH2F*> h2PtEta, h2PtEtaA, h2PtEtaB, h2PtEtaC;
-	vector <TProfile*> pPtEta, pPtEtaA, pPtEtaB, pPtEtaC;
+    vector <TProfile*> pPtEta, pPtEtaA, pPtEtaB, pPtEtaC;
 
     vector <TH2F*> hXaXRPCent_SP, hYaYRPCent_SP, hXbXRPCent_SP, hYbYRPCent_SP, hXcXRPCent_SP, hYcYRPCent_SP;
     vector <TH2F*> hXaXRPCent_EP, hYaYRPCent_EP, hXbXRPCent_EP, hYbYRPCent_EP, hXcXRPCent_EP, hYcYRPCent_EP;
@@ -961,50 +961,45 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
     vector <TH2F*> hXaXRPMult_SP, hYaYRPMult_SP, hXbXRPMult_SP, hYbYRPMult_SP, hXcXRPMult_SP, hYcYRPMult_SP;
     vector <TH2F*> hXaXRPMult_EP, hYaYRPMult_EP, hXbXRPMult_EP, hYbYRPMult_EP, hXcXRPMult_EP, hYcYRPMult_EP;
 
-	vector <TProfile*> pxXCent_RP;
-	vector <TProfile*> pxXaCent_SP, pxXbCent_SP, pxXcCent_SP, pyYaCent_SP, pyYbCent_SP, pyYcCent_SP;
-	vector <TProfile*> pyXaCent_SP, pyXbCent_SP, pyXcCent_SP, pxYaCent_SP, pxYbCent_SP, pxYcCent_SP;
-	vector <TProfile*> pxXaCent_EP, pxXbCent_EP, pxXcCent_EP, pyYaCent_EP, pyYbCent_EP, pyYcCent_EP;
-	vector <TProfile*> pyXaCent_EP, pyXbCent_EP, pyXcCent_EP, pxYaCent_EP, pxYbCent_EP, pxYcCent_EP;
-	vector <TProfile2D*> p2xXaCent_SP, p2xXbCent_SP, p2xXcCent_SP, p2yYaCent_SP, p2yYbCent_SP, p2yYcCent_SP;
-	vector <TProfile2D*> p2yXaCent_SP, p2yXbCent_SP, p2yXcCent_SP, p2xYaCent_SP, p2xYbCent_SP, p2xYcCent_SP;
-	vector <TProfile2D*> p2xXaCent_EP, p2xXbCent_EP, p2xXcCent_EP, p2yYaCent_EP, p2yYbCent_EP, p2yYcCent_EP;
-	vector <TProfile2D*> p2yXaCent_EP, p2yXbCent_EP, p2yXcCent_EP, p2xYaCent_EP, p2xYbCent_EP, p2xYcCent_EP;
+    vector <TProfile*> pxXCent_RP;
+    vector <TProfile*> pxXaCent_SP, pxXbCent_SP, pxXcCent_SP, pyYaCent_SP, pyYbCent_SP, pyYcCent_SP;
+    vector <TProfile*> pyXaCent_SP, pyXbCent_SP, pyXcCent_SP, pxYaCent_SP, pxYbCent_SP, pxYcCent_SP;
+    vector <TProfile*> pxXaCent_EP, pxXbCent_EP, pxXcCent_EP, pyYaCent_EP, pyYbCent_EP, pyYcCent_EP;
+    vector <TProfile*> pyXaCent_EP, pyXbCent_EP, pyXcCent_EP, pxYaCent_EP, pxYbCent_EP, pxYcCent_EP;
+    vector <TProfile2D*> p2xXaCent_SP, p2xXbCent_SP, p2xXcCent_SP, p2yYaCent_SP, p2yYbCent_SP, p2yYcCent_SP;
+    vector <TProfile2D*> p2yXaCent_SP, p2yXbCent_SP, p2yXcCent_SP, p2xYaCent_SP, p2xYbCent_SP, p2xYcCent_SP;
+    vector <TProfile2D*> p2xXaCent_EP, p2xXbCent_EP, p2xXcCent_EP, p2yYaCent_EP, p2yYbCent_EP, p2yYcCent_EP;
+    vector <TProfile2D*> p2yXaCent_EP, p2yXbCent_EP, p2yXcCent_EP, p2xYaCent_EP, p2xYbCent_EP, p2xYcCent_EP;
 
-	vector <TProfile*> pxXMult_RP;
-	vector <TProfile*> pxXaMult_SP, pxXbMult_SP, pxXcMult_SP, pyYaMult_SP, pyYbMult_SP, pyYcMult_SP;
-	vector <TProfile*> pyXaMult_SP, pyXbMult_SP, pyXcMult_SP, pxYaMult_SP, pxYbMult_SP, pxYcMult_SP;
-	vector <TProfile*> pxXaMult_EP, pxXbMult_EP, pxXcMult_EP, pyYaMult_EP, pyYbMult_EP, pyYcMult_EP;
-	vector <TProfile*> pyXaMult_EP, pyXbMult_EP, pyXcMult_EP, pxYaMult_EP, pxYbMult_EP, pxYcMult_EP;
-	vector <TProfile2D*> p2xXaMult_SP, p2xXbMult_SP, p2xXcMult_SP, p2yYaMult_SP, p2yYbMult_SP, p2yYcMult_SP;
-	vector <TProfile2D*> p2yXaMult_SP, p2yXbMult_SP, p2yXcMult_SP, p2xYaMult_SP, p2xYbMult_SP, p2xYcMult_SP;
-	vector <TProfile2D*> p2xXaMult_EP, p2xXbMult_EP, p2xXcMult_EP, p2yYaMult_EP, p2yYbMult_EP, p2yYcMult_EP;
-	vector <TProfile2D*> p2yXaMult_EP, p2yXbMult_EP, p2yXcMult_EP, p2xYaMult_EP, p2xYbMult_EP, p2xYcMult_EP;
+    vector <TProfile*> pxXMult_RP;
+    vector <TProfile*> pxXaMult_SP, pxXbMult_SP, pxXcMult_SP, pyYaMult_SP, pyYbMult_SP, pyYcMult_SP;
+    vector <TProfile*> pyXaMult_SP, pyXbMult_SP, pyXcMult_SP, pxYaMult_SP, pxYbMult_SP, pxYcMult_SP;
+    vector <TProfile*> pxXaMult_EP, pxXbMult_EP, pxXcMult_EP, pyYaMult_EP, pyYbMult_EP, pyYcMult_EP;
+    vector <TProfile*> pyXaMult_EP, pyXbMult_EP, pyXcMult_EP, pxYaMult_EP, pxYbMult_EP, pxYcMult_EP;
+    vector <TProfile2D*> p2xXaMult_SP, p2xXbMult_SP, p2xXcMult_SP, p2yYaMult_SP, p2yYbMult_SP, p2yYcMult_SP;
+    vector <TProfile2D*> p2yXaMult_SP, p2yXbMult_SP, p2yXcMult_SP, p2xYaMult_SP, p2xYbMult_SP, p2xYcMult_SP;
+    vector <TProfile2D*> p2xXaMult_EP, p2xXbMult_EP, p2xXcMult_EP, p2yYaMult_EP, p2yYbMult_EP, p2yYcMult_EP;
+    vector <TProfile2D*> p2yXaMult_EP, p2yXbMult_EP, p2yXcMult_EP, p2xYaMult_EP, p2xYbMult_EP, p2xYcMult_EP;
 
-	vector <TProfile*> pXaXbCent_SP, pXaXcCent_SP, pXbXcCent_SP, pYaYbCent_SP, pYaYcCent_SP, pYbYcCent_SP;
-	vector <TProfile*> pXaYbCent_SP, pXaYcCent_SP, pXbYcCent_SP, pYaXbCent_SP, pYaXcCent_SP, pYbXcCent_SP;
-	vector <TProfile*> pXaXbCent_EP, pXaXcCent_EP, pXbXcCent_EP, pYaYbCent_EP, pYaYcCent_EP, pYbYcCent_EP;
-	vector <TProfile*> pXaYbCent_EP, pXaYcCent_EP, pXbYcCent_EP, pYaXbCent_EP, pYaXcCent_EP, pYbXcCent_EP;
+    vector <TProfile*> pXaXbCent_SP, pXaXcCent_SP, pXbXcCent_SP, pYaYbCent_SP, pYaYcCent_SP, pYbYcCent_SP;
+    vector <TProfile*> pXaYbCent_SP, pXaYcCent_SP, pXbYcCent_SP, pYaXbCent_SP, pYaXcCent_SP, pYbXcCent_SP;
+    vector <TProfile*> pXaXbCent_EP, pXaXcCent_EP, pXbXcCent_EP, pYaYbCent_EP, pYaYcCent_EP, pYbYcCent_EP;
+    vector <TProfile*> pXaYbCent_EP, pXaYcCent_EP, pXbYcCent_EP, pYaXbCent_EP, pYaXcCent_EP, pYbXcCent_EP;
 
-	vector <TProfile*> pXaXbMult_SP, pXaXcMult_SP, pXbXcMult_SP, pYaYbMult_SP, pYaYcMult_SP, pYbYcMult_SP;
-	vector <TProfile*> pXaYbMult_SP, pXaYcMult_SP, pXbYcMult_SP, pYaXbMult_SP, pYaXcMult_SP, pYbXcMult_SP;
-	vector <TProfile*> pXaXbMult_EP, pXaXcMult_EP, pXbXcMult_EP, pYaYbMult_EP, pYaYcMult_EP, pYbYcMult_EP;
-	vector <TProfile*> pXaYbMult_EP, pXaYcMult_EP, pXbYcMult_EP, pYaXbMult_EP, pYaXcMult_EP, pYbXcMult_EP;
+    vector <TProfile*> pXaXbMult_SP, pXaXcMult_SP, pXbXcMult_SP, pYaYbMult_SP, pYaYcMult_SP, pYbYcMult_SP;
+    vector <TProfile*> pXaYbMult_SP, pXaYcMult_SP, pXbYcMult_SP, pYaXbMult_SP, pYaXcMult_SP, pYbXcMult_SP;
+    vector <TProfile*> pXaXbMult_EP, pXaXcMult_EP, pXbXcMult_EP, pYaYbMult_EP, pYaYcMult_EP, pYbYcMult_EP;
+    vector <TProfile*> pXaYbMult_EP, pXaYcMult_EP, pXbYcMult_EP, pYaXbMult_EP, pYaXcMult_EP, pYbXcMult_EP;
 
-	vector <TProfile2D*> p2XaXbCent_SP, p2XaXcCent_SP, p2XbXcCent_SP, p2YaYbCent_SP, p2YaYcCent_SP, p2YbYcCent_SP;
-	vector <TProfile2D*> p2XaYbCent_SP, p2XaYcCent_SP, p2XbYcCent_SP, p2YaXbCent_SP, p2YaXcCent_SP, p2YbXcCent_SP;
-	vector <TProfile2D*> p2XaXbCent_EP, p2XaXcCent_EP, p2XbXcCent_EP, p2YaYbCent_EP, p2YaYcCent_EP, p2YbYcCent_EP;
-	vector <TProfile2D*> p2XaYbCent_EP, p2XaYcCent_EP, p2XbYcCent_EP, p2YaXbCent_EP, p2YaXcCent_EP, p2YbXcCent_EP;
+    vector <TProfile2D*> p2XaXbCent_SP, p2XaXcCent_SP, p2XbXcCent_SP, p2YaYbCent_SP, p2YaYcCent_SP, p2YbYcCent_SP;
+    vector <TProfile2D*> p2XaYbCent_SP, p2XaYcCent_SP, p2XbYcCent_SP, p2YaXbCent_SP, p2YaXcCent_SP, p2YbXcCent_SP;
+    vector <TProfile2D*> p2XaXbCent_EP, p2XaXcCent_EP, p2XbXcCent_EP, p2YaYbCent_EP, p2YaYcCent_EP, p2YbYcCent_EP;
+    vector <TProfile2D*> p2XaYbCent_EP, p2XaYcCent_EP, p2XbYcCent_EP, p2YaXbCent_EP, p2YaXcCent_EP, p2YbXcCent_EP;
 
-	vector <TProfile2D*> p2XaXbMult_SP, p2XaXcMult_SP, p2XbXcMult_SP, p2YaYbMult_SP, p2YaYcMult_SP, p2YbYcMult_SP;
-	vector <TProfile2D*> p2XaYbMult_SP, p2XaYcMult_SP, p2XbYcMult_SP, p2YaXbMult_SP, p2YaXcMult_SP, p2YbXcMult_SP;
-	vector <TProfile2D*> p2XaXbMult_EP, p2XaXcMult_EP, p2XbXcMult_EP, p2YaYbMult_EP, p2YaYcMult_EP, p2YbYcMult_EP;
-	vector <TProfile2D*> p2XaYbMult_EP, p2XaYcMult_EP, p2XbYcMult_EP, p2YaXbMult_EP, p2YaXcMult_EP, p2YbXcMult_EP;
-
-	vector <TProfile*> pXaXbCent_SP, pXaXcCent_SP, pXbXcCent_SP, pYaYbCent_SP, pYaYcCent_SP, pYbYcCent_SP;
-	vector <TProfile*> pXaYbCent_SP, pXaYcCent_SP, pXbYcCent_SP, pYaXbCent_SP, pYaXcCent_SP, pYbXcCent_SP;
-	vector <TProfile*> pXaXbCent_EP, pXaXcCent_EP, pXbXcCent_EP, pYaYbCent_EP, pYaYcCent_EP, pYbYcCent_EP;
-	vector <TProfile*> pXaYbCent_EP, pXaYcCent_EP, pXbYcCent_EP, pYaXbCent_EP, pYaXcCent_EP, pYbXcCent_EP;
+    vector <TProfile2D*> p2XaXbMult_SP, p2XaXcMult_SP, p2XbXcMult_SP, p2YaYbMult_SP, p2YaYcMult_SP, p2YbYcMult_SP;
+    vector <TProfile2D*> p2XaYbMult_SP, p2XaYcMult_SP, p2XbYcMult_SP, p2YaXbMult_SP, p2YaXcMult_SP, p2YbXcMult_SP;
+    vector <TProfile2D*> p2XaXbMult_EP, p2XaXcMult_EP, p2XbXcMult_EP, p2YaYbMult_EP, p2YaYcMult_EP, p2YbYcMult_EP;
+    vector <TProfile2D*> p2XaYbMult_EP, p2XaYcMult_EP, p2XbYcMult_EP, p2YaXbMult_EP, p2YaXcMult_EP, p2YbXcMult_EP;
 
     vector <TProfile2D*> p2xXaPtCent_SP, p2yYaPtCent_SP, p2yXaPtCent_SP, p2xYaPtCent_SP;
     vector <TProfile2D*> p2xXbPtCent_SP, p2yYbPtCent_SP, p2yXbPtCent_SP, p2xYbPtCent_SP;
@@ -1062,21 +1057,21 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
     vector <TProfile3D*> p3xXbEtaMult_EP, p3yYbEtaMult_EP, p3yXbEtaMult_EP, p3xYbEtaMult_EP;
     vector <TProfile3D*> p3xXcEtaMult_EP, p3yYcEtaMult_EP, p3yXcEtaMult_EP, p3xYcEtaMult_EP;
 
-	subeventFlag = new Int_t* [nHarmonics];
+    subeventFlag = new Int_t* [nHarmonics];
 
-	for (Int_t i = 0; i < nHarmonics; i++) { // create histograms
-		n = harmonicsMap [i];
-		subeventFlag [i] = new Int_t [mhMax_];
+    for (Int_t i = 0; i < nHarmonics; i++) { // create histograms
+        n = harmonicsMap [i];
+        subeventFlag [i] = new Int_t [mhMax_];
 
-		h2nEventSampleWeight.push_back (new TH2F (Form ("h2nEventSampleWeight_%i", n), Form ("Event weights in samples (n = %i);Nevent;Sample", n), nEvents, 0, nEvents, nBinsBS_, 0, nBinsBS_));
-		pPtCent.push_back (new TProfile (Form ("pPtCent%i", n), Form ("#LTP_{T}#GT versus centrality, harmonic %i; #LTP_{T}#GT; centrality", n), nBinsCent_, centMin_, centMax_));
-		pPtCentA.push_back (new TProfile (Form ("pPtCentA%i", n), Form ("#LTP_{T}#GT versus centrality, subevent a_{%i}; #LTP_{T}#GT; centrality", n), nBinsCent_, centMin_, centMax_));
-		pPtCentB.push_back (new TProfile (Form ("pPtCentB%i", n), Form ("#LTP_{T}#GT versus centrality, subevent b_{%i}; #LTP_{T}#GT; centrality", n), nBinsCent_, centMin_, centMax_));
-		pPtCentC.push_back (new TProfile (Form ("pPtCentC%i", n), Form ("#LTP_{T}#GT versus centrality, subevent c_{%i}; #LTP_{T}#GT; centrality", n), nBinsCent_, centMin_, centMax_));
-		hMh.push_back (new TH1F (Form ("hMh%i", n), Form ("Multiplicity distribution, harmonic %i; mh; nEvents", n), 100, 0, mhMax_));
-		hMha.push_back (new TH1F (Form ("hMha%i", n), Form ("Multiplicity distribution for subevent 'a_{%i}'; mh; nEvents", n), 100, 0, mhMax_));
-		hMhb.push_back (new TH1F (Form ("hMhb%i", n), Form ("Multiplicity distribution for subevent 'b_{%i}'; mh; nEvents", n), 100, 0, mhMax_));
-		hMhc.push_back (new TH1F (Form ("hMhc%i", n), Form ("Multiplicity distribution for subevent 'c_{%i}'; mh; nEvents", n), 100, 0, mhMax_));
+        h2nEventSampleWeight.push_back (new TH2F (Form ("h2nEventSampleWeight_%i", n), Form ("Event weights in samples (n = %i);Nevent;Sample", n), nEvents, 0, nEvents, nBinsBS_, 0, nBinsBS_));
+        pPtCent.push_back (new TProfile (Form ("pPtCent%i", n), Form ("#LTP_{T}#GT versus centrality, harmonic %i; #LTP_{T}#GT; centrality", n), nBinsCent_, centMin_, centMax_));
+        pPtCentA.push_back (new TProfile (Form ("pPtCentA%i", n), Form ("#LTP_{T}#GT versus centrality, subevent a_{%i}; #LTP_{T}#GT; centrality", n), nBinsCent_, centMin_, centMax_));
+        pPtCentB.push_back (new TProfile (Form ("pPtCentB%i", n), Form ("#LTP_{T}#GT versus centrality, subevent b_{%i}; #LTP_{T}#GT; centrality", n), nBinsCent_, centMin_, centMax_));
+        pPtCentC.push_back (new TProfile (Form ("pPtCentC%i", n), Form ("#LTP_{T}#GT versus centrality, subevent c_{%i}; #LTP_{T}#GT; centrality", n), nBinsCent_, centMin_, centMax_));
+        hMh.push_back (new TH1F (Form ("hMh%i", n), Form ("Multiplicity distribution, harmonic %i; mh; nEvents", n), 100, 0, mhMax_));
+        hMha.push_back (new TH1F (Form ("hMha%i", n), Form ("Multiplicity distribution for subevent 'a_{%i}'; mh; nEvents", n), 100, 0, mhMax_));
+        hMhb.push_back (new TH1F (Form ("hMhb%i", n), Form ("Multiplicity distribution for subevent 'b_{%i}'; mh; nEvents", n), 100, 0, mhMax_));
+        hMhc.push_back (new TH1F (Form ("hMhc%i", n), Form ("Multiplicity distribution for subevent 'c_{%i}'; mh; nEvents", n), 100, 0, mhMax_));
 
         hNeventsBS.push_back (new TH1F (Form ("hNeventsBS%i", n), "Subsample distribution of Nevents;subsample;Nevents", nBinsBS_, 0, nBinsBS_));
         hNtracksBS.push_back (new TH1F (Form ("hNtracksBS%i", n), "Subsample distribution of Ntracks;subsample;Ntracks", nBinsBS_, 0, nBinsBS_));
@@ -1131,472 +1126,473 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
             hYcYRPMult_EP.push_back (new TH2F (Form ("hY%icY%iRPMult_EP", n, n), Form ("Y_{%i}^{c}Y_{%i}^{RP} (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_, 100, -1.0, 1.0));
         }
 
+        pxXaCent_SP.push_back (new TProfile (Form ("px%iX%iaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxXbCent_SP.push_back (new TProfile (Form ("px%iX%ibCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxXcCent_SP.push_back (new TProfile (Form ("px%iX%icCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyYaCent_SP.push_back (new TProfile (Form ("py%iY%iaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyYbCent_SP.push_back (new TProfile (Form ("py%iY%ibCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyYcCent_SP.push_back (new TProfile (Form ("py%iY%icCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyXaCent_SP.push_back (new TProfile (Form ("py%iX%iaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyXbCent_SP.push_back (new TProfile (Form ("py%iX%ibCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyXcCent_SP.push_back (new TProfile (Form ("py%iX%icCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxYaCent_SP.push_back (new TProfile (Form ("px%iY%iaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxYbCent_SP.push_back (new TProfile (Form ("px%iY%ibCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxYcCent_SP.push_back (new TProfile (Form ("px%iY%icCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
 
-		pxXaCent_SP.push_back (new TProfile (Form ("px%iX%iaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pxXbCent_SP.push_back (new TProfile (Form ("px%iX%ibCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pxXcCent_SP.push_back (new TProfile (Form ("px%iX%icCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyYaCent_SP.push_back (new TProfile (Form ("py%iY%iaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyYbCent_SP.push_back (new TProfile (Form ("py%iY%ibCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyYcCent_SP.push_back (new TProfile (Form ("py%iY%icCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyXaCent_SP.push_back (new TProfile (Form ("py%iX%iaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyXbCent_SP.push_back (new TProfile (Form ("py%iX%ibCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyXcCent_SP.push_back (new TProfile (Form ("py%iX%icCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pxYaCent_SP.push_back (new TProfile (Form ("px%iY%iaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pxYbCent_SP.push_back (new TProfile (Form ("px%iY%ibCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pxYcCent_SP.push_back (new TProfile (Form ("px%iY%icCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxXaCent_EP.push_back (new TProfile (Form ("px%iX%iaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxXbCent_EP.push_back (new TProfile (Form ("px%iX%ibCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxXcCent_EP.push_back (new TProfile (Form ("px%iX%icCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyYaCent_EP.push_back (new TProfile (Form ("py%iY%iaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyYbCent_EP.push_back (new TProfile (Form ("py%iY%ibCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyYcCent_EP.push_back (new TProfile (Form ("py%iY%icCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyXaCent_EP.push_back (new TProfile (Form ("py%iX%iaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyXbCent_EP.push_back (new TProfile (Form ("py%iX%ibCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pyXcCent_EP.push_back (new TProfile (Form ("py%iX%icCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxYaCent_EP.push_back (new TProfile (Form ("px%iY%iaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxYbCent_EP.push_back (new TProfile (Form ("px%iY%ibCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+        pxYcCent_EP.push_back (new TProfile (Form ("px%iY%icCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
 
-		pxXaCent_EP.push_back (new TProfile (Form ("px%iX%iaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pxXbCent_EP.push_back (new TProfile (Form ("px%iX%ibCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pxXcCent_EP.push_back (new TProfile (Form ("px%iX%icCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyYaCent_EP.push_back (new TProfile (Form ("py%iY%iaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyYbCent_EP.push_back (new TProfile (Form ("py%iY%ibCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyYcCent_EP.push_back (new TProfile (Form ("py%iY%icCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyXaCent_EP.push_back (new TProfile (Form ("py%iX%iaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyXbCent_EP.push_back (new TProfile (Form ("py%iX%ibCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pyXcCent_EP.push_back (new TProfile (Form ("py%iX%icCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pxYaCent_EP.push_back (new TProfile (Form ("px%iY%iaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		pxYbCent_EP.push_back (new TProfile (Form ("px%iY%ibCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-		p2xXaCent_SP.push_back (new TProfile2D (Form ("p2x%iX%iaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xXbCent_SP.push_back (new TProfile2D (Form ("p2x%iX%ibCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xXcCent_SP.push_back (new TProfile2D (Form ("p2x%iX%icCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYaCent_SP.push_back (new TProfile2D (Form ("p2y%iY%iaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYbCent_SP.push_back (new TProfile2D (Form ("p2y%iY%ibCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYcCent_SP.push_back (new TProfile2D (Form ("p2y%iY%icCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXaCent_SP.push_back (new TProfile2D (Form ("p2y%iX%iaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXbCent_SP.push_back (new TProfile2D (Form ("p2y%iX%ibCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXcCent_SP.push_back (new TProfile2D (Form ("p2y%iX%icCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYaCent_SP.push_back (new TProfile2D (Form ("p2x%iY%iaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYbCent_SP.push_back (new TProfile2D (Form ("p2x%iY%ibCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYcCent_SP.push_back (new TProfile2D (Form ("p2x%iY%icCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXaCent_SP.push_back (new TProfile2D (Form ("p2x%iX%iaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXbCent_SP.push_back (new TProfile2D (Form ("p2x%iX%ibCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXcCent_SP.push_back (new TProfile2D (Form ("p2x%iX%icCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYaCent_SP.push_back (new TProfile2D (Form ("p2y%iY%iaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYbCent_SP.push_back (new TProfile2D (Form ("p2y%iY%ibCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYcCent_SP.push_back (new TProfile2D (Form ("p2y%iY%icCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXaCent_SP.push_back (new TProfile2D (Form ("p2y%iX%iaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXbCent_SP.push_back (new TProfile2D (Form ("p2y%iX%ibCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXcCent_SP.push_back (new TProfile2D (Form ("p2y%iX%icCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYaCent_SP.push_back (new TProfile2D (Form ("p2x%iY%iaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYbCent_SP.push_back (new TProfile2D (Form ("p2x%iY%ibCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYcCent_SP.push_back (new TProfile2D (Form ("p2x%iY%icCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
-		p2xXaCent_EP.push_back (new TProfile2D (Form ("p2x%iX%iaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xXbCent_EP.push_back (new TProfile2D (Form ("p2x%iX%ibCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xXcCent_EP.push_back (new TProfile2D (Form ("p2x%iX%icCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYaCent_EP.push_back (new TProfile2D (Form ("p2y%iY%iaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYbCent_EP.push_back (new TProfile2D (Form ("p2y%iY%ibCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYcCent_EP.push_back (new TProfile2D (Form ("p2y%iY%icCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXaCent_EP.push_back (new TProfile2D (Form ("p2y%iX%iaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXbCent_EP.push_back (new TProfile2D (Form ("p2y%iX%ibCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXcCent_EP.push_back (new TProfile2D (Form ("p2y%iX%icCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYaCent_EP.push_back (new TProfile2D (Form ("p2x%iY%iaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYbCent_EP.push_back (new TProfile2D (Form ("p2x%iY%ibCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYcCent_EP.push_back (new TProfile2D (Form ("p2x%iY%icCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXaCent_EP.push_back (new TProfile2D (Form ("p2x%iX%iaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXbCent_EP.push_back (new TProfile2D (Form ("p2x%iX%ibCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXcCent_EP.push_back (new TProfile2D (Form ("p2x%iX%icCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYaCent_EP.push_back (new TProfile2D (Form ("p2y%iY%iaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYbCent_EP.push_back (new TProfile2D (Form ("p2y%iY%ibCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYcCent_EP.push_back (new TProfile2D (Form ("p2y%iY%icCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXaCent_EP.push_back (new TProfile2D (Form ("p2y%iX%iaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXbCent_EP.push_back (new TProfile2D (Form ("p2y%iX%ibCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXcCent_EP.push_back (new TProfile2D (Form ("p2y%iX%icCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYaCent_EP.push_back (new TProfile2D (Form ("p2x%iY%iaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYbCent_EP.push_back (new TProfile2D (Form ("p2x%iY%ibCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYcCent_EP.push_back (new TProfile2D (Form ("p2x%iY%icCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
-		pxXaMult_SP.push_back (new TProfile (Form ("px%iX%iaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxXbMult_SP.push_back (new TProfile (Form ("px%iX%ibMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxXcMult_SP.push_back (new TProfile (Form ("px%iX%icMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyYaMult_SP.push_back (new TProfile (Form ("py%iY%iaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyYbMult_SP.push_back (new TProfile (Form ("py%iY%ibMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyYcMult_SP.push_back (new TProfile (Form ("py%iY%icMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyXaMult_SP.push_back (new TProfile (Form ("py%iX%iaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyXbMult_SP.push_back (new TProfile (Form ("py%iX%ibMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyXcMult_SP.push_back (new TProfile (Form ("py%iX%icMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxYaMult_SP.push_back (new TProfile (Form ("px%iY%iaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxYbMult_SP.push_back (new TProfile (Form ("px%iY%ibMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxYcMult_SP.push_back (new TProfile (Form ("px%iY%icMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxXaMult_SP.push_back (new TProfile (Form ("px%iX%iaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxXbMult_SP.push_back (new TProfile (Form ("px%iX%ibMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxXcMult_SP.push_back (new TProfile (Form ("px%iX%icMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyYaMult_SP.push_back (new TProfile (Form ("py%iY%iaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyYbMult_SP.push_back (new TProfile (Form ("py%iY%ibMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyYcMult_SP.push_back (new TProfile (Form ("py%iY%icMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyXaMult_SP.push_back (new TProfile (Form ("py%iX%iaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyXbMult_SP.push_back (new TProfile (Form ("py%iX%ibMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyXcMult_SP.push_back (new TProfile (Form ("py%iX%icMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxYaMult_SP.push_back (new TProfile (Form ("px%iY%iaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxYbMult_SP.push_back (new TProfile (Form ("px%iY%ibMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxYcMult_SP.push_back (new TProfile (Form ("px%iY%icMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
 
-		pxXaMult_EP.push_back (new TProfile (Form ("px%iX%iaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxXbMult_EP.push_back (new TProfile (Form ("px%iX%ibMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxXcMult_EP.push_back (new TProfile (Form ("px%iX%icMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyYaMult_EP.push_back (new TProfile (Form ("py%iY%iaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyYbMult_EP.push_back (new TProfile (Form ("py%iY%ibMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyYcMult_EP.push_back (new TProfile (Form ("py%iY%icMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyXaMult_EP.push_back (new TProfile (Form ("py%iX%iaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyXbMult_EP.push_back (new TProfile (Form ("py%iX%ibMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pyXcMult_EP.push_back (new TProfile (Form ("py%iX%icMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxYaMult_EP.push_back (new TProfile (Form ("px%iY%iaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxYbMult_EP.push_back (new TProfile (Form ("px%iY%ibMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-		pxYcMult_EP.push_back (new TProfile (Form ("px%iY%icMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxXaMult_EP.push_back (new TProfile (Form ("px%iX%iaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxXbMult_EP.push_back (new TProfile (Form ("px%iX%ibMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxXcMult_EP.push_back (new TProfile (Form ("px%iX%icMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyYaMult_EP.push_back (new TProfile (Form ("py%iY%iaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyYbMult_EP.push_back (new TProfile (Form ("py%iY%ibMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyYcMult_EP.push_back (new TProfile (Form ("py%iY%icMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyXaMult_EP.push_back (new TProfile (Form ("py%iX%iaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyXbMult_EP.push_back (new TProfile (Form ("py%iX%ibMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pyXcMult_EP.push_back (new TProfile (Form ("py%iX%icMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxYaMult_EP.push_back (new TProfile (Form ("px%iY%iaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxYbMult_EP.push_back (new TProfile (Form ("px%iY%ibMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+        pxYcMult_EP.push_back (new TProfile (Form ("px%iY%icMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_));
 
-		p2xXaMult_SP.push_back (new TProfile2D (Form ("p2x%iX%iaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xXbMult_SP.push_back (new TProfile2D (Form ("p2x%iX%ibMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xXcMult_SP.push_back (new TProfile2D (Form ("p2x%iX%icMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYaMult_SP.push_back (new TProfile2D (Form ("p2y%iY%iaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYbMult_SP.push_back (new TProfile2D (Form ("p2y%iY%ibMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYcMult_SP.push_back (new TProfile2D (Form ("p2y%iY%icMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXaMult_SP.push_back (new TProfile2D (Form ("p2y%iX%iaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXbMult_SP.push_back (new TProfile2D (Form ("p2y%iX%ibMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXcMult_SP.push_back (new TProfile2D (Form ("p2y%iX%icMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYaMult_SP.push_back (new TProfile2D (Form ("p2x%iY%iaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYbMult_SP.push_back (new TProfile2D (Form ("p2x%iY%ibMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYcMult_SP.push_back (new TProfile2D (Form ("p2x%iY%icMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXaMult_SP.push_back (new TProfile2D (Form ("p2x%iX%iaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXbMult_SP.push_back (new TProfile2D (Form ("p2x%iX%ibMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXcMult_SP.push_back (new TProfile2D (Form ("p2x%iX%icMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYaMult_SP.push_back (new TProfile2D (Form ("p2y%iY%iaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYbMult_SP.push_back (new TProfile2D (Form ("p2y%iY%ibMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYcMult_SP.push_back (new TProfile2D (Form ("p2y%iY%icMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXaMult_SP.push_back (new TProfile2D (Form ("p2y%iX%iaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXbMult_SP.push_back (new TProfile2D (Form ("p2y%iX%ibMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXcMult_SP.push_back (new TProfile2D (Form ("p2y%iX%icMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYaMult_SP.push_back (new TProfile2D (Form ("p2x%iY%iaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYbMult_SP.push_back (new TProfile2D (Form ("p2x%iY%ibMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYcMult_SP.push_back (new TProfile2D (Form ("p2x%iY%icMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
-		p2xXaMult_EP.push_back (new TProfile2D (Form ("p2x%iX%iaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xXbMult_EP.push_back (new TProfile2D (Form ("p2x%iX%ibMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xXcMult_EP.push_back (new TProfile2D (Form ("p2x%iX%icMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYaMult_EP.push_back (new TProfile2D (Form ("p2y%iY%iaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYbMult_EP.push_back (new TProfile2D (Form ("p2y%iY%ibMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yYcMult_EP.push_back (new TProfile2D (Form ("p2y%iY%icMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXaMult_EP.push_back (new TProfile2D (Form ("p2y%iX%iaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXbMult_EP.push_back (new TProfile2D (Form ("p2y%iX%ibMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2yXcMult_EP.push_back (new TProfile2D (Form ("p2y%iX%icMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYaMult_EP.push_back (new TProfile2D (Form ("p2x%iY%iaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYbMult_EP.push_back (new TProfile2D (Form ("p2x%iY%ibMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2xYcMult_EP.push_back (new TProfile2D (Form ("p2x%iY%icMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXaMult_EP.push_back (new TProfile2D (Form ("p2x%iX%iaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXbMult_EP.push_back (new TProfile2D (Form ("p2x%iX%ibMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xXcMult_EP.push_back (new TProfile2D (Form ("p2x%iX%icMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYaMult_EP.push_back (new TProfile2D (Form ("p2y%iY%iaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYbMult_EP.push_back (new TProfile2D (Form ("p2y%iY%ibMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yYcMult_EP.push_back (new TProfile2D (Form ("p2y%iY%icMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXaMult_EP.push_back (new TProfile2D (Form ("p2y%iX%iaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXbMult_EP.push_back (new TProfile2D (Form ("p2y%iX%ibMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2yXcMult_EP.push_back (new TProfile2D (Form ("p2y%iX%icMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYaMult_EP.push_back (new TProfile2D (Form ("p2x%iY%iaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYbMult_EP.push_back (new TProfile2D (Form ("p2x%iY%ibMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2xYcMult_EP.push_back (new TProfile2D (Form ("p2x%iY%icMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
         pXaXbCent_SP.push_back (new TProfile (Form ("pX%iaX%ibCent_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXaXcCent_SP.push_back (new TProfile (Form ("pX%iaX%icCent_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXbXcCent_SP.push_back (new TProfile (Form ("pX%ibX%icCent_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXaYbCent_SP.push_back (new TProfile (Form ("pX%iaY%ibCent_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXaYcCent_SP.push_back (new TProfile (Form ("pX%iaY%icCent_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXbYcCent_SP.push_back (new TProfile (Form ("pX%ibY%icCent_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYaYbCent_SP.push_back (new TProfile (Form ("pY%iaY%ibCent_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYaYcCent_SP.push_back (new TProfile (Form ("pY%iaY%icCent_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYbYcCent_SP.push_back (new TProfile (Form ("pY%ibY%icCent_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYaXbCent_SP.push_back (new TProfile (Form ("pY%iaX%ibCent_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYaXcCent_SP.push_back (new TProfile (Form ("pY%iaX%icCent_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYbXcCent_SP.push_back (new TProfile (Form ("pY%ibX%icCent_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXaXcCent_SP.push_back (new TProfile (Form ("pX%iaX%icCent_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXbXcCent_SP.push_back (new TProfile (Form ("pX%ibX%icCent_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXaYbCent_SP.push_back (new TProfile (Form ("pX%iaY%ibCent_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXaYcCent_SP.push_back (new TProfile (Form ("pX%iaY%icCent_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXbYcCent_SP.push_back (new TProfile (Form ("pX%ibY%icCent_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYaYbCent_SP.push_back (new TProfile (Form ("pY%iaY%ibCent_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYaYcCent_SP.push_back (new TProfile (Form ("pY%iaY%icCent_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYbYcCent_SP.push_back (new TProfile (Form ("pY%ibY%icCent_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYaXbCent_SP.push_back (new TProfile (Form ("pY%iaX%ibCent_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYaXcCent_SP.push_back (new TProfile (Form ("pY%iaX%icCent_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYbXcCent_SP.push_back (new TProfile (Form ("pY%ibX%icCent_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
 
         pXaXbCent_EP.push_back (new TProfile (Form ("pX%iaX%ibCent_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXaXcCent_EP.push_back (new TProfile (Form ("pX%iaX%icCent_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXbXcCent_EP.push_back (new TProfile (Form ("pX%ibX%icCent_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXaYbCent_EP.push_back (new TProfile (Form ("pX%iaY%ibCent_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXaYcCent_EP.push_back (new TProfile (Form ("pX%iaY%icCent_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pXbYcCent_EP.push_back (new TProfile (Form ("pX%ibY%icCent_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYaYbCent_EP.push_back (new TProfile (Form ("pY%iaY%ibCent_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYaYcCent_EP.push_back (new TProfile (Form ("pY%iaY%icCent_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYbYcCent_EP.push_back (new TProfile (Form ("pY%ibY%icCent_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYaXbCent_EP.push_back (new TProfile (Form ("pY%iaX%ibCent_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYaXcCent_EP.push_back (new TProfile (Form ("pY%iaX%icCent_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
-		pYbXcCent_EP.push_back (new TProfile (Form ("pY%ibX%icCent_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXaXcCent_EP.push_back (new TProfile (Form ("pX%iaX%icCent_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXbXcCent_EP.push_back (new TProfile (Form ("pX%ibX%icCent_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXaYbCent_EP.push_back (new TProfile (Form ("pX%iaY%ibCent_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXaYcCent_EP.push_back (new TProfile (Form ("pX%iaY%icCent_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pXbYcCent_EP.push_back (new TProfile (Form ("pX%ibY%icCent_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYaYbCent_EP.push_back (new TProfile (Form ("pY%iaY%ibCent_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYaYcCent_EP.push_back (new TProfile (Form ("pY%iaY%icCent_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYbYcCent_EP.push_back (new TProfile (Form ("pY%ibY%icCent_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYaXbCent_EP.push_back (new TProfile (Form ("pY%iaX%ibCent_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYaXcCent_EP.push_back (new TProfile (Form ("pY%iaX%icCent_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
+        pYbXcCent_EP.push_back (new TProfile (Form ("pY%ibX%icCent_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP);cent", n, n), nBinsCent_, centMin_, centMax_));
 
         pXaXbMult_SP.push_back (new TProfile (Form ("pX%iaX%ibMult_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXaXcMult_SP.push_back (new TProfile (Form ("pX%iaX%icMult_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXbXcMult_SP.push_back (new TProfile (Form ("pX%ibX%icMult_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXaYbMult_SP.push_back (new TProfile (Form ("pX%iaY%ibMult_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXaYcMult_SP.push_back (new TProfile (Form ("pX%iaY%icMult_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXbYcMult_SP.push_back (new TProfile (Form ("pX%ibY%icMult_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYaYbMult_SP.push_back (new TProfile (Form ("pY%iaY%ibMult_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYaYcMult_SP.push_back (new TProfile (Form ("pY%iaY%icMult_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYbYcMult_SP.push_back (new TProfile (Form ("pY%ibY%icMult_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYaXbMult_SP.push_back (new TProfile (Form ("pY%iaX%ibMult_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYaXcMult_SP.push_back (new TProfile (Form ("pY%iaX%icMult_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYbXcMult_SP.push_back (new TProfile (Form ("pY%ibX%icMult_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXaXcMult_SP.push_back (new TProfile (Form ("pX%iaX%icMult_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXbXcMult_SP.push_back (new TProfile (Form ("pX%ibX%icMult_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXaYbMult_SP.push_back (new TProfile (Form ("pX%iaY%ibMult_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXaYcMult_SP.push_back (new TProfile (Form ("pX%iaY%icMult_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXbYcMult_SP.push_back (new TProfile (Form ("pX%ibY%icMult_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYaYbMult_SP.push_back (new TProfile (Form ("pY%iaY%ibMult_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYaYcMult_SP.push_back (new TProfile (Form ("pY%iaY%icMult_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYbYcMult_SP.push_back (new TProfile (Form ("pY%ibY%icMult_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYaXbMult_SP.push_back (new TProfile (Form ("pY%iaX%ibMult_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYaXcMult_SP.push_back (new TProfile (Form ("pY%iaX%icMult_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYbXcMult_SP.push_back (new TProfile (Form ("pY%ibX%icMult_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
 
         pXaXbMult_EP.push_back (new TProfile (Form ("pX%iaX%ibMult_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXaXcMult_EP.push_back (new TProfile (Form ("pX%iaX%icMult_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXbXcMult_EP.push_back (new TProfile (Form ("pX%ibX%icMult_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXaYbMult_EP.push_back (new TProfile (Form ("pX%iaY%ibMult_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXaYcMult_EP.push_back (new TProfile (Form ("pX%iaY%icMult_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pXbYcMult_EP.push_back (new TProfile (Form ("pX%ibY%icMult_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYaYbMult_EP.push_back (new TProfile (Form ("pY%iaY%ibMult_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYaYcMult_EP.push_back (new TProfile (Form ("pY%iaY%icMult_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYbYcMult_EP.push_back (new TProfile (Form ("pY%ibY%icMult_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYaXbMult_EP.push_back (new TProfile (Form ("pY%iaX%ibMult_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYaXcMult_EP.push_back (new TProfile (Form ("pY%iaX%icMult_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-		pYbXcMult_EP.push_back (new TProfile (Form ("pY%ibX%icMult_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXaXcMult_EP.push_back (new TProfile (Form ("pX%iaX%icMult_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXbXcMult_EP.push_back (new TProfile (Form ("pX%ibX%icMult_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXaYbMult_EP.push_back (new TProfile (Form ("pX%iaY%ibMult_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXaYcMult_EP.push_back (new TProfile (Form ("pX%iaY%icMult_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pXbYcMult_EP.push_back (new TProfile (Form ("pX%ibY%icMult_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYaYbMult_EP.push_back (new TProfile (Form ("pY%iaY%ibMult_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYaYcMult_EP.push_back (new TProfile (Form ("pY%iaY%icMult_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYbYcMult_EP.push_back (new TProfile (Form ("pY%ibY%icMult_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYaXbMult_EP.push_back (new TProfile (Form ("pY%iaX%ibMult_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYaXcMult_EP.push_back (new TProfile (Form ("pY%iaX%icMult_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+        pYbXcMult_EP.push_back (new TProfile (Form ("pY%ibX%icMult_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
 
         p2XaXbCent_SP.push_back (new TProfile2D (Form ("p2X%iaX%ibCent_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaXcCent_SP.push_back (new TProfile2D (Form ("p2X%iaX%icCent_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XbXcCent_SP.push_back (new TProfile2D (Form ("p2X%ibX%icCent_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaYbCent_SP.push_back (new TProfile2D (Form ("p2X%iaY%ibCent_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaYcCent_SP.push_back (new TProfile2D (Form ("p2X%iaY%icCent_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XbYcCent_SP.push_back (new TProfile2D (Form ("p2X%ibY%icCent_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaYbCent_SP.push_back (new TProfile2D (Form ("p2Y%iaY%ibCent_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaYcCent_SP.push_back (new TProfile2D (Form ("p2Y%iaY%icCent_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YbYcCent_SP.push_back (new TProfile2D (Form ("p2Y%ibY%icCent_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaXbCent_SP.push_back (new TProfile2D (Form ("p2Y%iaX%ibCent_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaXcCent_SP.push_back (new TProfile2D (Form ("p2Y%iaX%icCent_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YbXcCent_SP.push_back (new TProfile2D (Form ("p2Y%ibX%icCent_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaXcCent_SP.push_back (new TProfile2D (Form ("p2X%iaX%icCent_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XbXcCent_SP.push_back (new TProfile2D (Form ("p2X%ibX%icCent_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaYbCent_SP.push_back (new TProfile2D (Form ("p2X%iaY%ibCent_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaYcCent_SP.push_back (new TProfile2D (Form ("p2X%iaY%icCent_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XbYcCent_SP.push_back (new TProfile2D (Form ("p2X%ibY%icCent_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaYbCent_SP.push_back (new TProfile2D (Form ("p2Y%iaY%ibCent_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaYcCent_SP.push_back (new TProfile2D (Form ("p2Y%iaY%icCent_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YbYcCent_SP.push_back (new TProfile2D (Form ("p2Y%ibY%icCent_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaXbCent_SP.push_back (new TProfile2D (Form ("p2Y%iaX%ibCent_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaXcCent_SP.push_back (new TProfile2D (Form ("p2Y%iaX%icCent_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YbXcCent_SP.push_back (new TProfile2D (Form ("p2Y%ibX%icCent_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
         p2XaXbCent_EP.push_back (new TProfile2D (Form ("p2X%iaX%ibCent_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaXcCent_EP.push_back (new TProfile2D (Form ("p2X%iaX%icCent_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XbXcCent_EP.push_back (new TProfile2D (Form ("p2X%ibX%icCent_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaYbCent_EP.push_back (new TProfile2D (Form ("p2X%iaY%ibCent_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaYcCent_EP.push_back (new TProfile2D (Form ("p2X%iaY%icCent_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2XbYcCent_EP.push_back (new TProfile2D (Form ("p2X%ibY%icCent_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaYbCent_EP.push_back (new TProfile2D (Form ("p2Y%iaY%ibCent_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaYcCent_EP.push_back (new TProfile2D (Form ("p2Y%iaY%icCent_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YbYcCent_EP.push_back (new TProfile2D (Form ("p2Y%ibY%icCent_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaXbCent_EP.push_back (new TProfile2D (Form ("p2Y%iaX%ibCent_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaXcCent_EP.push_back (new TProfile2D (Form ("p2Y%iaX%icCent_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p2YbXcCent_EP.push_back (new TProfile2D (Form ("p2Y%ibX%icCent_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaXcCent_EP.push_back (new TProfile2D (Form ("p2X%iaX%icCent_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XbXcCent_EP.push_back (new TProfile2D (Form ("p2X%ibX%icCent_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaYbCent_EP.push_back (new TProfile2D (Form ("p2X%iaY%ibCent_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaYcCent_EP.push_back (new TProfile2D (Form ("p2X%iaY%icCent_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2XbYcCent_EP.push_back (new TProfile2D (Form ("p2X%ibY%icCent_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaYbCent_EP.push_back (new TProfile2D (Form ("p2Y%iaY%ibCent_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaYcCent_EP.push_back (new TProfile2D (Form ("p2Y%iaY%icCent_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YbYcCent_EP.push_back (new TProfile2D (Form ("p2Y%ibY%icCent_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaXbCent_EP.push_back (new TProfile2D (Form ("p2Y%iaX%ibCent_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaXcCent_EP.push_back (new TProfile2D (Form ("p2Y%iaX%icCent_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p2YbXcCent_EP.push_back (new TProfile2D (Form ("p2Y%ibX%icCent_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
         p2XaXbMult_SP.push_back (new TProfile2D (Form ("p2X%iaX%ibMult_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaXcMult_SP.push_back (new TProfile2D (Form ("p2X%iaX%icMult_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XbXcMult_SP.push_back (new TProfile2D (Form ("p2X%ibX%icMult_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaYbMult_SP.push_back (new TProfile2D (Form ("p2X%iaY%ibMult_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaYcMult_SP.push_back (new TProfile2D (Form ("p2X%iaY%icMult_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XbYcMult_SP.push_back (new TProfile2D (Form ("p2X%ibY%icMult_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaYbMult_SP.push_back (new TProfile2D (Form ("p2Y%iaY%ibMult_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaYcMult_SP.push_back (new TProfile2D (Form ("p2Y%iaY%icMult_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YbYcMult_SP.push_back (new TProfile2D (Form ("p2Y%ibY%icMult_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaXbMult_SP.push_back (new TProfile2D (Form ("p2Y%iaX%ibMult_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaXcMult_SP.push_back (new TProfile2D (Form ("p2Y%iaX%icMult_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YbXcMult_SP.push_back (new TProfile2D (Form ("p2Y%ibX%icMult_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaXcMult_SP.push_back (new TProfile2D (Form ("p2X%iaX%icMult_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XbXcMult_SP.push_back (new TProfile2D (Form ("p2X%ibX%icMult_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaYbMult_SP.push_back (new TProfile2D (Form ("p2X%iaY%ibMult_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaYcMult_SP.push_back (new TProfile2D (Form ("p2X%iaY%icMult_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XbYcMult_SP.push_back (new TProfile2D (Form ("p2X%ibY%icMult_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaYbMult_SP.push_back (new TProfile2D (Form ("p2Y%iaY%ibMult_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaYcMult_SP.push_back (new TProfile2D (Form ("p2Y%iaY%icMult_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YbYcMult_SP.push_back (new TProfile2D (Form ("p2Y%ibY%icMult_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaXbMult_SP.push_back (new TProfile2D (Form ("p2Y%iaX%ibMult_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaXcMult_SP.push_back (new TProfile2D (Form ("p2Y%iaX%icMult_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YbXcMult_SP.push_back (new TProfile2D (Form ("p2Y%ibX%icMult_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
         p2XaXbMult_EP.push_back (new TProfile2D (Form ("p2X%iaX%ibMult_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaXcMult_EP.push_back (new TProfile2D (Form ("p2X%iaX%icMult_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XbXcMult_EP.push_back (new TProfile2D (Form ("p2X%ibX%icMult_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaYbMult_EP.push_back (new TProfile2D (Form ("p2X%iaY%ibMult_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XaYcMult_EP.push_back (new TProfile2D (Form ("p2X%iaY%icMult_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2XbYcMult_EP.push_back (new TProfile2D (Form ("p2X%ibY%icMult_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaYbMult_EP.push_back (new TProfile2D (Form ("p2Y%iaY%ibMult_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaYcMult_EP.push_back (new TProfile2D (Form ("p2Y%iaY%icMult_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YbYcMult_EP.push_back (new TProfile2D (Form ("p2Y%ibY%icMult_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaXbMult_EP.push_back (new TProfile2D (Form ("p2Y%iaX%ibMult_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YaXcMult_EP.push_back (new TProfile2D (Form ("p2Y%iaX%icMult_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p2YbXcMult_EP.push_back (new TProfile2D (Form ("p2Y%ibX%icMult_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaXcMult_EP.push_back (new TProfile2D (Form ("p2X%iaX%icMult_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XbXcMult_EP.push_back (new TProfile2D (Form ("p2X%ibX%icMult_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaYbMult_EP.push_back (new TProfile2D (Form ("p2X%iaY%ibMult_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XaYcMult_EP.push_back (new TProfile2D (Form ("p2X%iaY%icMult_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2XbYcMult_EP.push_back (new TProfile2D (Form ("p2X%ibY%icMult_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaYbMult_EP.push_back (new TProfile2D (Form ("p2Y%iaY%ibMult_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaYcMult_EP.push_back (new TProfile2D (Form ("p2Y%iaY%icMult_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YbYcMult_EP.push_back (new TProfile2D (Form ("p2Y%ibY%icMult_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaXbMult_EP.push_back (new TProfile2D (Form ("p2Y%iaX%ibMult_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YaXcMult_EP.push_back (new TProfile2D (Form ("p2Y%iaX%icMult_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p2YbXcMult_EP.push_back (new TProfile2D (Form ("p2Y%ibX%icMult_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP);mult;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
         p2xXaPtCent_SP.push_back (new TProfile2D (Form ("p2x%iX%iaPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yXaPtCent_SP.push_back (new TProfile2D (Form ("p2y%iX%iaPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xXbPtCent_SP.push_back (new TProfile2D (Form ("p2x%iX%ibPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yXbPtCent_SP.push_back (new TProfile2D (Form ("p2y%iX%ibPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xXcPtCent_SP.push_back (new TProfile2D (Form ("p2x%iX%icPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yXcPtCent_SP.push_back (new TProfile2D (Form ("p2y%iX%icPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yYaPtCent_SP.push_back (new TProfile2D (Form ("p2y%iY%iaPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xYaPtCent_SP.push_back (new TProfile2D (Form ("p2x%iY%iaPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yYbPtCent_SP.push_back (new TProfile2D (Form ("p2y%iY%ibPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xYbPtCent_SP.push_back (new TProfile2D (Form ("p2x%iY%ibPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yYcPtCent_SP.push_back (new TProfile2D (Form ("p2y%iY%icPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xYcPtCent_SP.push_back (new TProfile2D (Form ("p2x%iY%icPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yXaPtCent_SP.push_back (new TProfile2D (Form ("p2y%iX%iaPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xXbPtCent_SP.push_back (new TProfile2D (Form ("p2x%iX%ibPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yXbPtCent_SP.push_back (new TProfile2D (Form ("p2y%iX%ibPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xXcPtCent_SP.push_back (new TProfile2D (Form ("p2x%iX%icPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yXcPtCent_SP.push_back (new TProfile2D (Form ("p2y%iX%icPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yYaPtCent_SP.push_back (new TProfile2D (Form ("p2y%iY%iaPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xYaPtCent_SP.push_back (new TProfile2D (Form ("p2x%iY%iaPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yYbPtCent_SP.push_back (new TProfile2D (Form ("p2y%iY%ibPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xYbPtCent_SP.push_back (new TProfile2D (Form ("p2x%iY%ibPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yYcPtCent_SP.push_back (new TProfile2D (Form ("p2y%iY%icPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xYcPtCent_SP.push_back (new TProfile2D (Form ("p2x%iY%icPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
 
         p2xXaPtCent_EP.push_back (new TProfile2D (Form ("p2x%iX%iaPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yXaPtCent_EP.push_back (new TProfile2D (Form ("p2y%iX%iaPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xXbPtCent_EP.push_back (new TProfile2D (Form ("p2x%iX%ibPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yXbPtCent_EP.push_back (new TProfile2D (Form ("p2y%iX%ibPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xXcPtCent_EP.push_back (new TProfile2D (Form ("p2x%iX%icPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yXcPtCent_EP.push_back (new TProfile2D (Form ("p2y%iX%icPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yYaPtCent_EP.push_back (new TProfile2D (Form ("p2y%iY%iaPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xYaPtCent_EP.push_back (new TProfile2D (Form ("p2x%iY%iaPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yYbPtCent_EP.push_back (new TProfile2D (Form ("p2y%iY%ibPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xYbPtCent_EP.push_back (new TProfile2D (Form ("p2x%iY%ibPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2yYcPtCent_EP.push_back (new TProfile2D (Form ("p2y%iY%icPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-		p2xYcPtCent_EP.push_back (new TProfile2D (Form ("p2x%iY%icPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yXaPtCent_EP.push_back (new TProfile2D (Form ("p2y%iX%iaPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xXbPtCent_EP.push_back (new TProfile2D (Form ("p2x%iX%ibPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yXbPtCent_EP.push_back (new TProfile2D (Form ("p2y%iX%ibPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xXcPtCent_EP.push_back (new TProfile2D (Form ("p2x%iX%icPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yXcPtCent_EP.push_back (new TProfile2D (Form ("p2y%iX%icPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yYaPtCent_EP.push_back (new TProfile2D (Form ("p2y%iY%iaPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xYaPtCent_EP.push_back (new TProfile2D (Form ("p2x%iY%iaPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yYbPtCent_EP.push_back (new TProfile2D (Form ("p2y%iY%ibPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xYbPtCent_EP.push_back (new TProfile2D (Form ("p2x%iY%ibPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2yYcPtCent_EP.push_back (new TProfile2D (Form ("p2y%iY%icPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+        p2xYcPtCent_EP.push_back (new TProfile2D (Form ("p2x%iY%icPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
 
         p3xXaPtCent_SP.push_back (new TProfile3D (Form ("p3x%iX%iaPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXaPtCent_SP.push_back (new TProfile3D (Form ("p3y%iX%iaPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXbPtCent_SP.push_back (new TProfile3D (Form ("p3x%iX%ibPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXbPtCent_SP.push_back (new TProfile3D (Form ("p3y%iX%ibPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXcPtCent_SP.push_back (new TProfile3D (Form ("p3x%iX%icPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXcPtCent_SP.push_back (new TProfile3D (Form ("p3y%iX%icPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYaPtCent_SP.push_back (new TProfile3D (Form ("p3y%iY%iaPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYaPtCent_SP.push_back (new TProfile3D (Form ("p3x%iY%iaPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYbPtCent_SP.push_back (new TProfile3D (Form ("p3y%iY%ibPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYbPtCent_SP.push_back (new TProfile3D (Form ("p3x%iY%ibPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYcPtCent_SP.push_back (new TProfile3D (Form ("p3y%iY%icPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYcPtCent_SP.push_back (new TProfile3D (Form ("p3x%iY%icPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXaPtCent_SP.push_back (new TProfile3D (Form ("p3y%iX%iaPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXbPtCent_SP.push_back (new TProfile3D (Form ("p3x%iX%ibPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXbPtCent_SP.push_back (new TProfile3D (Form ("p3y%iX%ibPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXcPtCent_SP.push_back (new TProfile3D (Form ("p3x%iX%icPtCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXcPtCent_SP.push_back (new TProfile3D (Form ("p3y%iX%icPtCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYaPtCent_SP.push_back (new TProfile3D (Form ("p3y%iY%iaPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYaPtCent_SP.push_back (new TProfile3D (Form ("p3x%iY%iaPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYbPtCent_SP.push_back (new TProfile3D (Form ("p3y%iY%ibPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYbPtCent_SP.push_back (new TProfile3D (Form ("p3x%iY%ibPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYcPtCent_SP.push_back (new TProfile3D (Form ("p3y%iY%icPtCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYcPtCent_SP.push_back (new TProfile3D (Form ("p3x%iY%icPtCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
         p3xXaPtCent_EP.push_back (new TProfile3D (Form ("p3x%iX%iaPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXaPtCent_EP.push_back (new TProfile3D (Form ("p3y%iX%iaPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXbPtCent_EP.push_back (new TProfile3D (Form ("p3x%iX%ibPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXbPtCent_EP.push_back (new TProfile3D (Form ("p3y%iX%ibPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXcPtCent_EP.push_back (new TProfile3D (Form ("p3x%iX%icPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXcPtCent_EP.push_back (new TProfile3D (Form ("p3y%iX%icPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYaPtCent_EP.push_back (new TProfile3D (Form ("p3y%iY%iaPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYaPtCent_EP.push_back (new TProfile3D (Form ("p3x%iY%iaPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYbPtCent_EP.push_back (new TProfile3D (Form ("p3y%iY%ibPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYbPtCent_EP.push_back (new TProfile3D (Form ("p3x%iY%ibPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYcPtCent_EP.push_back (new TProfile3D (Form ("p3y%iY%icPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYcPtCent_EP.push_back (new TProfile3D (Form ("p3x%iY%icPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXaPtCent_EP.push_back (new TProfile3D (Form ("p3y%iX%iaPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXbPtCent_EP.push_back (new TProfile3D (Form ("p3x%iX%ibPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXbPtCent_EP.push_back (new TProfile3D (Form ("p3y%iX%ibPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXcPtCent_EP.push_back (new TProfile3D (Form ("p3x%iX%icPtCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXcPtCent_EP.push_back (new TProfile3D (Form ("p3y%iX%icPtCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYaPtCent_EP.push_back (new TProfile3D (Form ("p3y%iY%iaPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYaPtCent_EP.push_back (new TProfile3D (Form ("p3x%iY%iaPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYbPtCent_EP.push_back (new TProfile3D (Form ("p3y%iY%ibPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYbPtCent_EP.push_back (new TProfile3D (Form ("p3x%iY%ibPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYcPtCent_EP.push_back (new TProfile3D (Form ("p3y%iY%icPtCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYcPtCent_EP.push_back (new TProfile3D (Form ("p3x%iY%icPtCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
         p2xXaPtMult_SP.push_back (new TProfile2D (Form ("p2x%iX%iaPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXaPtMult_SP.push_back (new TProfile2D (Form ("p2y%iX%iaPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xXbPtMult_SP.push_back (new TProfile2D (Form ("p2x%iX%ibPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXbPtMult_SP.push_back (new TProfile2D (Form ("p2y%iX%ibPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xXcPtMult_SP.push_back (new TProfile2D (Form ("p2x%iX%icPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXcPtMult_SP.push_back (new TProfile2D (Form ("p2y%iX%icPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYaPtMult_SP.push_back (new TProfile2D (Form ("p2y%iY%iaPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYaPtMult_SP.push_back (new TProfile2D (Form ("p2x%iY%iaPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYbPtMult_SP.push_back (new TProfile2D (Form ("p2y%iY%ibPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYbPtMult_SP.push_back (new TProfile2D (Form ("p2x%iY%ibPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYcPtMult_SP.push_back (new TProfile2D (Form ("p2y%iY%icPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYcPtMult_SP.push_back (new TProfile2D (Form ("p2x%iY%icPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXaPtMult_SP.push_back (new TProfile2D (Form ("p2y%iX%iaPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xXbPtMult_SP.push_back (new TProfile2D (Form ("p2x%iX%ibPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXbPtMult_SP.push_back (new TProfile2D (Form ("p2y%iX%ibPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xXcPtMult_SP.push_back (new TProfile2D (Form ("p2x%iX%icPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXcPtMult_SP.push_back (new TProfile2D (Form ("p2y%iX%icPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYaPtMult_SP.push_back (new TProfile2D (Form ("p2y%iY%iaPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYaPtMult_SP.push_back (new TProfile2D (Form ("p2x%iY%iaPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYbPtMult_SP.push_back (new TProfile2D (Form ("p2y%iY%ibPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYbPtMult_SP.push_back (new TProfile2D (Form ("p2x%iY%ibPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYcPtMult_SP.push_back (new TProfile2D (Form ("p2y%iY%icPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYcPtMult_SP.push_back (new TProfile2D (Form ("p2x%iY%icPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
 
         p2xXaPtMult_EP.push_back (new TProfile2D (Form ("p2x%iX%iaPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXaPtMult_EP.push_back (new TProfile2D (Form ("p2y%iX%iaPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xXbPtMult_EP.push_back (new TProfile2D (Form ("p2x%iX%ibPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXbPtMult_EP.push_back (new TProfile2D (Form ("p2y%iX%ibPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xXcPtMult_EP.push_back (new TProfile2D (Form ("p2x%iX%icPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXcPtMult_EP.push_back (new TProfile2D (Form ("p2y%iX%icPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYaPtMult_EP.push_back (new TProfile2D (Form ("p2y%iY%iaPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYaPtMult_EP.push_back (new TProfile2D (Form ("p2x%iY%iaPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYbPtMult_EP.push_back (new TProfile2D (Form ("p2y%iY%ibPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYbPtMult_EP.push_back (new TProfile2D (Form ("p2x%iY%ibPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYcPtMult_EP.push_back (new TProfile2D (Form ("p2y%iY%icPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYcPtMult_EP.push_back (new TProfile2D (Form ("p2x%iY%icPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXaPtMult_EP.push_back (new TProfile2D (Form ("p2y%iX%iaPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xXbPtMult_EP.push_back (new TProfile2D (Form ("p2x%iX%ibPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXbPtMult_EP.push_back (new TProfile2D (Form ("p2y%iX%ibPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xXcPtMult_EP.push_back (new TProfile2D (Form ("p2x%iX%icPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXcPtMult_EP.push_back (new TProfile2D (Form ("p2y%iX%icPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYaPtMult_EP.push_back (new TProfile2D (Form ("p2y%iY%iaPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYaPtMult_EP.push_back (new TProfile2D (Form ("p2x%iY%iaPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYbPtMult_EP.push_back (new TProfile2D (Form ("p2y%iY%ibPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYbPtMult_EP.push_back (new TProfile2D (Form ("p2x%iY%ibPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYcPtMult_EP.push_back (new TProfile2D (Form ("p2y%iY%icPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYcPtMult_EP.push_back (new TProfile2D (Form ("p2x%iY%icPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
 
         p3xXaPtMult_SP.push_back (new TProfile3D (Form ("p3x%iX%iaPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXaPtMult_SP.push_back (new TProfile3D (Form ("p3y%iX%iaPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXbPtMult_SP.push_back (new TProfile3D (Form ("p3x%iX%ibPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXbPtMult_SP.push_back (new TProfile3D (Form ("p3y%iX%ibPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXcPtMult_SP.push_back (new TProfile3D (Form ("p3x%iX%icPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXcPtMult_SP.push_back (new TProfile3D (Form ("p3y%iX%icPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYaPtMult_SP.push_back (new TProfile3D (Form ("p3y%iY%iaPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYaPtMult_SP.push_back (new TProfile3D (Form ("p3x%iY%iaPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYbPtMult_SP.push_back (new TProfile3D (Form ("p3y%iY%ibPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYbPtMult_SP.push_back (new TProfile3D (Form ("p3x%iY%ibPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYcPtMult_SP.push_back (new TProfile3D (Form ("p3y%iY%icPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYcPtMult_SP.push_back (new TProfile3D (Form ("p3x%iY%icPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXaPtMult_SP.push_back (new TProfile3D (Form ("p3y%iX%iaPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXbPtMult_SP.push_back (new TProfile3D (Form ("p3x%iX%ibPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXbPtMult_SP.push_back (new TProfile3D (Form ("p3y%iX%ibPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXcPtMult_SP.push_back (new TProfile3D (Form ("p3x%iX%icPtMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXcPtMult_SP.push_back (new TProfile3D (Form ("p3y%iX%icPtMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYaPtMult_SP.push_back (new TProfile3D (Form ("p3y%iY%iaPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYaPtMult_SP.push_back (new TProfile3D (Form ("p3x%iY%iaPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYbPtMult_SP.push_back (new TProfile3D (Form ("p3y%iY%ibPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYbPtMult_SP.push_back (new TProfile3D (Form ("p3x%iY%ibPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYcPtMult_SP.push_back (new TProfile3D (Form ("p3y%iY%icPtMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYcPtMult_SP.push_back (new TProfile3D (Form ("p3x%iY%icPtMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
         p3xXaPtMult_EP.push_back (new TProfile3D (Form ("p3x%iX%iaPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXaPtMult_EP.push_back (new TProfile3D (Form ("p3y%iX%iaPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXbPtMult_EP.push_back (new TProfile3D (Form ("p3x%iX%ibPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXbPtMult_EP.push_back (new TProfile3D (Form ("p3y%iX%ibPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXcPtMult_EP.push_back (new TProfile3D (Form ("p3x%iX%icPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXcPtMult_EP.push_back (new TProfile3D (Form ("p3y%iX%icPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYaPtMult_EP.push_back (new TProfile3D (Form ("p3y%iY%iaPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYaPtMult_EP.push_back (new TProfile3D (Form ("p3x%iY%iaPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYbPtMult_EP.push_back (new TProfile3D (Form ("p3y%iY%ibPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYbPtMult_EP.push_back (new TProfile3D (Form ("p3x%iY%ibPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYcPtMult_EP.push_back (new TProfile3D (Form ("p3y%iY%icPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYcPtMult_EP.push_back (new TProfile3D (Form ("p3x%iY%icPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXaPtMult_EP.push_back (new TProfile3D (Form ("p3y%iX%iaPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXbPtMult_EP.push_back (new TProfile3D (Form ("p3x%iX%ibPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXbPtMult_EP.push_back (new TProfile3D (Form ("p3y%iX%ibPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXcPtMult_EP.push_back (new TProfile3D (Form ("p3x%iX%icPtMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXcPtMult_EP.push_back (new TProfile3D (Form ("p3y%iX%icPtMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYaPtMult_EP.push_back (new TProfile3D (Form ("p3y%iY%iaPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYaPtMult_EP.push_back (new TProfile3D (Form ("p3x%iY%iaPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYbPtMult_EP.push_back (new TProfile3D (Form ("p3y%iY%ibPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYbPtMult_EP.push_back (new TProfile3D (Form ("p3x%iY%ibPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYcPtMult_EP.push_back (new TProfile3D (Form ("p3y%iY%icPtMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYcPtMult_EP.push_back (new TProfile3D (Form ("p3x%iY%icPtMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
         p2xXaEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iX%iaEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yXaEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iX%iaEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xXbEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iX%ibEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yXbEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iX%ibEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xXcEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iX%icEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yXcEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iX%icEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yYaEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iY%iaEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xYaEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iY%iaEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yYbEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iY%ibEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xYbEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iY%ibEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yYcEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iY%icEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xYcEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iY%icEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yXaEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iX%iaEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xXbEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iX%ibEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yXbEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iX%ibEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xXcEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iX%icEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yXcEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iX%icEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yYaEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iY%iaEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xYaEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iY%iaEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yYbEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iY%ibEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xYbEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iY%ibEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yYcEtaCent_SP.push_back (new TProfile2D (Form ("p2y%iY%icEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xYcEtaCent_SP.push_back (new TProfile2D (Form ("p2x%iY%icEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
 
         p2xXaEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iX%iaEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yXaEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iX%iaEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xXbEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iX%ibEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yXbEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iX%ibEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xXcEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iX%icEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yXcEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iX%icEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yYaEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iY%iaEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xYaEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iY%iaEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yYbEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iY%ibEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xYbEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iY%ibEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2yYcEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iY%icEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-		p2xYcEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iY%icEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yXaEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iX%iaEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xXbEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iX%ibEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yXbEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iX%ibEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xXcEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iX%icEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yXcEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iX%icEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yYaEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iY%iaEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xYaEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iY%iaEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yYbEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iY%ibEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xYbEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iY%ibEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2yYcEtaCent_EP.push_back (new TProfile2D (Form ("p2y%iY%icEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+        p2xYcEtaCent_EP.push_back (new TProfile2D (Form ("p2x%iY%icEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
 
         p3xXaEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iX%iaEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXaEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iX%iaEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXbEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iX%ibEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXbEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iX%ibEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXcEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iX%icEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXcEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iX%icEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYaEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iY%iaEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYaEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iY%iaEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYbEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iY%ibEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYbEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iY%ibEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYcEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iY%icEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYcEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iY%icEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXaEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iX%iaEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXbEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iX%ibEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXbEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iX%ibEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXcEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iX%icEtaCent_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXcEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iX%icEtaCent_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYaEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iY%iaEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYaEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iY%iaEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYbEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iY%ibEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYbEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iY%ibEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYcEtaCent_SP.push_back (new TProfile3D (Form ("p3y%iY%icEtaCent_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYcEtaCent_SP.push_back (new TProfile3D (Form ("p3x%iY%icEtaCent_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
         p3xXaEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iX%iaEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXaEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iX%iaEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXbEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iX%ibEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXbEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iX%ibEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXcEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iX%icEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXcEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iX%icEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYaEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iY%iaEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYaEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iY%iaEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYbEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iY%ibEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYbEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iY%ibEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYcEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iY%icEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYcEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iY%icEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXaEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iX%iaEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXbEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iX%ibEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXbEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iX%ibEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXcEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iX%icEtaCent_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXcEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iX%icEtaCent_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYaEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iY%iaEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYaEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iY%iaEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYbEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iY%ibEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYbEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iY%ibEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYcEtaCent_EP.push_back (new TProfile3D (Form ("p3y%iY%icEtaCent_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYcEtaCent_EP.push_back (new TProfile3D (Form ("p3x%iY%icEtaCent_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
         p2xXaEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iX%iaEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXaEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iX%iaEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xXbEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iX%ibEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXbEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iX%ibEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xXcEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iX%icEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXcEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iX%icEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYaEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iY%iaEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYaEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iY%iaEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYbEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iY%ibEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYbEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iY%ibEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYcEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iY%icEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYcEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iY%icEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXaEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iX%iaEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xXbEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iX%ibEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXbEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iX%ibEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xXcEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iX%icEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXcEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iX%icEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYaEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iY%iaEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYaEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iY%iaEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYbEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iY%ibEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYbEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iY%ibEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYcEtaMult_SP.push_back (new TProfile2D (Form ("p2y%iY%icEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYcEtaMult_SP.push_back (new TProfile2D (Form ("p2x%iY%icEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
 
         p2xXaEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iX%iaEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXaEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iX%iaEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xXbEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iX%ibEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXbEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iX%ibEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xXcEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iX%icEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yXcEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iX%icEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYaEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iY%iaEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYaEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iY%iaEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYbEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iY%ibEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYbEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iY%ibEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2yYcEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iY%icEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-		p2xYcEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iY%icEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXaEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iX%iaEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xXbEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iX%ibEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXbEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iX%ibEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xXcEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iX%icEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yXcEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iX%icEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYaEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iY%iaEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYaEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iY%iaEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYbEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iY%ibEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYbEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iY%ibEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2yYcEtaMult_EP.push_back (new TProfile2D (Form ("p2y%iY%icEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+        p2xYcEtaMult_EP.push_back (new TProfile2D (Form ("p2x%iY%icEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
 
         p3xXaEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iX%iaEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXaEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iX%iaEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXbEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iX%ibEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXbEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iX%ibEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXcEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iX%icEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXcEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iX%icEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYaEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iY%iaEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYaEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iY%iaEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYbEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iY%ibEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYbEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iY%ibEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYcEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iY%icEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYcEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iY%icEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXaEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iX%iaEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXbEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iX%ibEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXbEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iX%ibEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXcEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iX%icEtaMult_SP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXcEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iX%icEtaMult_SP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYaEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iY%iaEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYaEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iY%iaEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYbEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iY%ibEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYbEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iY%ibEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYcEtaMult_SP.push_back (new TProfile3D (Form ("p3y%iY%icEtaMult_SP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYcEtaMult_SP.push_back (new TProfile3D (Form ("p3x%iY%icEtaMult_SP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (SP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
         p3xXaEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iX%iaEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXaEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iX%iaEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXbEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iX%ibEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXbEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iX%ibEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xXcEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iX%icEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yXcEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iX%icEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYaEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iY%iaEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYaEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iY%iaEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYbEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iY%ibEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYbEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iY%ibEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3yYcEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iY%icEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-		p3xYcEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iY%icEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-	}
+        p3yXaEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iX%iaEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXbEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iX%ibEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXbEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iX%ibEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xXcEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iX%icEtaMult_EP", n, n), Form ("#LTx_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yXcEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iX%icEtaMult_EP", n, n), Form ("#LTy_{%i}X_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYaEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iY%iaEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYaEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iY%iaEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{a}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYbEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iY%ibEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYbEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iY%ibEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{b}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3yYcEtaMult_EP.push_back (new TProfile3D (Form ("p3y%iY%icEtaMult_EP", n, n), Form ("#LTy_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+        p3xYcEtaMult_EP.push_back (new TProfile3D (Form ("p3x%iY%icEtaMult_EP", n, n), Form ("#LTx_{%i}Y_{%i}^{c}#GT (EP);" + varName_ + " ;mh;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+    }
 
-	int total = 0;
+    int total = 0;
 
-	for (Long64_t jentry = 0; jentry < nEvents; jentry++) { // loop over events
+    for (Long64_t jentry = 0; jentry < nEvents; jentry++) { // loop over events
         cout << "\rEvent " << jentry + 1 << " from " << nEvents;
-		QnMan -> ClearEvent ();
-		inputTree -> GetEntry (jentry);
-		if (samplingMethod_ == kBootStrapping) sampleTree -> GetEntry (jentry);
+        QnMan -> ClearEvent ();
+        inputTree -> GetEntry (jentry);
+        if (samplingMethod_ == kBootStrapping) sampleTree -> GetEntry (jentry);
         else {
             bsIndex = gRandom -> Rndm () * nBinsBS_; // subsampling
             W [bsIndex] = 1; // subsampling
         }
-		nRun = event -> GetNrun ();
+        nRun = event -> GetNrun ();
         skipFlag = 0;
 
-		for (UInt_t i = 0; i < excludedRuns_.size (); i++) {
+        for (UInt_t i = 0; i < excludedRuns_.size (); i++) {
             if (nRun == excludedRuns_ [i]) skipFlag = 1;
-		}
-		if (skipFlag == 1) continue;
-		mh = event -> GetMh ();
-		cent = event -> GetCent ();
+        }
+        if (skipFlag == 1) continue;
+        mh = event -> GetMh ();
+        cent = event -> GetCent ();
 
-		Eveto = event -> GetEveto ();
-		summEveto = Eveto [0] + Eveto [1] + Eveto [2] + Eveto [3];
+        Eveto = event -> GetEveto ();
+        summEveto = Eveto [0] + Eveto [1] + Eveto [2] + Eveto [3];
 
-		centBin = p3xXaEtaCent_SP [0] -> GetYaxis () -> FindBin (cent);
+        centBin = p3xXaEtaCent_SP [0] -> GetYaxis () -> FindBin (cent);
         //centrality classes
         if (cent < centMin_ || cent > centMax_) {
             continue;
         }
-		if (mh < mhMin_ || mh > mhMax_) {
+        if (mh < mhMin_ || mh > mhMax_) {
             continue;
         }
-		QnMan -> GetDataContainer () [kNrun] = nRun;
-		//QnMan -> GetDataContainer () [kMult] = mh;
-		QnMan -> GetDataContainer () [kCent] = cent;
+        QnMan -> GetDataContainer () [kNrun] = nRun;
+        //QnMan -> GetDataContainer () [kMult] = mh;
+        QnMan -> GetDataContainer () [kCent] = cent;
 
-		for (Int_t i = 0; i < nHarmonics; i++) { // zero subevent multiplicities
-			mha [i] = 0;
-			mhb [i] = 0;
-			mhc [i] = 0;
-		}
+        for (Int_t i = 0; i < nHarmonics; i++) { // zero subevent multiplicities
+            mha [i] = 0;
+            mhb [i] = 0;
+            mhc [i] = 0;
+        }
 
-		for (Int_t itrack = 1; itrack <= mh; itrack++) { // loop over tracks
-			track = event -> GetTrack (itrack);
+        for (Int_t itrack = 1; itrack <= mh; itrack++) { // loop over tracks
+            track = event -> GetTrack (itrack);
             pt = track -> GetPt ();
-			if (varName_ == "#it{y}") eta = track -> GetRap ();
-			else eta = track -> GetEta ();
-			phi = track -> GetPhi ();
-			charge = track -> GetCharge ();
-			pid = track -> GetPid ();
+            if (varName_ == "#it{y}") eta = track -> GetRap ();
+            else eta = track -> GetEta ();
+            phi = track -> GetPhi ();
+            charge = track -> GetCharge ();
+            pid = track -> GetPid ();
 
             if (pid == kVeto1) weight = Eveto [0] / summEveto;
             else if (pid == kVeto2) weight = Eveto [1] / summEveto;
@@ -1608,9 +1604,9 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
 
             subeventIndex = r.Rndm (); // random subevent
 
-			QnMan -> AddDataVector (kDetector1, phi);
+            QnMan -> AddDataVector (kDetector1, phi);
 
-			for (Int_t i = 0; i < nHarmonics; i++) {
+            for (Int_t i = 0; i < nHarmonics; i++) {
                 n = harmonicsMap [i];
                 subeventFlag [i][itrack - 1] = 0;
                 h2PtEta [i] -> Fill (eta, pt);
@@ -1632,9 +1628,9 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
                             break;
                         }
                     }
-				}
+                }
 
-				for (UInt_t j = 0; j < resParticles [i][1].size(); j++) {
+                for (UInt_t j = 0; j < resParticles [i][1].size(); j++) {
                     if (resMethod_ == kRandomSubevent && subeventIndex < 0.5) break;
                     if (pid == resParticles [i][1][j]) {
                         if (eta > etaLim_ [i][2] && eta < etaLim_ [i][3] && pt > ptLim_ [i][2] && pt < ptLim_ [i][3]) {
@@ -1648,12 +1644,12 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
                             break;
                         }
                     }
-				}
+                }
 
-				for (UInt_t j = 0; j < resParticles [i][2].size(); j++) {
+                for (UInt_t j = 0; j < resParticles [i][2].size(); j++) {
                     if (resMethod_ == kRandomSubevent) break;
                     if (pid == resParticles [i][2][j]) {
-                        //if (eta > etaLim_ [i][4] && eta < etaLim_ [i][5] && pt > ptLim_ [i][4] && pt < ptLim_ [i][5]) {
+                        if (eta > etaLim_ [i][4] && eta < etaLim_ [i][5] && pt > ptLim_ [i][4] && pt < ptLim_ [i][5]) {
                             if (n == 1 && pid == kProton) phi += TMath::Pi (); // patch
                             QnMan -> AddDataVector (kNDetectors * i + kDetector1C, phi, weight);
                             subeventFlag [i][itrack - 1] = 3;
@@ -1662,16 +1658,16 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
                             pPtEtaC [i] -> Fill (eta, pt);
                             pPtCentC [i] -> Fill (cent, pt, eta);
                             break;
-                       // }
+                        }
                     }
-				}
-			}
-		}
+                }
+            }
+        }
 
-		QnMan -> ProcessEvent ();
+        QnMan -> ProcessEvent ();
 
-		for (Int_t i = 0; i < nHarmonics; i++) {
-			n = harmonicsMap [i];
+        for (Int_t i = 0; i < nHarmonics; i++) {
+            n = harmonicsMap [i];
 //            for (Int_t j = 0; j < nBinsCent_; j++) { // momentum conservation
 //                ptAvg [i][j] = pPtCent [i] -> GetBinContent (j + 1);
 //                ptAvgA [i][j] = pPtCentA [i] -> GetBinContent (j + 1);
@@ -1679,59 +1675,59 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
 //                ptAvgC [i][j] = pPtCentC [i] -> GetBinContent (j + 1);
 //            }
 
-			if (QnMan -> GetDetectorQnVector ("D1")) {
+            if (QnMan -> GetDetectorQnVector ("D1")) {
                 X [i] = QnMan -> GetDetectorQnVector ("D1", "latest") -> Qx (n);
                 Y [i] = QnMan -> GetDetectorQnVector ("D1", "latest") -> Qy (n);
-			}
-			else {
-				total++;
-				printf ("\nD1_%i FAILED!!!\tmh = %i\ttotal = %i\n", n, mh, total);
-				if (!useZeroSubevents_) continue;
-				X [i] = 0.0;
-				Y [i] = 0.0;
-			}
+            }
+            else {
+                total++;
+                printf ("\nD1_%i FAILED!!!\tmh = %i\ttotal = %i\n", n, mh, total);
+                if (!useZeroSubevents_) continue;
+                X [i] = 0.0;
+                Y [i] = 0.0;
+            }
 
-			if (QnMan -> GetDetectorQnVector (Form ("D1A_%i", n))) {
+            if (QnMan -> GetDetectorQnVector (Form ("D1A_%i", n))) {
                 Xa [i] = QnMan -> GetDetectorQnVector (Form ("D1A_%i", n), "latest") -> Qx (n);
                 Ya [i] = QnMan -> GetDetectorQnVector (Form ("D1A_%i", n), "latest") -> Qy (n);
-			}
-			else {
-				total++;
-				printf ("\nD1A_%i FAILED!!!\tmha = %i\ttotal = %i\n", n, mha [i], total);
-				if (!useZeroSubevents_) continue;
+            }
+            else {
+                total++;
+                printf ("\nD1A_%i FAILED!!!\tmha = %i\ttotal = %i\n", n, mha [i], total);
+                if (!useZeroSubevents_) continue;
                 Xa [i] = 0.0;
                 Ya [i] = 0.0;
-			}
+            }
 
-			if (QnMan -> GetDetectorQnVector (Form ("D1B_%i", n))) {
+            if (QnMan -> GetDetectorQnVector (Form ("D1B_%i", n))) {
                 Xb [i] = QnMan -> GetDetectorQnVector (Form ("D1B_%i", n), "latest") -> Qx (n);
                 Yb [i] = QnMan -> GetDetectorQnVector (Form ("D1B_%i", n), "latest") -> Qy (n);
-			}
-			else {
-				total++;
-				printf ("\nD1B_%i FAILED!!!\tmhb = %i\ttotal = %i\n", n, mhb [i], total);
-				if (!useZeroSubevents_) continue;
+            }
+            else {
+                total++;
+                printf ("\nD1B_%i FAILED!!!\tmhb = %i\ttotal = %i\n", n, mhb [i], total);
+                if (!useZeroSubevents_) continue;
                 Xb [i] = 0.0;
                 Yb [i] = 0.0;
-			}
+            }
 
-			if (QnMan -> GetDetectorQnVector (Form ("D1C_%i", n))) {
+            if (QnMan -> GetDetectorQnVector (Form ("D1C_%i", n))) {
                 Xc [i] = QnMan -> GetDetectorQnVector (Form ("D1C_%i", n), "latest") -> Qx (n);
                 Yc [i] = QnMan -> GetDetectorQnVector (Form ("D1C_%i", n), "latest") -> Qy (n);
-			}
-			else {
-				total++;
-				if (resMethod_ == kThreeSubevents)
+            }
+            else {
+                total++;
+                if (resMethod_ == kThreeSubevents)
                     printf ("\nD1C_%i FAILED!!!\tmhc = %i\ttotal = %i\n", n, mhc [i], total);
-				if (!useZeroSubevents_ && resMethod_ == kThreeSubevents) continue;
+                if (!useZeroSubevents_ && resMethod_ == kThreeSubevents) continue;
                 Xc [i] = 0.0;
                 Yc [i] = 0.0;
-			}
+            }
 
-			hMh [i] -> Fill (mh);
-			hMha [i] -> Fill (mha [i]);
-			hMhb [i] -> Fill (mhb [i]);
-			hMhc [i] -> Fill (mhc [i]);
+            hMh [i] -> Fill (mh);
+            hMha [i] -> Fill (mha [i]);
+            hMhb [i] -> Fill (mhb [i]);
+            hMhc [i] -> Fill (mhc [i]);
 
             h2mhCent [i] -> Fill (cent, mh);
             h2mhaCent [i] -> Fill (cent, mha [i]);
@@ -1743,34 +1739,22 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
             h2mhbMult [i] -> Fill (mh, mhb [i]);
             h2mhcMult [i] -> Fill (mh, mhc [i]);
 
-			//psiEP [i] = TMath::ATan2 (Y [i], X [i]) / n;
-			psiEPa [i] = TMath::ATan2 (Ya [i], Xa [i]) / n;
-			psiEPb [i] = TMath::ATan2 (Yb [i], Xb [i]) / n;
-			psiEPc [i] = TMath::ATan2 (Yc [i], Xc [i]) / n;
+            //psiEP [i] = TMath::ATan2 (Y [i], X [i]) / n;
+            psiEPa [i] = TMath::ATan2 (Ya [i], Xa [i]) / n;
+            psiEPb [i] = TMath::ATan2 (Yb [i], Xb [i]) / n;
+            psiEPc [i] = TMath::ATan2 (Yc [i], Xc [i]) / n;
 
-//			Q [i] = TMath::Sqrt (X [i] * X [i] + Y [i] * Y [i]); // candidate
-//			Qa [i] = TMath::Sqrt (Xa [i] * Xa [i] + Ya [i] * Ya [i]);
-//			Qb [i] = TMath::Sqrt (Xb [i] * Xb [i] + Yb [i] * Yb [i]);
-//			Qc [i] = TMath::Sqrt (Xc [i] * Xc [i] + Yc [i] * Yc [i]);
+//          Q [i] = TMath::Sqrt (X [i] * X [i] + Y [i] * Y [i]); // candidate
+//          Qa [i] = TMath::Sqrt (Xa [i] * Xa [i] + Ya [i] * Ya [i]);
+//          Qb [i] = TMath::Sqrt (Xb [i] * Xb [i] + Yb [i] * Yb [i]);
+//          Qc [i] = TMath::Sqrt (Xc [i] * Xc [i] + Yc [i] * Yc [i]);
 
-			if (uniformSet) {
-				psiRP [i] = event -> GetPsi_n (n);
-				XRP [i] = TMath::Cos (n * psiRP [i]);
-				YRP [i] = TMath::Sin (n * psiRP [i]);
-			}
+            if (uniformSet) {
+                psiRP [i] = event -> GetPsi_n (n);
+                XRP [i] = TMath::Cos (n * psiRP [i]);
+                YRP [i] = TMath::Sin (n * psiRP [i]);
+            }
 
-            pXaXbCent_SP [i] -> Fill (cent, Xa [i] * Xb [i]);
-            pXaXcCent_SP [i] -> Fill (cent, Xa [i] * Xc [i]);
-            pXbXcCent_SP [i] -> Fill (cent, Xb [i] * Xc [i]);
-            pXaYbCent_SP [i] -> Fill (cent, Xa [i] * Yb [i]);
-            pXaYcCent_SP [i] -> Fill (cent, Xa [i] * Yc [i]);
-            pXbYcCent_SP [i] -> Fill (cent, Xb [i] * Yc [i]);
-            pYaYbCent_SP [i] -> Fill (cent, Ya [i] * Yb [i]);
-            pYaYcCent_SP [i] -> Fill (cent, Ya [i] * Yc [i]);
-            pYbYcCent_SP [i] -> Fill (cent, Yb [i] * Yc [i]);
-            pYaXbCent_SP [i] -> Fill (cent, Ya [i] * Xb [i]);
-            pYaXcCent_SP [i] -> Fill (cent, Ya [i] * Xc [i]);
-            pYbXcCent_SP [i] -> Fill (cent, Yb [i] * Xc [i]);
             //no sampling
             pXaXbCent_SP [i] -> Fill (cent, Xa [i] * Xb [i]);
             pXaXcCent_SP [i] -> Fill (cent, Xa [i] * Xc [i]);
@@ -1889,72 +1873,72 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
                 p2YbXcMult_EP [i] -> Fill (mh, bsIndex, TMath::Sin (n * psiEPb [i]) * TMath::Cos (n * psiEPc [i]), W [bsIndex]);
             }
             }
-		}
+        }
 
-		for (Int_t itrack = 1; itrack <= mh; itrack++) { // <unQn>
-			skipFlag = 1;
+        for (Int_t itrack = 1; itrack <= mh; itrack++) { // <unQn>
+            skipFlag = 1;
             track = event -> GetTrack (itrack);
             pid = track -> GetPid ();
             for (Int_t i = 0; i < nFlowParts; i++) { // check pid of the tracks used for unQn
                 if (pid == flowParticles [i]) skipFlag = 0;
             }
             if (skipFlag == 1) continue;
-			pt = track -> GetPt ();
+            pt = track -> GetPt ();
             if (varName_ == "#it{y}") eta = track -> GetRap ();
-			else eta = track -> GetEta ();
-			phi = track -> GetPhi ();
+            else eta = track -> GetEta ();
+            phi = track -> GetPhi ();
 
 
-			for (Int_t i = 0; i < nHarmonics; i++) {
-				n = harmonicsMap [i];
-				x = TMath::Cos (n * phi);
-				y = TMath::Sin (n * phi);
+            for (Int_t i = 0; i < nHarmonics; i++) {
+                n = harmonicsMap [i];
+                x = TMath::Cos (n * phi);
+                y = TMath::Sin (n * phi);
                 if (varName_ == "#it{y}" && eta < 0.0 && n % 2 == 1) {
                     //eta = TMath::Abs (eta);
                     sign = -1.0;
                 }
                 else sign = 1.0;
 
-				if (uniformSet) {
+                if (uniformSet) {
                     // Fill Monte-Carlo HERE
-				}
+                }
 
-//				if (Xa [i] != 0.0) Xa [i] += ptAvgA [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
-//				if (Xb [i] != 0.0) Xb [i] += ptAvgB [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
-//				if (Xc [i] != 0.0) Xc [i] += ptAvgC [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
+//              if (Xa [i] != 0.0) Xa [i] += ptAvgA [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
+//              if (Xb [i] != 0.0) Xb [i] += ptAvgB [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
+//              if (Xc [i] != 0.0) Xc [i] += ptAvgC [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
 
-//				if (Xa [i] != 0.0) Xa [i] += ptAvgFixedA [centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
-//				if (Xb [i] != 0.0) Xb [i] += ptAvgFixedB [centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
-//				if (Xc [i] != 0.0) Xc [i] += ptAvgFixedC [centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
+//              if (Xa [i] != 0.0) Xa [i] += ptAvgFixedA [centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
+//              if (Xb [i] != 0.0) Xb [i] += ptAvgFixedB [centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
+//              if (Xc [i] != 0.0) Xc [i] += ptAvgFixedC [centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
 
-//				if (Xa [i] != 0.0) Xa [i] += ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
-//				if (Xb [i] != 0.0) Xb [i] += ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
-//				if (Xc [i] != 0.0) Xc [i] += ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
+//              if (Xa [i] != 0.0) Xa [i] += ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
+//              if (Xb [i] != 0.0) Xb [i] += ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
+//              if (Xc [i] != 0.0) Xc [i] += ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
 
-//				if (Xa [i] != 0.0) Xa [i] += ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
-//				if (Xb [i] != 0.0) Xb [i] += ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
-//				if (Xc [i] != 0.0) Xc [i] += ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
+//              if (Xa [i] != 0.0) Xa [i] += ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
+//              if (Xb [i] != 0.0) Xb [i] += ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
+//              if (Xc [i] != 0.0) Xc [i] += ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
 
-				if (subeventFlag [i][itrack - 1] == 1) {
-					Xa [i] -= x / mha [i];
-					Ya [i] -= y / mha [i];
-					psiEPa [i] = TMath::ATan2 (Ya [i], Xa [i]) / n;
-				}
+                if (subeventFlag [i][itrack - 1] == 1) {
+                    Xa [i] -= x / mha [i];
+                    Ya [i] -= y / mha [i];
+                    psiEPa [i] = TMath::ATan2 (Ya [i], Xa [i]) / n;
+                }
 
-				if (subeventFlag [i][itrack - 1] == 2) {
-					Xb [i] -= x / mhb [i];
-					Yb [i] -= y / mhb [i];
-					psiEPb [i] = TMath::ATan2 (Yb [i], Xb [i]) / n;
-				}
+                if (subeventFlag [i][itrack - 1] == 2) {
+                    Xb [i] -= x / mhb [i];
+                    Yb [i] -= y / mhb [i];
+                    psiEPb [i] = TMath::ATan2 (Yb [i], Xb [i]) / n;
+                }
 
-				if (subeventFlag [i][itrack - 1] == 3) {
-					Xc [i] -= x / mhc [i];
-					Yc [i] -= y / mhc [i];
-					psiEPc [i] = TMath::ATan2 (Yc [i], Xc [i]) / n;
-				}
+                if (subeventFlag [i][itrack - 1] == 3) {
+                    Xc [i] -= x / mhc [i];
+                    Yc [i] -= y / mhc [i];
+                    psiEPc [i] = TMath::ATan2 (Yc [i], Xc [i]) / n;
+                }
 
                 // no sampling
-				if (pt >= ptAveragingRange_ [i][0] && pt <= ptAveragingRange_ [i][1]
+                if (pt >= ptAveragingRange_ [i][0] && pt <= ptAveragingRange_ [i][1]
                     && eta >= etaAveragingRange_ [i][0] && eta <= etaAveragingRange_ [i][1]) {
 
                     pxXaCent_SP [i] -> Fill (cent, sign * x * Xa [i]);
@@ -2131,6 +2115,7 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
 
                     if (pt >= ptAveragingRange_ [i][0] && pt <= ptAveragingRange_ [i][1]
                         && eta >= etaAveragingRange_ [i][0] && eta <= etaAveragingRange_ [i][1]) {
+
                         p2xXaCent_SP [i] -> Fill (cent, bsIndex, sign * x * Xa [i], W [bsIndex]);
                         p2xXbCent_SP [i] -> Fill (cent, bsIndex, sign * x * Xb [i], W [bsIndex]);
                         p2xXcCent_SP [i] -> Fill (cent, bsIndex, sign * x * Xc [i], W [bsIndex]);
@@ -2301,53 +2286,53 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
                 }
 
                 if (subeventFlag [i][itrack - 1] == 1) {
-					Xa [i] += x / mha [i];
-					Ya [i] += y / mha [i];
-					psiEPa [i] = TMath::ATan2 (Ya [i], Xa [i]) / n;
-				}
+                    Xa [i] += x / mha [i];
+                    Ya [i] += y / mha [i];
+                    psiEPa [i] = TMath::ATan2 (Ya [i], Xa [i]) / n;
+                }
 
-				if (subeventFlag [i][itrack - 1] == 2) {
-					Xb [i] += x / mhb [i];
-					Yb [i] += y / mhb [i];
-					psiEPb [i] = TMath::ATan2 (Yb [i], Xb [i]) / n;
-				}
+                if (subeventFlag [i][itrack - 1] == 2) {
+                    Xb [i] += x / mhb [i];
+                    Yb [i] += y / mhb [i];
+                    psiEPb [i] = TMath::ATan2 (Yb [i], Xb [i]) / n;
+                }
 
-				if (subeventFlag [i][itrack - 1] == 3) {
-					Xc [i] += x / mhc [i];
-					Yc [i] += y / mhc [i];
-					psiEPc [i] = TMath::ATan2 (Yc [i], Xc [i]) / n;
-				}
+                if (subeventFlag [i][itrack - 1] == 3) {
+                    Xc [i] += x / mhc [i];
+                    Yc [i] += y / mhc [i];
+                    psiEPc [i] = TMath::ATan2 (Yc [i], Xc [i]) / n;
+                }
 
-//				if (Xa [i] != 0.0) Xa [i] -= ptAvgA [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
-//				if (Xb [i] != 0.0) Xb [i] -= ptAvgB [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
-//				if (Xc [i] != 0.0) Xc [i] -= ptAvgC [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
+//              if (Xa [i] != 0.0) Xa [i] -= ptAvgA [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
+//              if (Xb [i] != 0.0) Xb [i] -= ptAvgB [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
+//              if (Xc [i] != 0.0) Xc [i] -= ptAvgC [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
 
-//				if (Xa [i] != 0.0) Xa [i] -= ptAvgFixedA [centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
-//				if (Xb [i] != 0.0) Xb [i] -= ptAvgFixedB [centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
-//				if (Xc [i] != 0.0) Xc [i] -= ptAvgFixedC [centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
+//              if (Xa [i] != 0.0) Xa [i] -= ptAvgFixedA [centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
+//              if (Xb [i] != 0.0) Xb [i] -= ptAvgFixedB [centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
+//              if (Xc [i] != 0.0) Xc [i] -= ptAvgFixedC [centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
 
-//				if (Xa [i] != 0.0) Xa [i] -= ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
-//				if (Xb [i] != 0.0) Xb [i] -= ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
-//				if (Xc [i] != 0.0) Xc [i] -= ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
+//              if (Xa [i] != 0.0) Xa [i] -= ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
+//              if (Xb [i] != 0.0) Xb [i] -= ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
+//              if (Xc [i] != 0.0) Xc [i] -= ptAvg [i][centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
 
-//				if (Xa [i] != 0.0) Xa [i] -= ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
-//				if (Xb [i] != 0.0) Xb [i] -= ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
-//				if (Xc [i] != 0.0) Xc [i] -= ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
+//              if (Xa [i] != 0.0) Xa [i] -= ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mha [i];
+//              if (Xb [i] != 0.0) Xb [i] -= ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mhb [i];
+//              if (Xc [i] != 0.0) Xc [i] -= ptAvgFixed [centBin - 1] / pt2Avg [centBin - 1] * pt / mhc [i];
 //
-//				pPtCent [i] -> Reset ("ICESM");
-//				pPtCentA [i] -> Reset ("ICESM");
-//				pPtCentB[i] -> Reset ("ICESM");
-//				pPtCentC [i] -> Reset ("ICESM");
-			}
-		}
+//              pPtCent [i] -> Reset ("ICESM");
+//              pPtCentA [i] -> Reset ("ICESM");
+//              pPtCentB[i] -> Reset ("ICESM");
+//              pPtCentC [i] -> Reset ("ICESM");
+            }
+        }
         testTree -> Fill (); // test
         if (samplingMethod_ != kBootStrapping) W [bsIndex] = 0; // subsampling
-	}
+    }
     cout << endl;
 
-	inputFile -> Close ();
-	servHistDir -> Write ();
-	histFile -> Close ();
+    inputFile -> Close ();
+    servHistDir -> Write ();
+    histFile -> Close ();
 
     testFile -> cd (); // test
     testTree -> Write (); // test
@@ -2355,14 +2340,14 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
     if (samplingMethod_ == kBootStrapping) sampleFile -> Close ();
 
 //    for (Int_t i = 0; i < nHarmonics; i++) {
-//	    QnMan -> GetDetectorQnVectorList (Form ("D1A_%i", n)) -> Print ("",-1);
-//	    QnMan -> GetDetectorQnVectorList (Form ("D1B_%i", n)) -> Print ("",-1);
-//	    QnMan -> GetDetectorQnVectorList (Form ("D1C_%i", n)) -> Print ("",-1);
-//	}
+//      QnMan -> GetDetectorQnVectorList (Form ("D1A_%i", n)) -> Print ("",-1);
+//      QnMan -> GetDetectorQnVectorList (Form ("D1B_%i", n)) -> Print ("",-1);
+//      QnMan -> GetDetectorQnVectorList (Form ("D1C_%i", n)) -> Print ("",-1);
+//  }
 
-	FinalizeQnCorrectionsManager (qnInputFile, qnOutputFile, QnMan);
-	FinalizeQnCorrectionsManager (qnPtInputFile, qnPtOutputFile, QnManPt);
-	FinalizeQnCorrectionsManager (qnEtaInputFile, qnEtaOutputFile, QnManEta);
+    FinalizeQnCorrectionsManager (qnInputFile, qnOutputFile, QnMan);
+    FinalizeQnCorrectionsManager (qnPtInputFile, qnPtOutputFile, QnManPt);
+    FinalizeQnCorrectionsManager (qnEtaInputFile, qnEtaOutputFile, QnManEta);
 }
 
 
@@ -3066,117 +3051,120 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
         centHigh_ = centMax_;
     }
     if (harmonicFunctionSet) FillReferenceHist ();
-	Int_t n, mh;
-	Float_t R, Rerr, cent, pt, eta, bsIndex, shift, sign;
+    Int_t n, mh;
+    Float_t R, Rerr, cent, pt, eta, bsIndex, shift, sign;
 
 // test
-
-
 //    Float_t QQ [3][2][2]; // [AB, AC, BC][x, y][x, y]
-
+//  TFile *testFile = new TFile (histFileName_ + "QQ.root", "RECREATE");
+//    TTree *testTree = new TTree ("testTree", "Test tree");
+//  testTree -> Branch ("QQ", &QQ, "QQ[3][2][2]/F");
+//  testTree -> Branch ("Nsub", &nBinsBS_, 32000, 4);
+//  testTree -> Branch ("Cent", &cent, 32000, 4);
+//  testTree -> Branch ("Harm", &n, 32000, 4);
 // test
 
     TH1 *hList1 [12], *hList2 [12], *hList3 [12], *hList4 [12];
 
-	vector <TProfile*> pxXCent_RP, pxXMult_RP, pxXPt_RP, pxXEta_RP;
+    vector <TProfile*> pxXCent_RP, pxXMult_RP, pxXPt_RP, pxXEta_RP;
 
-	vector <TProfile*> pxXaCent_SP, pxXbCent_SP, pxXcCent_SP, pyYaCent_SP, pyYbCent_SP, pyYcCent_SP;
-	vector <TProfile*> pxYaCent_SP, pxYbCent_SP, pxYcCent_SP, pyXaCent_SP, pyXbCent_SP, pyXcCent_SP;
-	vector <TProfile*> pqQaCent_SP, pqQbCent_SP, pqQcCent_SP;
-	vector <TProfile*> pxXaCent_EP, pxXbCent_EP, pxXcCent_EP, pyYaCent_EP, pyYbCent_EP, pyYcCent_EP;
-	vector <TProfile*> pxYaCent_EP, pxYbCent_EP, pxYcCent_EP, pyXaCent_EP, pyXbCent_EP, pyXcCent_EP;
-	vector <TProfile*> pqQaCent_EP, pqQbCent_EP, pqQcCent_EP;
+    vector <TProfile*> pxXaCent_SP, pxXbCent_SP, pxXcCent_SP, pyYaCent_SP, pyYbCent_SP, pyYcCent_SP;
+    vector <TProfile*> pxYaCent_SP, pxYbCent_SP, pxYcCent_SP, pyXaCent_SP, pyXbCent_SP, pyXcCent_SP;
+    vector <TProfile*> pqQaCent_SP, pqQbCent_SP, pqQcCent_SP;
+    vector <TProfile*> pxXaCent_EP, pxXbCent_EP, pxXcCent_EP, pyYaCent_EP, pyYbCent_EP, pyYcCent_EP;
+    vector <TProfile*> pxYaCent_EP, pxYbCent_EP, pxYcCent_EP, pyXaCent_EP, pyXbCent_EP, pyXcCent_EP;
+    vector <TProfile*> pqQaCent_EP, pqQbCent_EP, pqQcCent_EP;
 
-	vector <TProfile*> pxXaMult_SP, pxXbMult_SP, pxXcMult_SP, pyYaMult_SP, pyYbMult_SP, pyYcMult_SP;
-	vector <TProfile*> pxYaMult_SP, pxYbMult_SP, pxYcMult_SP, pyXaMult_SP, pyXbMult_SP, pyXcMult_SP;
-	vector <TProfile*> pqQaMult_SP, pqQbMult_SP, pqQcMult_SP;
-	vector <TProfile*> pxXaMult_EP, pxXbMult_EP, pxXcMult_EP, pyYaMult_EP, pyYbMult_EP, pyYcMult_EP;
-	vector <TProfile*> pxYaMult_EP, pxYbMult_EP, pxYcMult_EP, pyXaMult_EP, pyXbMult_EP, pyXcMult_EP;
-	vector <TProfile*> pqQaMult_EP, pqQbMult_EP, pqQcMult_EP;
+    vector <TProfile*> pxXaMult_SP, pxXbMult_SP, pxXcMult_SP, pyYaMult_SP, pyYbMult_SP, pyYcMult_SP;
+    vector <TProfile*> pxYaMult_SP, pxYbMult_SP, pxYcMult_SP, pyXaMult_SP, pyXbMult_SP, pyXcMult_SP;
+    vector <TProfile*> pqQaMult_SP, pqQbMult_SP, pqQcMult_SP;
+    vector <TProfile*> pxXaMult_EP, pxXbMult_EP, pxXcMult_EP, pyYaMult_EP, pyYbMult_EP, pyYcMult_EP;
+    vector <TProfile*> pxYaMult_EP, pxYbMult_EP, pxYcMult_EP, pyXaMult_EP, pyXbMult_EP, pyXcMult_EP;
+    vector <TProfile*> pqQaMult_EP, pqQbMult_EP, pqQcMult_EP;
 
-	vector <TProfile2D*> p2xXaCent_SP, p2xXbCent_SP, p2xXcCent_SP, p2yYaCent_SP, p2yYbCent_SP, p2yYcCent_SP;
-	vector <TProfile2D*> p2xYaCent_SP, p2xYbCent_SP, p2xYcCent_SP, p2yXaCent_SP, p2yXbCent_SP, p2yXcCent_SP;
-	vector <TProfile2D*> p2qQaCent_SP, p2qQbCent_SP, p2qQcCent_SP;
-	vector <TProfile2D*> p2xXaCent_EP, p2xXbCent_EP, p2xXcCent_EP, p2yYaCent_EP, p2yYbCent_EP, p2yYcCent_EP;
-	vector <TProfile2D*> p2xYaCent_EP, p2xYbCent_EP, p2xYcCent_EP, p2yXaCent_EP, p2yXbCent_EP, p2yXcCent_EP;
-	vector <TProfile2D*> p2qQaCent_EP, p2qQbCent_EP, p2qQcCent_EP;
+    vector <TProfile2D*> p2xXaCent_SP, p2xXbCent_SP, p2xXcCent_SP, p2yYaCent_SP, p2yYbCent_SP, p2yYcCent_SP;
+    vector <TProfile2D*> p2xYaCent_SP, p2xYbCent_SP, p2xYcCent_SP, p2yXaCent_SP, p2yXbCent_SP, p2yXcCent_SP;
+    vector <TProfile2D*> p2qQaCent_SP, p2qQbCent_SP, p2qQcCent_SP;
+    vector <TProfile2D*> p2xXaCent_EP, p2xXbCent_EP, p2xXcCent_EP, p2yYaCent_EP, p2yYbCent_EP, p2yYcCent_EP;
+    vector <TProfile2D*> p2xYaCent_EP, p2xYbCent_EP, p2xYcCent_EP, p2yXaCent_EP, p2yXbCent_EP, p2yXcCent_EP;
+    vector <TProfile2D*> p2qQaCent_EP, p2qQbCent_EP, p2qQcCent_EP;
 
-	vector <TProfile2D*> p2xXaMult_SP, p2xXbMult_SP, p2xXcMult_SP, p2yYaMult_SP, p2yYbMult_SP, p2yYcMult_SP;
-	vector <TProfile2D*> p2xYaMult_SP, p2xYbMult_SP, p2xYcMult_SP, p2yXaMult_SP, p2yXbMult_SP, p2yXcMult_SP;
-	vector <TProfile2D*> p2qQaMult_SP, p2qQbMult_SP, p2qQcMult_SP;
-	vector <TProfile2D*> p2xXaMult_EP, p2xXbMult_EP, p2xXcMult_EP, p2yYaMult_EP, p2yYbMult_EP, p2yYcMult_EP;
-	vector <TProfile2D*> p2xYaMult_EP, p2xYbMult_EP, p2xYcMult_EP, p2yXaMult_EP, p2yXbMult_EP, p2yXcMult_EP;
-	vector <TProfile2D*> p2qQaMult_EP, p2qQbMult_EP, p2qQcMult_EP;
+    vector <TProfile2D*> p2xXaMult_SP, p2xXbMult_SP, p2xXcMult_SP, p2yYaMult_SP, p2yYbMult_SP, p2yYcMult_SP;
+    vector <TProfile2D*> p2xYaMult_SP, p2xYbMult_SP, p2xYcMult_SP, p2yXaMult_SP, p2yXbMult_SP, p2yXcMult_SP;
+    vector <TProfile2D*> p2qQaMult_SP, p2qQbMult_SP, p2qQcMult_SP;
+    vector <TProfile2D*> p2xXaMult_EP, p2xXbMult_EP, p2xXcMult_EP, p2yYaMult_EP, p2yYbMult_EP, p2yYcMult_EP;
+    vector <TProfile2D*> p2xYaMult_EP, p2xYbMult_EP, p2xYcMult_EP, p2yXaMult_EP, p2yXbMult_EP, p2yXcMult_EP;
+    vector <TProfile2D*> p2qQaMult_EP, p2qQbMult_EP, p2qQcMult_EP;
 
-	vector <TProfile2D*> p2xXaPtCent_SP, p2xXbPtCent_SP, p2xXcPtCent_SP, p2yYaPtCent_SP, p2yYbPtCent_SP, p2yYcPtCent_SP;
-	vector <TProfile2D*> p2xYaPtCent_SP, p2xYbPtCent_SP, p2xYcPtCent_SP, p2yXaPtCent_SP, p2yXbPtCent_SP, p2yXcPtCent_SP;
-	vector <TProfile2D*> p2qQaPtCent_SP, p2qQbPtCent_SP, p2qQcPtCent_SP;
-	vector <TProfile2D*> p2xXaPtCent_EP, p2xXbPtCent_EP, p2xXcPtCent_EP, p2yYaPtCent_EP, p2yYbPtCent_EP, p2yYcPtCent_EP;
-	vector <TProfile2D*> p2xYaPtCent_EP, p2xYbPtCent_EP, p2xYcPtCent_EP, p2yXaPtCent_EP, p2yXbPtCent_EP, p2yXcPtCent_EP;
-	vector <TProfile2D*> p2qQaPtCent_EP, p2qQbPtCent_EP, p2qQcPtCent_EP;
+    vector <TProfile2D*> p2xXaPtCent_SP, p2xXbPtCent_SP, p2xXcPtCent_SP, p2yYaPtCent_SP, p2yYbPtCent_SP, p2yYcPtCent_SP;
+    vector <TProfile2D*> p2xYaPtCent_SP, p2xYbPtCent_SP, p2xYcPtCent_SP, p2yXaPtCent_SP, p2yXbPtCent_SP, p2yXcPtCent_SP;
+    vector <TProfile2D*> p2qQaPtCent_SP, p2qQbPtCent_SP, p2qQcPtCent_SP;
+    vector <TProfile2D*> p2xXaPtCent_EP, p2xXbPtCent_EP, p2xXcPtCent_EP, p2yYaPtCent_EP, p2yYbPtCent_EP, p2yYcPtCent_EP;
+    vector <TProfile2D*> p2xYaPtCent_EP, p2xYbPtCent_EP, p2xYcPtCent_EP, p2yXaPtCent_EP, p2yXbPtCent_EP, p2yXcPtCent_EP;
+    vector <TProfile2D*> p2qQaPtCent_EP, p2qQbPtCent_EP, p2qQcPtCent_EP;
 
-	vector <TProfile2D*> p2xXaPtMult_SP, p2xXbPtMult_SP, p2xXcPtMult_SP, p2yYaPtMult_SP, p2yYbPtMult_SP, p2yYcPtMult_SP;
-	vector <TProfile2D*> p2xYaPtMult_SP, p2xYbPtMult_SP, p2xYcPtMult_SP, p2yXaPtMult_SP, p2yXbPtMult_SP, p2yXcPtMult_SP;
-	vector <TProfile2D*> p2qQaPtMult_SP, p2qQbPtMult_SP, p2qQcPtMult_SP;
-	vector <TProfile2D*> p2xXaPtMult_EP, p2xXbPtMult_EP, p2xXcPtMult_EP, p2yYaPtMult_EP, p2yYbPtMult_EP, p2yYcPtMult_EP;
-	vector <TProfile2D*> p2xYaPtMult_EP, p2xYbPtMult_EP, p2xYcPtMult_EP, p2yXaPtMult_EP, p2yXbPtMult_EP, p2yXcPtMult_EP;
-	vector <TProfile2D*> p2qQaPtMult_EP, p2qQbPtMult_EP, p2qQcPtMult_EP;
+    vector <TProfile2D*> p2xXaPtMult_SP, p2xXbPtMult_SP, p2xXcPtMult_SP, p2yYaPtMult_SP, p2yYbPtMult_SP, p2yYcPtMult_SP;
+    vector <TProfile2D*> p2xYaPtMult_SP, p2xYbPtMult_SP, p2xYcPtMult_SP, p2yXaPtMult_SP, p2yXbPtMult_SP, p2yXcPtMult_SP;
+    vector <TProfile2D*> p2qQaPtMult_SP, p2qQbPtMult_SP, p2qQcPtMult_SP;
+    vector <TProfile2D*> p2xXaPtMult_EP, p2xXbPtMult_EP, p2xXcPtMult_EP, p2yYaPtMult_EP, p2yYbPtMult_EP, p2yYcPtMult_EP;
+    vector <TProfile2D*> p2xYaPtMult_EP, p2xYbPtMult_EP, p2xYcPtMult_EP, p2yXaPtMult_EP, p2yXbPtMult_EP, p2yXcPtMult_EP;
+    vector <TProfile2D*> p2qQaPtMult_EP, p2qQbPtMult_EP, p2qQcPtMult_EP;
 
-	vector <TProfile2D*> p2xXaEtaCent_SP, p2xXbEtaCent_SP, p2xXcEtaCent_SP, p2yYaEtaCent_SP, p2yYbEtaCent_SP, p2yYcEtaCent_SP;
-	vector <TProfile2D*> p2xYaEtaCent_SP, p2xYbEtaCent_SP, p2xYcEtaCent_SP, p2yXaEtaCent_SP, p2yXbEtaCent_SP, p2yXcEtaCent_SP;
-	vector <TProfile2D*> p2qQaEtaCent_SP, p2qQbEtaCent_SP, p2qQcEtaCent_SP;
-	vector <TProfile2D*> p2xXaEtaCent_EP, p2xXbEtaCent_EP, p2xXcEtaCent_EP, p2yYaEtaCent_EP, p2yYbEtaCent_EP, p2yYcEtaCent_EP;
-	vector <TProfile2D*> p2xYaEtaCent_EP, p2xYbEtaCent_EP, p2xYcEtaCent_EP, p2yXaEtaCent_EP, p2yXbEtaCent_EP, p2yXcEtaCent_EP;
-	vector <TProfile2D*> p2qQaEtaCent_EP, p2qQbEtaCent_EP, p2qQcEtaCent_EP;
+    vector <TProfile2D*> p2xXaEtaCent_SP, p2xXbEtaCent_SP, p2xXcEtaCent_SP, p2yYaEtaCent_SP, p2yYbEtaCent_SP, p2yYcEtaCent_SP;
+    vector <TProfile2D*> p2xYaEtaCent_SP, p2xYbEtaCent_SP, p2xYcEtaCent_SP, p2yXaEtaCent_SP, p2yXbEtaCent_SP, p2yXcEtaCent_SP;
+    vector <TProfile2D*> p2qQaEtaCent_SP, p2qQbEtaCent_SP, p2qQcEtaCent_SP;
+    vector <TProfile2D*> p2xXaEtaCent_EP, p2xXbEtaCent_EP, p2xXcEtaCent_EP, p2yYaEtaCent_EP, p2yYbEtaCent_EP, p2yYcEtaCent_EP;
+    vector <TProfile2D*> p2xYaEtaCent_EP, p2xYbEtaCent_EP, p2xYcEtaCent_EP, p2yXaEtaCent_EP, p2yXbEtaCent_EP, p2yXcEtaCent_EP;
+    vector <TProfile2D*> p2qQaEtaCent_EP, p2qQbEtaCent_EP, p2qQcEtaCent_EP;
 
-	vector <TProfile2D*> p2xXaEtaMult_SP, p2xXbEtaMult_SP, p2xXcEtaMult_SP, p2yYaEtaMult_SP, p2yYbEtaMult_SP, p2yYcEtaMult_SP;
-	vector <TProfile2D*> p2xYaEtaMult_SP, p2xYbEtaMult_SP, p2xYcEtaMult_SP, p2yXaEtaMult_SP, p2yXbEtaMult_SP, p2yXcEtaMult_SP;
-	vector <TProfile2D*> p2qQaEtaMult_SP, p2qQbEtaMult_SP, p2qQcEtaMult_SP;
-	vector <TProfile2D*> p2xXaEtaMult_EP, p2xXbEtaMult_EP, p2xXcEtaMult_EP, p2yYaEtaMult_EP, p2yYbEtaMult_EP, p2yYcEtaMult_EP;
-	vector <TProfile2D*> p2xYaEtaMult_EP, p2xYbEtaMult_EP, p2xYcEtaMult_EP, p2yXaEtaMult_EP, p2yXbEtaMult_EP, p2yXcEtaMult_EP;
-	vector <TProfile2D*> p2qQaEtaMult_EP, p2qQbEtaMult_EP, p2qQcEtaMult_EP;
+    vector <TProfile2D*> p2xXaEtaMult_SP, p2xXbEtaMult_SP, p2xXcEtaMult_SP, p2yYaEtaMult_SP, p2yYbEtaMult_SP, p2yYcEtaMult_SP;
+    vector <TProfile2D*> p2xYaEtaMult_SP, p2xYbEtaMult_SP, p2xYcEtaMult_SP, p2yXaEtaMult_SP, p2yXbEtaMult_SP, p2yXcEtaMult_SP;
+    vector <TProfile2D*> p2qQaEtaMult_SP, p2qQbEtaMult_SP, p2qQcEtaMult_SP;
+    vector <TProfile2D*> p2xXaEtaMult_EP, p2xXbEtaMult_EP, p2xXcEtaMult_EP, p2yYaEtaMult_EP, p2yYbEtaMult_EP, p2yYcEtaMult_EP;
+    vector <TProfile2D*> p2xYaEtaMult_EP, p2xYbEtaMult_EP, p2xYcEtaMult_EP, p2yXaEtaMult_EP, p2yXbEtaMult_EP, p2yXcEtaMult_EP;
+    vector <TProfile2D*> p2qQaEtaMult_EP, p2qQbEtaMult_EP, p2qQcEtaMult_EP;
 
-	vector <TProfile3D*> p3xXaPtCent_SP, p3xXbPtCent_SP, p3xXcPtCent_SP, p3yYaPtCent_SP, p3yYbPtCent_SP, p3yYcPtCent_SP;
-	vector <TProfile3D*> p3xYaPtCent_SP, p3xYbPtCent_SP, p3xYcPtCent_SP, p3yXaPtCent_SP, p3yXbPtCent_SP, p3yXcPtCent_SP;
-	vector <TProfile3D*> p3qQaPtCent_SP, p3qQbPtCent_SP, p3qQcPtCent_SP;
-	vector <TProfile3D*> p3xXaPtCent_EP, p3xXbPtCent_EP, p3xXcPtCent_EP, p3yYaPtCent_EP, p3yYbPtCent_EP, p3yYcPtCent_EP;
-	vector <TProfile3D*> p3xYaPtCent_EP, p3xYbPtCent_EP, p3xYcPtCent_EP, p3yXaPtCent_EP, p3yXbPtCent_EP, p3yXcPtCent_EP;
-	vector <TProfile3D*> p3qQaPtCent_EP, p3qQbPtCent_EP, p3qQcPtCent_EP;
+    vector <TProfile3D*> p3xXaPtCent_SP, p3xXbPtCent_SP, p3xXcPtCent_SP, p3yYaPtCent_SP, p3yYbPtCent_SP, p3yYcPtCent_SP;
+    vector <TProfile3D*> p3xYaPtCent_SP, p3xYbPtCent_SP, p3xYcPtCent_SP, p3yXaPtCent_SP, p3yXbPtCent_SP, p3yXcPtCent_SP;
+    vector <TProfile3D*> p3qQaPtCent_SP, p3qQbPtCent_SP, p3qQcPtCent_SP;
+    vector <TProfile3D*> p3xXaPtCent_EP, p3xXbPtCent_EP, p3xXcPtCent_EP, p3yYaPtCent_EP, p3yYbPtCent_EP, p3yYcPtCent_EP;
+    vector <TProfile3D*> p3xYaPtCent_EP, p3xYbPtCent_EP, p3xYcPtCent_EP, p3yXaPtCent_EP, p3yXbPtCent_EP, p3yXcPtCent_EP;
+    vector <TProfile3D*> p3qQaPtCent_EP, p3qQbPtCent_EP, p3qQcPtCent_EP;
 
-	vector <TProfile3D*> p3xXaPtMult_SP, p3xXbPtMult_SP, p3xXcPtMult_SP, p3yYaPtMult_SP, p3yYbPtMult_SP, p3yYcPtMult_SP;
-	vector <TProfile3D*> p3xYaPtMult_SP, p3xYbPtMult_SP, p3xYcPtMult_SP, p3yXaPtMult_SP, p3yXbPtMult_SP, p3yXcPtMult_SP;
-	vector <TProfile3D*> p3qQaPtMult_SP, p3qQbPtMult_SP, p3qQcPtMult_SP;
-	vector <TProfile3D*> p3xXaPtMult_EP, p3xXbPtMult_EP, p3xXcPtMult_EP, p3yYaPtMult_EP, p3yYbPtMult_EP, p3yYcPtMult_EP;
-	vector <TProfile3D*> p3xYaPtMult_EP, p3xYbPtMult_EP, p3xYcPtMult_EP, p3yXaPtMult_EP, p3yXbPtMult_EP, p3yXcPtMult_EP;
-	vector <TProfile3D*> p3qQaPtMult_EP, p3qQbPtMult_EP, p3qQcPtMult_EP;
+    vector <TProfile3D*> p3xXaPtMult_SP, p3xXbPtMult_SP, p3xXcPtMult_SP, p3yYaPtMult_SP, p3yYbPtMult_SP, p3yYcPtMult_SP;
+    vector <TProfile3D*> p3xYaPtMult_SP, p3xYbPtMult_SP, p3xYcPtMult_SP, p3yXaPtMult_SP, p3yXbPtMult_SP, p3yXcPtMult_SP;
+    vector <TProfile3D*> p3qQaPtMult_SP, p3qQbPtMult_SP, p3qQcPtMult_SP;
+    vector <TProfile3D*> p3xXaPtMult_EP, p3xXbPtMult_EP, p3xXcPtMult_EP, p3yYaPtMult_EP, p3yYbPtMult_EP, p3yYcPtMult_EP;
+    vector <TProfile3D*> p3xYaPtMult_EP, p3xYbPtMult_EP, p3xYcPtMult_EP, p3yXaPtMult_EP, p3yXbPtMult_EP, p3yXcPtMult_EP;
+    vector <TProfile3D*> p3qQaPtMult_EP, p3qQbPtMult_EP, p3qQcPtMult_EP;
 
-	vector <TProfile3D*> p3xXaEtaCent_SP, p3xXbEtaCent_SP, p3xXcEtaCent_SP, p3yYaEtaCent_SP, p3yYbEtaCent_SP, p3yYcEtaCent_SP;
-	vector <TProfile3D*> p3xYaEtaCent_SP, p3xYbEtaCent_SP, p3xYcEtaCent_SP, p3yXaEtaCent_SP, p3yXbEtaCent_SP, p3yXcEtaCent_SP;
-	vector <TProfile3D*> p3qQaEtaCent_SP, p3qQbEtaCent_SP, p3qQcEtaCent_SP;
-	vector <TProfile3D*> p3xXaEtaCent_EP, p3xXbEtaCent_EP, p3xXcEtaCent_EP, p3yYaEtaCent_EP, p3yYbEtaCent_EP, p3yYcEtaCent_EP;
-	vector <TProfile3D*> p3xYaEtaCent_EP, p3xYbEtaCent_EP, p3xYcEtaCent_EP, p3yXaEtaCent_EP, p3yXbEtaCent_EP, p3yXcEtaCent_EP;
-	vector <TProfile3D*> p3qQaEtaCent_EP, p3qQbEtaCent_EP, p3qQcEtaCent_EP;
+    vector <TProfile3D*> p3xXaEtaCent_SP, p3xXbEtaCent_SP, p3xXcEtaCent_SP, p3yYaEtaCent_SP, p3yYbEtaCent_SP, p3yYcEtaCent_SP;
+    vector <TProfile3D*> p3xYaEtaCent_SP, p3xYbEtaCent_SP, p3xYcEtaCent_SP, p3yXaEtaCent_SP, p3yXbEtaCent_SP, p3yXcEtaCent_SP;
+    vector <TProfile3D*> p3qQaEtaCent_SP, p3qQbEtaCent_SP, p3qQcEtaCent_SP;
+    vector <TProfile3D*> p3xXaEtaCent_EP, p3xXbEtaCent_EP, p3xXcEtaCent_EP, p3yYaEtaCent_EP, p3yYbEtaCent_EP, p3yYcEtaCent_EP;
+    vector <TProfile3D*> p3xYaEtaCent_EP, p3xYbEtaCent_EP, p3xYcEtaCent_EP, p3yXaEtaCent_EP, p3yXbEtaCent_EP, p3yXcEtaCent_EP;
+    vector <TProfile3D*> p3qQaEtaCent_EP, p3qQbEtaCent_EP, p3qQcEtaCent_EP;
 
-	vector <TProfile3D*> p3xXaEtaMult_SP, p3xXbEtaMult_SP, p3xXcEtaMult_SP, p3yYaEtaMult_SP, p3yYbEtaMult_SP, p3yYcEtaMult_SP;
-	vector <TProfile3D*> p3xYaEtaMult_SP, p3xYbEtaMult_SP, p3xYcEtaMult_SP, p3yXaEtaMult_SP, p3yXbEtaMult_SP, p3yXcEtaMult_SP;
-	vector <TProfile3D*> p3qQaEtaMult_SP, p3qQbEtaMult_SP, p3qQcEtaMult_SP;
-	vector <TProfile3D*> p3xXaEtaMult_EP, p3xXbEtaMult_EP, p3xXcEtaMult_EP, p3yYaEtaMult_EP, p3yYbEtaMult_EP, p3yYcEtaMult_EP;
-	vector <TProfile3D*> p3xYaEtaMult_EP, p3xYbEtaMult_EP, p3xYcEtaMult_EP, p3yXaEtaMult_EP, p3yXbEtaMult_EP, p3yXcEtaMult_EP;
-	vector <TProfile3D*> p3qQaEtaMult_EP, p3qQbEtaMult_EP, p3qQcEtaMult_EP;
+    vector <TProfile3D*> p3xXaEtaMult_SP, p3xXbEtaMult_SP, p3xXcEtaMult_SP, p3yYaEtaMult_SP, p3yYbEtaMult_SP, p3yYcEtaMult_SP;
+    vector <TProfile3D*> p3xYaEtaMult_SP, p3xYbEtaMult_SP, p3xYcEtaMult_SP, p3yXaEtaMult_SP, p3yXbEtaMult_SP, p3yXcEtaMult_SP;
+    vector <TProfile3D*> p3qQaEtaMult_SP, p3qQbEtaMult_SP, p3qQcEtaMult_SP;
+    vector <TProfile3D*> p3xXaEtaMult_EP, p3xXbEtaMult_EP, p3xXcEtaMult_EP, p3yYaEtaMult_EP, p3yYbEtaMult_EP, p3yYcEtaMult_EP;
+    vector <TProfile3D*> p3xYaEtaMult_EP, p3xYbEtaMult_EP, p3xYcEtaMult_EP, p3yXaEtaMult_EP, p3yXbEtaMult_EP, p3yXcEtaMult_EP;
+    vector <TProfile3D*> p3qQaEtaMult_EP, p3qQbEtaMult_EP, p3qQcEtaMult_EP;
 
-	vector <TProfile2D*> p2XaXbCent_SP, p2YaYbCent_SP, p2XaYbCent_SP, p2YaXbCent_SP, p2QaQbCent_SP;
-	vector <TProfile2D*> p2XaXcCent_SP, p2YaYcCent_SP, p2XaYcCent_SP, p2YaXcCent_SP, p2QaQcCent_SP;
-	vector <TProfile2D*> p2XbXcCent_SP, p2YbYcCent_SP, p2XbYcCent_SP, p2YbXcCent_SP, p2QbQcCent_SP;
-	vector <TProfile2D*> p2XaXbCent_EP, p2YaYbCent_EP, p2XaYbCent_EP, p2YaXbCent_EP, p2QaQbCent_EP;
-	vector <TProfile2D*> p2XaXcCent_EP, p2YaYcCent_EP, p2XaYcCent_EP, p2YaXcCent_EP, p2QaQcCent_EP;
-	vector <TProfile2D*> p2XbXcCent_EP, p2YbYcCent_EP, p2XbYcCent_EP, p2YbXcCent_EP, p2QbQcCent_EP;
+    vector <TProfile2D*> p2XaXbCent_SP, p2YaYbCent_SP, p2XaYbCent_SP, p2YaXbCent_SP, p2QaQbCent_SP;
+    vector <TProfile2D*> p2XaXcCent_SP, p2YaYcCent_SP, p2XaYcCent_SP, p2YaXcCent_SP, p2QaQcCent_SP;
+    vector <TProfile2D*> p2XbXcCent_SP, p2YbYcCent_SP, p2XbYcCent_SP, p2YbXcCent_SP, p2QbQcCent_SP;
+    vector <TProfile2D*> p2XaXbCent_EP, p2YaYbCent_EP, p2XaYbCent_EP, p2YaXbCent_EP, p2QaQbCent_EP;
+    vector <TProfile2D*> p2XaXcCent_EP, p2YaYcCent_EP, p2XaYcCent_EP, p2YaXcCent_EP, p2QaQcCent_EP;
+    vector <TProfile2D*> p2XbXcCent_EP, p2YbYcCent_EP, p2XbYcCent_EP, p2YbXcCent_EP, p2QbQcCent_EP;
 
-	vector <TProfile2D*> p2XaXbMult_SP, p2YaYbMult_SP, p2XaYbMult_SP, p2YaXbMult_SP, p2QaQbMult_SP;
-	vector <TProfile2D*> p2XaXcMult_SP, p2YaYcMult_SP, p2XaYcMult_SP, p2YaXcMult_SP, p2QaQcMult_SP;
-	vector <TProfile2D*> p2XbXcMult_SP, p2YbYcMult_SP, p2XbYcMult_SP, p2YbXcMult_SP, p2QbQcMult_SP;
-	vector <TProfile2D*> p2XaXbMult_EP, p2YaYbMult_EP, p2XaYbMult_EP, p2YaXbMult_EP, p2QaQbMult_EP;
-	vector <TProfile2D*> p2XaXcMult_EP, p2YaYcMult_EP, p2XaYcMult_EP, p2YaXcMult_EP, p2QaQcMult_EP;
-	vector <TProfile2D*> p2XbXcMult_EP, p2YbYcMult_EP, p2XbYcMult_EP, p2YbXcMult_EP, p2QbQcMult_EP;
+    vector <TProfile2D*> p2XaXbMult_SP, p2YaYbMult_SP, p2XaYbMult_SP, p2YaXbMult_SP, p2QaQbMult_SP;
+    vector <TProfile2D*> p2XaXcMult_SP, p2YaYcMult_SP, p2XaYcMult_SP, p2YaXcMult_SP, p2QaQcMult_SP;
+    vector <TProfile2D*> p2XbXcMult_SP, p2YbYcMult_SP, p2XbYcMult_SP, p2YbXcMult_SP, p2QbQcMult_SP;
+    vector <TProfile2D*> p2XaXbMult_EP, p2YaYbMult_EP, p2XaYbMult_EP, p2YaXbMult_EP, p2QaQbMult_EP;
+    vector <TProfile2D*> p2XaXcMult_EP, p2YaYcMult_EP, p2XaYcMult_EP, p2YaXcMult_EP, p2QaQcMult_EP;
+    vector <TProfile2D*> p2XbXcMult_EP, p2YbYcMult_EP, p2XbYcMult_EP, p2YbXcMult_EP, p2QbQcMult_EP;
 
     vector <TH2F*> h2RxaCent_SP, h2RyaCent_SP, h2RaCent_SP, h2RxbCent_SP, h2RybCent_SP, h2RbCent_SP;
     vector <TH2F*> h2RxcCent_SP, h2RycCent_SP, h2RcCent_SP, h2RxaCent_EP, h2RyaCent_EP, h2RaCent_EP;
@@ -3186,19 +3174,19 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
     vector <TH2F*> h2RxcMult_SP, h2RycMult_SP, h2RcMult_SP, h2RxaMult_EP, h2RyaMult_EP, h2RaMult_EP;
     vector <TH2F*> h2RxbMult_EP, h2RybMult_EP, h2RbMult_EP, h2RxcMult_EP, h2RycMult_EP, h2RcMult_EP;
 
-	vector <TProfile*> pXaXbCent_SP, pYaYbCent_SP, pXaYbCent_SP, pYaXbCent_SP, pQaQbCent_SP;
-	vector <TProfile*> pXaXcCent_SP, pYaYcCent_SP, pXaYcCent_SP, pYaXcCent_SP, pQaQcCent_SP;
-	vector <TProfile*> pXbXcCent_SP, pYbYcCent_SP, pXbYcCent_SP, pYbXcCent_SP, pQbQcCent_SP;
-	vector <TProfile*> pXaXbCent_EP, pYaYbCent_EP, pXaYbCent_EP, pYaXbCent_EP, pQaQbCent_EP;
-	vector <TProfile*> pXaXcCent_EP, pYaYcCent_EP, pXaYcCent_EP, pYaXcCent_EP, pQaQcCent_EP;
-	vector <TProfile*> pXbXcCent_EP, pYbYcCent_EP, pXbYcCent_EP, pYbXcCent_EP, pQbQcCent_EP;
+    vector <TProfile*> pXaXbCent_SP, pYaYbCent_SP, pXaYbCent_SP, pYaXbCent_SP, pQaQbCent_SP;
+    vector <TProfile*> pXaXcCent_SP, pYaYcCent_SP, pXaYcCent_SP, pYaXcCent_SP, pQaQcCent_SP;
+    vector <TProfile*> pXbXcCent_SP, pYbYcCent_SP, pXbYcCent_SP, pYbXcCent_SP, pQbQcCent_SP;
+    vector <TProfile*> pXaXbCent_EP, pYaYbCent_EP, pXaYbCent_EP, pYaXbCent_EP, pQaQbCent_EP;
+    vector <TProfile*> pXaXcCent_EP, pYaYcCent_EP, pXaYcCent_EP, pYaXcCent_EP, pQaQcCent_EP;
+    vector <TProfile*> pXbXcCent_EP, pYbYcCent_EP, pXbYcCent_EP, pYbXcCent_EP, pQbQcCent_EP;
 
-	vector <TProfile*> pXaXbMult_SP, pYaYbMult_SP, pXaYbMult_SP, pYaXbMult_SP, pQaQbMult_SP;
-	vector <TProfile*> pXaXcMult_SP, pYaYcMult_SP, pXaYcMult_SP, pYaXcMult_SP, pQaQcMult_SP;
-	vector <TProfile*> pXbXcMult_SP, pYbYcMult_SP, pXbYcMult_SP, pYbXcMult_SP, pQbQcMult_SP;
-	vector <TProfile*> pXaXbMult_EP, pYaYbMult_EP, pXaYbMult_EP, pYaXbMult_EP, pQaQbMult_EP;
-	vector <TProfile*> pXaXcMult_EP, pYaYcMult_EP, pXaYcMult_EP, pYaXcMult_EP, pQaQcMult_EP;
-	vector <TProfile*> pXbXcMult_EP, pYbYcMult_EP, pXbYcMult_EP, pYbXcMult_EP, pQbQcMult_EP;
+    vector <TProfile*> pXaXbMult_SP, pYaYbMult_SP, pXaYbMult_SP, pYaXbMult_SP, pQaQbMult_SP;
+    vector <TProfile*> pXaXcMult_SP, pYaYcMult_SP, pXaYcMult_SP, pYaXcMult_SP, pQaQcMult_SP;
+    vector <TProfile*> pXbXcMult_SP, pYbYcMult_SP, pXbYcMult_SP, pYbXcMult_SP, pQbQcMult_SP;
+    vector <TProfile*> pXaXbMult_EP, pYaYbMult_EP, pXaYbMult_EP, pYaXbMult_EP, pQaQbMult_EP;
+    vector <TProfile*> pXaXcMult_EP, pYaYcMult_EP, pXaYcMult_EP, pYaXcMult_EP, pQaQcMult_EP;
+    vector <TProfile*> pXbXcMult_EP, pYbYcMult_EP, pXbYcMult_EP, pYbXcMult_EP, pQbQcMult_EP;
 
     vector <TH1F*> hRxaCent_SP, hRyaCent_SP, hRaCent_SP, hRxbCent_SP, hRybCent_SP, hRbCent_SP;
     vector <TH1F*> hRxcCent_SP, hRycCent_SP, hRcCent_SP;
@@ -3210,19 +3198,19 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
     vector <TH1F*> hRxaMult_EP, hRyaMult_EP, hRaMult_EP, hRxbMult_EP, hRybMult_EP, hRbMult_EP;
     vector <TH1F*> hRxcMult_EP, hRycMult_EP, hRcMult_EP;
 
-	vector <TProfile*> pXaXbCentBS_SP, pYaYbCentBS_SP, pXaYbCentBS_SP, pYaXbCentBS_SP, pQaQbCentBS_SP;
-	vector <TProfile*> pXaXcCentBS_SP, pYaYcCentBS_SP, pXaYcCentBS_SP, pYaXcCentBS_SP, pQaQcCentBS_SP;
-	vector <TProfile*> pXbXcCentBS_SP, pYbYcCentBS_SP, pXbYcCentBS_SP, pYbXcCentBS_SP, pQbQcCentBS_SP;
-	vector <TProfile*> pXaXbCentBS_EP, pYaYbCentBS_EP, pXaYbCentBS_EP, pYaXbCentBS_EP, pQaQbCentBS_EP;
-	vector <TProfile*> pXaXcCentBS_EP, pYaYcCentBS_EP, pXaYcCentBS_EP, pYaXcCentBS_EP, pQaQcCentBS_EP;
-	vector <TProfile*> pXbXcCentBS_EP, pYbYcCentBS_EP, pXbYcCentBS_EP, pYbXcCentBS_EP, pQbQcCentBS_EP;
+    vector <TProfile*> pXaXbCentBS_SP, pYaYbCentBS_SP, pXaYbCentBS_SP, pYaXbCentBS_SP, pQaQbCentBS_SP;
+    vector <TProfile*> pXaXcCentBS_SP, pYaYcCentBS_SP, pXaYcCentBS_SP, pYaXcCentBS_SP, pQaQcCentBS_SP;
+    vector <TProfile*> pXbXcCentBS_SP, pYbYcCentBS_SP, pXbYcCentBS_SP, pYbXcCentBS_SP, pQbQcCentBS_SP;
+    vector <TProfile*> pXaXbCentBS_EP, pYaYbCentBS_EP, pXaYbCentBS_EP, pYaXbCentBS_EP, pQaQbCentBS_EP;
+    vector <TProfile*> pXaXcCentBS_EP, pYaYcCentBS_EP, pXaYcCentBS_EP, pYaXcCentBS_EP, pQaQcCentBS_EP;
+    vector <TProfile*> pXbXcCentBS_EP, pYbYcCentBS_EP, pXbYcCentBS_EP, pYbXcCentBS_EP, pQbQcCentBS_EP;
 
-	vector <TProfile*> pXaXbMultBS_SP, pYaYbMultBS_SP, pXaYbMultBS_SP, pYaXbMultBS_SP, pQaQbMultBS_SP;
-	vector <TProfile*> pXaXcMultBS_SP, pYaYcMultBS_SP, pXaYcMultBS_SP, pYaXcMultBS_SP, pQaQcMultBS_SP;
-	vector <TProfile*> pXbXcMultBS_SP, pYbYcMultBS_SP, pXbYcMultBS_SP, pYbXcMultBS_SP, pQbQcMultBS_SP;
-	vector <TProfile*> pXaXbMultBS_EP, pYaYbMultBS_EP, pXaYbMultBS_EP, pYaXbMultBS_EP, pQaQbMultBS_EP;
-	vector <TProfile*> pXaXcMultBS_EP, pYaYcMultBS_EP, pXaYcMultBS_EP, pYaXcMultBS_EP, pQaQcMultBS_EP;
-	vector <TProfile*> pXbXcMultBS_EP, pYbYcMultBS_EP, pXbYcMultBS_EP, pYbXcMultBS_EP, pQbQcMultBS_EP;
+    vector <TProfile*> pXaXbMultBS_SP, pYaYbMultBS_SP, pXaYbMultBS_SP, pYaXbMultBS_SP, pQaQbMultBS_SP;
+    vector <TProfile*> pXaXcMultBS_SP, pYaYcMultBS_SP, pXaYcMultBS_SP, pYaXcMultBS_SP, pQaQcMultBS_SP;
+    vector <TProfile*> pXbXcMultBS_SP, pYbYcMultBS_SP, pXbYcMultBS_SP, pYbXcMultBS_SP, pQbQcMultBS_SP;
+    vector <TProfile*> pXaXbMultBS_EP, pYaYbMultBS_EP, pXaYbMultBS_EP, pYaXbMultBS_EP, pQaQbMultBS_EP;
+    vector <TProfile*> pXaXcMultBS_EP, pYaYcMultBS_EP, pXaYcMultBS_EP, pYaXcMultBS_EP, pQaQcMultBS_EP;
+    vector <TProfile*> pXbXcMultBS_EP, pYbYcMultBS_EP, pXbYcMultBS_EP, pYbXcMultBS_EP, pQbQcMultBS_EP;
 
     vector <TH1F*> hRxaCentBS_SP, hRyaCentBS_SP, hRaCentBS_SP, hRxbCentBS_SP, hRybCentBS_SP, hRbCentBS_SP;
     vector <TH1F*> hRxcCentBS_SP, hRycCentBS_SP, hRcCentBS_SP, hRxaCentBS_EP, hRyaCentBS_EP, hRaCentBS_EP;
@@ -3835,118 +3823,118 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             p2YbYcMult_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2Y%ibY%icMult_EP", n, n)));
 
             nBinsBS_ = p2XaXbCent_SP [i] -> GetNbinsY ();
-			nBinsCent_ = p2XaXbCent_SP [i] -> GetNbinsX ();
-			centMin_ = p2XaXbCent_SP [i] -> GetXaxis() -> GetXmin ();
-			centMax_ = p2XaXbCent_SP [i] -> GetXaxis() -> GetXmax ();
+            nBinsCent_ = p2XaXbCent_SP [i] -> GetNbinsX ();
+            centMin_ = p2XaXbCent_SP [i] -> GetXaxis() -> GetXmin ();
+            centMax_ = p2XaXbCent_SP [i] -> GetXaxis() -> GetXmax ();
             nBinsMh_ = p2XaXbMult_SP [i] -> GetNbinsX ();
-			mhMin_ = p2XaXbMult_SP [i] -> GetXaxis() -> GetXmin ();
-			mhMax_ = p2XaXbMult_SP [i] -> GetXaxis() -> GetXmax ();
-			nBinsEta_ = p3xXaEtaCent_SP [i] -> GetNbinsX ();
-			etaMin_ = p3xXaEtaCent_SP [i] -> GetXaxis() -> GetXmin ();
-			etaMax_ = p3xXaEtaCent_SP [i] -> GetXaxis() -> GetXmax ();
-			nBinsPt_ = p3xXaPtCent_SP [i] -> GetNbinsX ();
-			ptMin_ = p3xXaPtCent_SP [i] -> GetXaxis() -> GetXmin ();
-			ptMax_ = p3xXaPtCent_SP [i] -> GetXaxis() -> GetXmax ();
+            mhMin_ = p2XaXbMult_SP [i] -> GetXaxis() -> GetXmin ();
+            mhMax_ = p2XaXbMult_SP [i] -> GetXaxis() -> GetXmax ();
+            nBinsEta_ = p3xXaEtaCent_SP [i] -> GetNbinsX ();
+            etaMin_ = p3xXaEtaCent_SP [i] -> GetXaxis() -> GetXmin ();
+            etaMax_ = p3xXaEtaCent_SP [i] -> GetXaxis() -> GetXmax ();
+            nBinsPt_ = p3xXaPtCent_SP [i] -> GetNbinsX ();
+            ptMin_ = p3xXaPtCent_SP [i] -> GetXaxis() -> GetXmin ();
+            ptMax_ = p3xXaPtCent_SP [i] -> GetXaxis() -> GetXmax ();
             mhLowerBin_ = p2XaXbMult_SP [i] -> GetXaxis () -> FindBin (mhLow_ + 0.1);
             mhHigherBin_ = p2XaXbMult_SP [i] -> GetXaxis () -> FindBin (mhHigh_ - 0.1);
             centLowerBin_ = p2XaXbCent_SP [i] -> GetXaxis () -> FindBin (centLow_ + 0.001);
             centHigherBin_ = p2XaXbCent_SP [i] -> GetXaxis () -> FindBin (centHigh_ - 0.001);
 
             cout << "BS: " << nBinsBS_ << endl;
-			cout << "mh: " << nBinsMh_ << " " << mhMin_ << " " << mhMax_ << endl;
-			cout << "mhFlowRange" << " " << mhLow_ << " " << mhHigh_ << endl;
-			cout << "cent: " << nBinsCent_ << " " << centMin_ << " " << centMax_ << endl;
-			cout << "centFlowRange" << " " << centLow_ << " " << centHigh_ << endl;
-			cout << "pt: " << nBinsPt_ << " " << ptMin_ << " " << ptMax_ << endl;
-			cout << "eta: " << nBinsEta_ << " " << etaMin_ << " " << etaMax_ << endl;
+            cout << "mh: " << nBinsMh_ << " " << mhMin_ << " " << mhMax_ << endl;
+            cout << "mhFlowRange" << " " << mhLow_ << " " << mhHigh_ << endl;
+            cout << "cent: " << nBinsCent_ << " " << centMin_ << " " << centMax_ << endl;
+            cout << "centFlowRange" << " " << centLow_ << " " << centHigh_ << endl;
+            cout << "pt: " << nBinsPt_ << " " << ptMin_ << " " << ptMax_ << endl;
+            cout << "eta: " << nBinsEta_ << " " << etaMin_ << " " << etaMax_ << endl;
             cout << "mhBins: " << mhLowerBin_ << " to " << mhHigherBin_ << endl;
             cout << "centBins: " << centLowerBin_ << " to " << centHigherBin_ << endl;
 
-			corrDir -> cd ();
+            corrDir -> cd ();
 
-			pqQaCent_SP.push_back (new TProfile (Form ("pq%iQ%iaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-			pqQbCent_SP.push_back (new TProfile (Form ("pq%iQ%ibCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-			pqQcCent_SP.push_back (new TProfile (Form ("pq%iQ%icCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-			pqQaCent_EP.push_back (new TProfile (Form ("pq%iQ%iaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-			pqQbCent_EP.push_back (new TProfile (Form ("pq%iQ%ibCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
-			pqQcCent_EP.push_back (new TProfile (Form ("pq%iQ%icCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+            pqQaCent_SP.push_back (new TProfile (Form ("pq%iQ%iaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+            pqQbCent_SP.push_back (new TProfile (Form ("pq%iQ%ibCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+            pqQcCent_SP.push_back (new TProfile (Form ("pq%iQ%icCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+            pqQaCent_EP.push_back (new TProfile (Form ("pq%iQ%iaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+            pqQbCent_EP.push_back (new TProfile (Form ("pq%iQ%ibCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
+            pqQcCent_EP.push_back (new TProfile (Form ("pq%iQ%icCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_));
 
-			pqQaMult_SP.push_back (new TProfile (Form ("pq%iQ%iaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-			pqQbMult_SP.push_back (new TProfile (Form ("pq%iQ%ibMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-			pqQcMult_SP.push_back (new TProfile (Form ("pq%iQ%icMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-			pqQaMult_EP.push_back (new TProfile (Form ("pq%iQ%iaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-			pqQbMult_EP.push_back (new TProfile (Form ("pq%iQ%ibMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
-			pqQcMult_EP.push_back (new TProfile (Form ("pq%iQ%icMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+            pqQaMult_SP.push_back (new TProfile (Form ("pq%iQ%iaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+            pqQbMult_SP.push_back (new TProfile (Form ("pq%iQ%ibMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+            pqQcMult_SP.push_back (new TProfile (Form ("pq%iQ%icMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+            pqQaMult_EP.push_back (new TProfile (Form ("pq%iQ%iaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+            pqQbMult_EP.push_back (new TProfile (Form ("pq%iQ%ibMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
+            pqQcMult_EP.push_back (new TProfile (Form ("pq%iQ%icMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_));
 
-			p2qQaCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQbCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQcCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%icCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQaCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQbCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQcCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%icCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQaCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQbCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQcCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%icCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQaCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQbCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQcCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%icCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
-			p2qQaMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQbMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQcMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%icMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQaMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQbMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p2qQcMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%icMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQaMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQbMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQcMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%icMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQaMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQbMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p2qQcMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%icMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);cent;sample", n, n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
-			p2qQaPtCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-			p2qQbPtCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-			p2qQcPtCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%icPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-			p2qQaPtCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-			p2qQbPtCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
-			p2qQcPtCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%icPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+            p2qQaPtCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+            p2qQbPtCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+            p2qQcPtCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%icPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+            p2qQaPtCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+            p2qQbPtCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
+            p2qQcPtCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%icPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_));
 
-			p2qQaEtaCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-			p2qQbEtaCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-			p2qQcEtaCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%icEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+            p2qQaEtaCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+            p2qQbEtaCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+            p2qQcEtaCent_SP.push_back (new TProfile2D (Form ("p2q%iQ%icEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
             p2qQaEtaCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-			p2qQbEtaCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
-			p2qQcEtaCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%icEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+            p2qQbEtaCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
+            p2qQcEtaCent_EP.push_back (new TProfile2D (Form ("p2q%iQ%icEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_));
 
-			p2qQaPtMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-			p2qQbPtMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-			p2qQcPtMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%icPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-			p2qQaPtMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-			p2qQbPtMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
-			p2qQcPtMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%icPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQaPtMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQbPtMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQcPtMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%icPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQaPtMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQbPtMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQcPtMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%icPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_));
 
-			p2qQaEtaMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-			p2qQbEtaMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-			p2qQcEtaMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%icEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQaEtaMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%iaEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQbEtaMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%ibEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQcEtaMult_SP.push_back (new TProfile2D (Form ("p2q%iQ%icEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
             p2qQaEtaMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%iaEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-			p2qQbEtaMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
-			p2qQcEtaMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%icEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQbEtaMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%ibEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
+            p2qQcEtaMult_EP.push_back (new TProfile2D (Form ("p2q%iQ%icEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_));
 
-			p3qQaPtCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%iaPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQbPtCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%ibPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQcPtCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%icPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQaPtCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%iaPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQbPtCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%ibPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQcPtCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%icPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQaPtCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%iaPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQbPtCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%ibPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQcPtCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%icPtCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQaPtCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%iaPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQbPtCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%ibPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQcPtCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%icPtCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);P_{T};cent;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
-			p3qQaEtaCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%iaEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQbEtaCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%ibEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQcEtaCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%icEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQaEtaCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%iaEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQbEtaCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%ibEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQcEtaCent_SP.push_back (new TProfile3D (Form ("p3q%iQ%icEtaCent_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
             p3qQaEtaCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%iaEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQbEtaCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%ibEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQcEtaCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%icEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQbEtaCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%ibEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQcEtaCent_EP.push_back (new TProfile3D (Form ("p3q%iQ%icEtaCent_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);" + varName_ + " ;cent;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
-			p3qQaPtMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%iaPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQbPtMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%ibPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQcPtMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%icPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQaPtMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%iaPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQbPtMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%ibPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQcPtMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%icPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQaPtMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%iaPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQbPtMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%ibPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQcPtMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%icPtMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQaPtMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%iaPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQbPtMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%ibPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQcPtMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%icPtMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);P_{T};mult;sample", n, n), nBinsPt_, ptMin_, ptMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
-			p3qQaEtaMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%iaEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQbEtaMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%ibEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQcEtaMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%icEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQaEtaMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%iaEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQbEtaMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%ibEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQcEtaMult_SP.push_back (new TProfile3D (Form ("p3q%iQ%icEtaMult_SP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (SP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
             p3qQaEtaMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%iaEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{a}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQbEtaMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%ibEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			p3qQcEtaMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%icEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQbEtaMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%ibEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{b}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            p3qQcEtaMult_EP.push_back (new TProfile3D (Form ("p3q%iQ%icEtaMult_EP", n, n), Form ("#LTq_{%i}Q_{%i}^{c}#GT (EP);" + varName_ + " ;mult;sample", n, n), nBinsEta_, etaMin_, etaMax_, nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
             pQaQbCent_SP.push_back (new TProfile (Form ("pQ%iaQ%ibCent_SP", n, n), Form ("#LTQ_{%i}^{a}Q_{%i}^{b}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
             pQaQcCent_SP.push_back (new TProfile (Form ("pQ%iaQ%icCent_SP", n, n), Form ("#LTQ_{%i}^{a}Q_{%i}^{c}#GT (SP);cent", n, n), nBinsCent_, centMin_, centMax_));
@@ -3990,173 +3978,173 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             pQaQcMultBS_EP.push_back (new TProfile (Form ("pQ%iaQ%icMultBS_EP", n, n), Form ("#LTQ_{%i}^{a}Q_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
             pQbQcMultBS_EP.push_back (new TProfile (Form ("pQ%ibQ%icMultBS_EP", n, n), Form ("#LTQ_{%i}^{b}Q_{%i}^{c}#GT (EP);mult", n, n), nBinsMh_, mhMin_, mhMax_));
 
-			pXaXbCentBS_SP.push_back (new TProfile (Form ("pX%iaX%ibCentBS_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXaXcCentBS_SP.push_back (new TProfile (Form ("pX%iaX%icCentBS_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXbXcCentBS_SP.push_back (new TProfile (Form ("pX%ibX%icCentBS_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYaYbCentBS_SP.push_back (new TProfile (Form ("pY%iaY%ibCentBS_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYaYcCentBS_SP.push_back (new TProfile (Form ("pY%iaY%icCentBS_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYbYcCentBS_SP.push_back (new TProfile (Form ("pY%ibY%icCentBS_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXaYbCentBS_SP.push_back (new TProfile (Form ("pX%iaY%ibCentBS_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXaYcCentBS_SP.push_back (new TProfile (Form ("pX%iaY%icCentBS_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXbYcCentBS_SP.push_back (new TProfile (Form ("pX%ibY%icCentBS_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYaXbCentBS_SP.push_back (new TProfile (Form ("pY%iaX%ibCentBS_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYaXcCentBS_SP.push_back (new TProfile (Form ("pY%iaX%icCentBS_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYbXcCentBS_SP.push_back (new TProfile (Form ("pY%ibX%icCentBS_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXaXbCentBS_EP.push_back (new TProfile (Form ("pX%iaX%ibCentBS_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXaXcCentBS_EP.push_back (new TProfile (Form ("pX%iaX%icCentBS_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXbXcCentBS_EP.push_back (new TProfile (Form ("pX%ibX%icCentBS_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYaYbCentBS_EP.push_back (new TProfile (Form ("pY%iaY%ibCentBS_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYaYcCentBS_EP.push_back (new TProfile (Form ("pY%iaY%icCentBS_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYbYcCentBS_EP.push_back (new TProfile (Form ("pY%ibY%icCentBS_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXaYbCentBS_EP.push_back (new TProfile (Form ("pX%iaY%ibCentBS_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXaYcCentBS_EP.push_back (new TProfile (Form ("pX%iaY%icCentBS_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pXbYcCentBS_EP.push_back (new TProfile (Form ("pX%ibY%icCentBS_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYaXbCentBS_EP.push_back (new TProfile (Form ("pY%iaX%ibCentBS_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYaXcCentBS_EP.push_back (new TProfile (Form ("pY%iaX%icCentBS_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
-			pYbXcCentBS_EP.push_back (new TProfile (Form ("pY%ibX%icCentBS_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXaXbCentBS_SP.push_back (new TProfile (Form ("pX%iaX%ibCentBS_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXaXcCentBS_SP.push_back (new TProfile (Form ("pX%iaX%icCentBS_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXbXcCentBS_SP.push_back (new TProfile (Form ("pX%ibX%icCentBS_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYaYbCentBS_SP.push_back (new TProfile (Form ("pY%iaY%ibCentBS_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYaYcCentBS_SP.push_back (new TProfile (Form ("pY%iaY%icCentBS_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYbYcCentBS_SP.push_back (new TProfile (Form ("pY%ibY%icCentBS_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXaYbCentBS_SP.push_back (new TProfile (Form ("pX%iaY%ibCentBS_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXaYcCentBS_SP.push_back (new TProfile (Form ("pX%iaY%icCentBS_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXbYcCentBS_SP.push_back (new TProfile (Form ("pX%ibY%icCentBS_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYaXbCentBS_SP.push_back (new TProfile (Form ("pY%iaX%ibCentBS_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYaXcCentBS_SP.push_back (new TProfile (Form ("pY%iaX%icCentBS_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYbXcCentBS_SP.push_back (new TProfile (Form ("pY%ibX%icCentBS_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXaXbCentBS_EP.push_back (new TProfile (Form ("pX%iaX%ibCentBS_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXaXcCentBS_EP.push_back (new TProfile (Form ("pX%iaX%icCentBS_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXbXcCentBS_EP.push_back (new TProfile (Form ("pX%ibX%icCentBS_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYaYbCentBS_EP.push_back (new TProfile (Form ("pY%iaY%ibCentBS_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYaYcCentBS_EP.push_back (new TProfile (Form ("pY%iaY%icCentBS_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYbYcCentBS_EP.push_back (new TProfile (Form ("pY%ibY%icCentBS_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXaYbCentBS_EP.push_back (new TProfile (Form ("pX%iaY%ibCentBS_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXaYcCentBS_EP.push_back (new TProfile (Form ("pX%iaY%icCentBS_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pXbYcCentBS_EP.push_back (new TProfile (Form ("pX%ibY%icCentBS_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYaXbCentBS_EP.push_back (new TProfile (Form ("pY%iaX%ibCentBS_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYaXcCentBS_EP.push_back (new TProfile (Form ("pY%iaX%icCentBS_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
+            pYbXcCentBS_EP.push_back (new TProfile (Form ("pY%ibX%icCentBS_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP, sampling);cent", n, n), nBinsCent_, centMin_, centMax_));
 
-			pXaXbMultBS_SP.push_back (new TProfile (Form ("pX%iaX%ibMultBS_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXaXcMultBS_SP.push_back (new TProfile (Form ("pX%iaX%icMultBS_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXbXcMultBS_SP.push_back (new TProfile (Form ("pX%ibX%icMultBS_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYaYbMultBS_SP.push_back (new TProfile (Form ("pY%iaY%ibMultBS_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYaYcMultBS_SP.push_back (new TProfile (Form ("pY%iaY%icMultBS_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYbYcMultBS_SP.push_back (new TProfile (Form ("pY%ibY%icMultBS_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXaYbMultBS_SP.push_back (new TProfile (Form ("pX%iaY%ibMultBS_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXaYcMultBS_SP.push_back (new TProfile (Form ("pX%iaY%icMultBS_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXbYcMultBS_SP.push_back (new TProfile (Form ("pX%ibY%icMultBS_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYaXbMultBS_SP.push_back (new TProfile (Form ("pY%iaX%ibMultBS_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYaXcMultBS_SP.push_back (new TProfile (Form ("pY%iaX%icMultBS_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYbXcMultBS_SP.push_back (new TProfile (Form ("pY%ibX%icMultBS_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXaXbMultBS_EP.push_back (new TProfile (Form ("pX%iaX%ibMultBS_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXaXcMultBS_EP.push_back (new TProfile (Form ("pX%iaX%icMultBS_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXbXcMultBS_EP.push_back (new TProfile (Form ("pX%ibX%icMultBS_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYaYbMultBS_EP.push_back (new TProfile (Form ("pY%iaY%ibMultBS_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYaYcMultBS_EP.push_back (new TProfile (Form ("pY%iaY%icMultBS_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYbYcMultBS_EP.push_back (new TProfile (Form ("pY%ibY%icMultBS_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXaYbMultBS_EP.push_back (new TProfile (Form ("pX%iaY%ibMultBS_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXaYcMultBS_EP.push_back (new TProfile (Form ("pX%iaY%icMultBS_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pXbYcMultBS_EP.push_back (new TProfile (Form ("pX%ibY%icMultBS_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYaXbMultBS_EP.push_back (new TProfile (Form ("pY%iaX%ibMultBS_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYaXcMultBS_EP.push_back (new TProfile (Form ("pY%iaX%icMultBS_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
-			pYbXcMultBS_EP.push_back (new TProfile (Form ("pY%ibX%icMultBS_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXaXbMultBS_SP.push_back (new TProfile (Form ("pX%iaX%ibMultBS_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXaXcMultBS_SP.push_back (new TProfile (Form ("pX%iaX%icMultBS_SP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXbXcMultBS_SP.push_back (new TProfile (Form ("pX%ibX%icMultBS_SP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYaYbMultBS_SP.push_back (new TProfile (Form ("pY%iaY%ibMultBS_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYaYcMultBS_SP.push_back (new TProfile (Form ("pY%iaY%icMultBS_SP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYbYcMultBS_SP.push_back (new TProfile (Form ("pY%ibY%icMultBS_SP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXaYbMultBS_SP.push_back (new TProfile (Form ("pX%iaY%ibMultBS_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXaYcMultBS_SP.push_back (new TProfile (Form ("pX%iaY%icMultBS_SP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXbYcMultBS_SP.push_back (new TProfile (Form ("pX%ibY%icMultBS_SP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYaXbMultBS_SP.push_back (new TProfile (Form ("pY%iaX%ibMultBS_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYaXcMultBS_SP.push_back (new TProfile (Form ("pY%iaX%icMultBS_SP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYbXcMultBS_SP.push_back (new TProfile (Form ("pY%ibX%icMultBS_SP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (SP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXaXbMultBS_EP.push_back (new TProfile (Form ("pX%iaX%ibMultBS_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{b}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXaXcMultBS_EP.push_back (new TProfile (Form ("pX%iaX%icMultBS_EP", n, n), Form ("#LTX_{%i}^{a}X_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXbXcMultBS_EP.push_back (new TProfile (Form ("pX%ibX%icMultBS_EP", n, n), Form ("#LTX_{%i}^{b}X_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYaYbMultBS_EP.push_back (new TProfile (Form ("pY%iaY%ibMultBS_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{b}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYaYcMultBS_EP.push_back (new TProfile (Form ("pY%iaY%icMultBS_EP", n, n), Form ("#LTY_{%i}^{a}Y_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYbYcMultBS_EP.push_back (new TProfile (Form ("pY%ibY%icMultBS_EP", n, n), Form ("#LTY_{%i}^{b}Y_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXaYbMultBS_EP.push_back (new TProfile (Form ("pX%iaY%ibMultBS_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{b}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXaYcMultBS_EP.push_back (new TProfile (Form ("pX%iaY%icMultBS_EP", n, n), Form ("#LTX_{%i}^{a}Y_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pXbYcMultBS_EP.push_back (new TProfile (Form ("pX%ibY%icMultBS_EP", n, n), Form ("#LTX_{%i}^{b}Y_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYaXbMultBS_EP.push_back (new TProfile (Form ("pY%iaX%ibMultBS_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{b}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYaXcMultBS_EP.push_back (new TProfile (Form ("pY%iaX%icMultBS_EP", n, n), Form ("#LTY_{%i}^{a}X_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
+            pYbXcMultBS_EP.push_back (new TProfile (Form ("pY%ibX%icMultBS_EP", n, n), Form ("#LTY_{%i}^{b}X_{%i}^{c}#GT (EP, sampling);mult", n, n), nBinsMh_, mhMin_, mhMax_));
 
-			resDir -> cd ();
+            resDir -> cd ();
 
-			h2RxaCent_SP.push_back (new TH2F (Form ("h2R%ixaCent_SP", n), Form ("R_{%i, a}^{x, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RxbCent_SP.push_back (new TH2F (Form ("h2R%ixbCent_SP", n), Form ("R_{%i, b}^{x, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RxcCent_SP.push_back (new TH2F (Form ("h2R%ixcCent_SP", n), Form ("R_{%i, c}^{x, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxaCent_SP.push_back (new TH2F (Form ("h2R%ixaCent_SP", n), Form ("R_{%i, a}^{x, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxbCent_SP.push_back (new TH2F (Form ("h2R%ixbCent_SP", n), Form ("R_{%i, b}^{x, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxcCent_SP.push_back (new TH2F (Form ("h2R%ixcCent_SP", n), Form ("R_{%i, c}^{x, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
             h2RyaCent_SP.push_back (new TH2F (Form ("h2R%iyaCent_SP", n), Form ("R_{%i, a}^{y, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RybCent_SP.push_back (new TH2F (Form ("h2R%iybCent_SP", n), Form ("R_{%i, b}^{y, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RycCent_SP.push_back (new TH2F (Form ("h2R%iycCent_SP", n), Form ("R_{%i, c}^{y, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RybCent_SP.push_back (new TH2F (Form ("h2R%iybCent_SP", n), Form ("R_{%i, b}^{y, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RycCent_SP.push_back (new TH2F (Form ("h2R%iycCent_SP", n), Form ("R_{%i, c}^{y, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
             h2RaCent_SP.push_back (new TH2F (Form ("h2R%iaCent_SP", n), Form ("R_{%i, a}^{x+y,SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RbCent_SP.push_back (new TH2F (Form ("h2R%ibCent_SP", n), Form ("R_{%i, b}^{x+y,SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RcCent_SP.push_back (new TH2F (Form ("h2R%icCent_SP", n), Form ("R_{%i, c}^{x+y,SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RbCent_SP.push_back (new TH2F (Form ("h2R%ibCent_SP", n), Form ("R_{%i, b}^{x+y,SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RcCent_SP.push_back (new TH2F (Form ("h2R%icCent_SP", n), Form ("R_{%i, c}^{x+y,SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
             h2RxaCent_EP.push_back (new TH2F (Form ("h2R%ixaCent_EP", n), Form ("R_{%i, a}^{x, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RxbCent_EP.push_back (new TH2F (Form ("h2R%ixbCent_EP", n), Form ("R_{%i, b}^{x, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RxcCent_EP.push_back (new TH2F (Form ("h2R%ixcCent_EP", n), Form ("R_{%i, c}^{x, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxbCent_EP.push_back (new TH2F (Form ("h2R%ixbCent_EP", n), Form ("R_{%i, b}^{x, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxcCent_EP.push_back (new TH2F (Form ("h2R%ixcCent_EP", n), Form ("R_{%i, c}^{x, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
             h2RyaCent_EP.push_back (new TH2F (Form ("h2R%iyaCent_EP", n), Form ("R_{%i, a}^{y, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RybCent_EP.push_back (new TH2F (Form ("h2R%iybCent_EP", n), Form ("R_{%i, b}^{y, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RycCent_EP.push_back (new TH2F (Form ("h2R%iycCent_EP", n), Form ("R_{%i, c}^{y, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RybCent_EP.push_back (new TH2F (Form ("h2R%iybCent_EP", n), Form ("R_{%i, b}^{y, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RycCent_EP.push_back (new TH2F (Form ("h2R%iycCent_EP", n), Form ("R_{%i, c}^{y, EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
             h2RaCent_EP.push_back (new TH2F (Form ("h2R%iaCent_EP", n), Form ("R_{%i, a}^{x+y,EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RbCent_EP.push_back (new TH2F (Form ("h2R%ibCent_EP", n), Form ("R_{%i, b}^{x+y,EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
-			h2RcCent_EP.push_back (new TH2F (Form ("h2R%icCent_EP", n), Form ("R_{%i, c}^{x+y,EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RbCent_EP.push_back (new TH2F (Form ("h2R%ibCent_EP", n), Form ("R_{%i, b}^{x+y,EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
+            h2RcCent_EP.push_back (new TH2F (Form ("h2R%icCent_EP", n), Form ("R_{%i, c}^{x+y,EP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
 
-			h2RxaMult_SP.push_back (new TH2F (Form ("h2R%ixaMult_SP", n), Form ("R_{%i, a}^{x, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RxbMult_SP.push_back (new TH2F (Form ("h2R%ixbMult_SP", n), Form ("R_{%i, b}^{x, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RxcMult_SP.push_back (new TH2F (Form ("h2R%ixcMult_SP", n), Form ("R_{%i, c}^{x, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxaMult_SP.push_back (new TH2F (Form ("h2R%ixaMult_SP", n), Form ("R_{%i, a}^{x, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxbMult_SP.push_back (new TH2F (Form ("h2R%ixbMult_SP", n), Form ("R_{%i, b}^{x, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxcMult_SP.push_back (new TH2F (Form ("h2R%ixcMult_SP", n), Form ("R_{%i, c}^{x, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
             h2RyaMult_SP.push_back (new TH2F (Form ("h2R%iyaMult_SP", n), Form ("R_{%i, a}^{y, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RybMult_SP.push_back (new TH2F (Form ("h2R%iybMult_SP", n), Form ("R_{%i, b}^{y, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RycMult_SP.push_back (new TH2F (Form ("h2R%iycMult_SP", n), Form ("R_{%i, c}^{y, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RybMult_SP.push_back (new TH2F (Form ("h2R%iybMult_SP", n), Form ("R_{%i, b}^{y, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RycMult_SP.push_back (new TH2F (Form ("h2R%iycMult_SP", n), Form ("R_{%i, c}^{y, SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
             h2RaMult_SP.push_back (new TH2F (Form ("h2R%iaMult_SP", n), Form ("R_{%i, a}^{x+y,SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RbMult_SP.push_back (new TH2F (Form ("h2R%ibMult_SP", n), Form ("R_{%i, b}^{x+y,SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RcMult_SP.push_back (new TH2F (Form ("h2R%icMult_SP", n), Form ("R_{%i, c}^{x+y,SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RbMult_SP.push_back (new TH2F (Form ("h2R%ibMult_SP", n), Form ("R_{%i, b}^{x+y,SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RcMult_SP.push_back (new TH2F (Form ("h2R%icMult_SP", n), Form ("R_{%i, c}^{x+y,SP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
             h2RxaMult_EP.push_back (new TH2F (Form ("h2R%ixaMult_EP", n), Form ("R_{%i, a}^{x, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RxbMult_EP.push_back (new TH2F (Form ("h2R%ixbMult_EP", n), Form ("R_{%i, b}^{x, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RxcMult_EP.push_back (new TH2F (Form ("h2R%ixcMult_EP", n), Form ("R_{%i, c}^{x, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxbMult_EP.push_back (new TH2F (Form ("h2R%ixbMult_EP", n), Form ("R_{%i, b}^{x, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RxcMult_EP.push_back (new TH2F (Form ("h2R%ixcMult_EP", n), Form ("R_{%i, c}^{x, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
             h2RyaMult_EP.push_back (new TH2F (Form ("h2R%iyaMult_EP", n), Form ("R_{%i, a}^{y, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RybMult_EP.push_back (new TH2F (Form ("h2R%iybMult_EP", n), Form ("R_{%i, b}^{y, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RycMult_EP.push_back (new TH2F (Form ("h2R%iycMult_EP", n), Form ("R_{%i, c}^{y, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RybMult_EP.push_back (new TH2F (Form ("h2R%iybMult_EP", n), Form ("R_{%i, b}^{y, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RycMult_EP.push_back (new TH2F (Form ("h2R%iycMult_EP", n), Form ("R_{%i, c}^{y, EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
             h2RaMult_EP.push_back (new TH2F (Form ("h2R%iaMult_EP", n), Form ("R_{%i, a}^{x+y,EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RbMult_EP.push_back (new TH2F (Form ("h2R%ibMult_EP", n), Form ("R_{%i, b}^{x+y,EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
-			h2RcMult_EP.push_back (new TH2F (Form ("h2R%icMult_EP", n), Form ("R_{%i, c}^{x+y,EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RbMult_EP.push_back (new TH2F (Form ("h2R%ibMult_EP", n), Form ("R_{%i, b}^{x+y,EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
+            h2RcMult_EP.push_back (new TH2F (Form ("h2R%icMult_EP", n), Form ("R_{%i, c}^{x+y,EP};mult;sample", n), nBinsMh_, mhMin_, mhMax_, nBinsBS_, 0, nBinsBS_));
 
             hRxaCent_SP.push_back (new TH1F (Form ("hR%ixaCent_SP", n), Form ("R_{%i, a}^{x, SP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRxbCent_SP.push_back (new TH1F (Form ("hR%ixbCent_SP", n), Form ("R_{%i, b}^{x, SP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRxcCent_SP.push_back (new TH1F (Form ("hR%ixcCent_SP", n), Form ("R_{%i, c}^{x, SP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRxbCent_SP.push_back (new TH1F (Form ("hR%ixbCent_SP", n), Form ("R_{%i, b}^{x, SP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRxcCent_SP.push_back (new TH1F (Form ("hR%ixcCent_SP", n), Form ("R_{%i, c}^{x, SP};cent", n), nBinsCent_, centMin_, centMax_));
             hRyaCent_SP.push_back (new TH1F (Form ("hR%iyaCent_SP", n), Form ("R_{%i, a}^{y, SP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRybCent_SP.push_back (new TH1F (Form ("hR%iybCent_SP", n), Form ("R_{%i, b}^{y, SP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRycCent_SP.push_back (new TH1F (Form ("hR%iycCent_SP", n), Form ("R_{%i, c}^{y, SP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRybCent_SP.push_back (new TH1F (Form ("hR%iybCent_SP", n), Form ("R_{%i, b}^{y, SP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRycCent_SP.push_back (new TH1F (Form ("hR%iycCent_SP", n), Form ("R_{%i, c}^{y, SP};cent", n), nBinsCent_, centMin_, centMax_));
             hRaCent_SP.push_back (new TH1F (Form ("hR%iaCent_SP", n), Form ("R_{%i, a}^{x+y,SP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRbCent_SP.push_back (new TH1F (Form ("hR%ibCent_SP", n), Form ("R_{%i, b}^{x+y,SP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRcCent_SP.push_back (new TH1F (Form ("hR%icCent_SP", n), Form ("R_{%i, c}^{x+y,SP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRbCent_SP.push_back (new TH1F (Form ("hR%ibCent_SP", n), Form ("R_{%i, b}^{x+y,SP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRcCent_SP.push_back (new TH1F (Form ("hR%icCent_SP", n), Form ("R_{%i, c}^{x+y,SP};cent", n), nBinsCent_, centMin_, centMax_));
             hRxaCent_EP.push_back (new TH1F (Form ("hR%ixaCent_EP", n), Form ("R_{%i, a}^{x, EP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRxbCent_EP.push_back (new TH1F (Form ("hR%ixbCent_EP", n), Form ("R_{%i, b}^{x, EP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRxcCent_EP.push_back (new TH1F (Form ("hR%ixcCent_EP", n), Form ("R_{%i, c}^{x, EP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRxbCent_EP.push_back (new TH1F (Form ("hR%ixbCent_EP", n), Form ("R_{%i, b}^{x, EP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRxcCent_EP.push_back (new TH1F (Form ("hR%ixcCent_EP", n), Form ("R_{%i, c}^{x, EP};cent", n), nBinsCent_, centMin_, centMax_));
             hRyaCent_EP.push_back (new TH1F (Form ("hR%iyaCent_EP", n), Form ("R_{%i, a}^{y, EP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRybCent_EP.push_back (new TH1F (Form ("hR%iybCent_EP", n), Form ("R_{%i, b}^{y, EP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRycCent_EP.push_back (new TH1F (Form ("hR%iycCent_EP", n), Form ("R_{%i, c}^{y, EP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRybCent_EP.push_back (new TH1F (Form ("hR%iybCent_EP", n), Form ("R_{%i, b}^{y, EP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRycCent_EP.push_back (new TH1F (Form ("hR%iycCent_EP", n), Form ("R_{%i, c}^{y, EP};cent", n), nBinsCent_, centMin_, centMax_));
             hRaCent_EP.push_back (new TH1F (Form ("hR%iaCent_EP", n), Form ("R_{%i, a}^{x+y,EP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRbCent_EP.push_back (new TH1F (Form ("hR%ibCent_EP", n), Form ("R_{%i, b}^{x+y,EP};cent", n), nBinsCent_, centMin_, centMax_));
-			hRcCent_EP.push_back (new TH1F (Form ("hR%icCent_EP", n), Form ("R_{%i, c}^{x+y,EP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRbCent_EP.push_back (new TH1F (Form ("hR%ibCent_EP", n), Form ("R_{%i, b}^{x+y,EP};cent", n), nBinsCent_, centMin_, centMax_));
+            hRcCent_EP.push_back (new TH1F (Form ("hR%icCent_EP", n), Form ("R_{%i, c}^{x+y,EP};cent", n), nBinsCent_, centMin_, centMax_));
 
-			hRxaMult_SP.push_back (new TH1F (Form ("hR%ixaMult_SP", n), Form ("R_{%i, a}^{x, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRxbMult_SP.push_back (new TH1F (Form ("hR%ixbMult_SP", n), Form ("R_{%i, b}^{x, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRxcMult_SP.push_back (new TH1F (Form ("hR%ixcMult_SP", n), Form ("R_{%i, c}^{x, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxaMult_SP.push_back (new TH1F (Form ("hR%ixaMult_SP", n), Form ("R_{%i, a}^{x, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxbMult_SP.push_back (new TH1F (Form ("hR%ixbMult_SP", n), Form ("R_{%i, b}^{x, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxcMult_SP.push_back (new TH1F (Form ("hR%ixcMult_SP", n), Form ("R_{%i, c}^{x, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
             hRyaMult_SP.push_back (new TH1F (Form ("hR%iyaMult_SP", n), Form ("R_{%i, a}^{y, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRybMult_SP.push_back (new TH1F (Form ("hR%iybMult_SP", n), Form ("R_{%i, b}^{y, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRycMult_SP.push_back (new TH1F (Form ("hR%iycMult_SP", n), Form ("R_{%i, c}^{y, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRybMult_SP.push_back (new TH1F (Form ("hR%iybMult_SP", n), Form ("R_{%i, b}^{y, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRycMult_SP.push_back (new TH1F (Form ("hR%iycMult_SP", n), Form ("R_{%i, c}^{y, SP};mult", n), nBinsMh_, mhMin_, mhMax_));
             hRaMult_SP.push_back (new TH1F (Form ("hR%iaMult_SP", n), Form ("R_{%i, a}^{x+y,SP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRbMult_SP.push_back (new TH1F (Form ("hR%ibMult_SP", n), Form ("R_{%i, b}^{x+y,SP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRcMult_SP.push_back (new TH1F (Form ("hR%icMult_SP", n), Form ("R_{%i, c}^{x+y,SP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRbMult_SP.push_back (new TH1F (Form ("hR%ibMult_SP", n), Form ("R_{%i, b}^{x+y,SP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRcMult_SP.push_back (new TH1F (Form ("hR%icMult_SP", n), Form ("R_{%i, c}^{x+y,SP};mult", n), nBinsMh_, mhMin_, mhMax_));
             hRxaMult_EP.push_back (new TH1F (Form ("hR%ixaMult_EP", n), Form ("R_{%i, a}^{x, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRxbMult_EP.push_back (new TH1F (Form ("hR%ixbMult_EP", n), Form ("R_{%i, b}^{x, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRxcMult_EP.push_back (new TH1F (Form ("hR%ixcMult_EP", n), Form ("R_{%i, c}^{x, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxbMult_EP.push_back (new TH1F (Form ("hR%ixbMult_EP", n), Form ("R_{%i, b}^{x, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxcMult_EP.push_back (new TH1F (Form ("hR%ixcMult_EP", n), Form ("R_{%i, c}^{x, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
             hRyaMult_EP.push_back (new TH1F (Form ("hR%iyaMult_EP", n), Form ("R_{%i, a}^{y, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRybMult_EP.push_back (new TH1F (Form ("hR%iybMult_EP", n), Form ("R_{%i, b}^{y, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRycMult_EP.push_back (new TH1F (Form ("hR%iycMult_EP", n), Form ("R_{%i, c}^{y, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRybMult_EP.push_back (new TH1F (Form ("hR%iybMult_EP", n), Form ("R_{%i, b}^{y, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRycMult_EP.push_back (new TH1F (Form ("hR%iycMult_EP", n), Form ("R_{%i, c}^{y, EP};mult", n), nBinsMh_, mhMin_, mhMax_));
             hRaMult_EP.push_back (new TH1F (Form ("hR%iaMult_EP", n), Form ("R_{%i, a}^{x+y,EP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRbMult_EP.push_back (new TH1F (Form ("hR%ibMult_EP", n), Form ("R_{%i, b}^{x+y,EP};mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRcMult_EP.push_back (new TH1F (Form ("hR%icMult_EP", n), Form ("R_{%i, c}^{x+y,EP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRbMult_EP.push_back (new TH1F (Form ("hR%ibMult_EP", n), Form ("R_{%i, b}^{x+y,EP};mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRcMult_EP.push_back (new TH1F (Form ("hR%icMult_EP", n), Form ("R_{%i, c}^{x+y,EP};mult", n), nBinsMh_, mhMin_, mhMax_));
 
             hRxaCentBS_SP.push_back (new TH1F (Form ("hR%ixaCentBS_SP", n), Form ("R_{%i, a}^{x, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRxbCentBS_SP.push_back (new TH1F (Form ("hR%ixbCentBS_SP", n), Form ("R_{%i, b}^{x, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRxcCentBS_SP.push_back (new TH1F (Form ("hR%ixcCentBS_SP", n), Form ("R_{%i, c}^{x, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRxbCentBS_SP.push_back (new TH1F (Form ("hR%ixbCentBS_SP", n), Form ("R_{%i, b}^{x, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRxcCentBS_SP.push_back (new TH1F (Form ("hR%ixcCentBS_SP", n), Form ("R_{%i, c}^{x, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
             hRyaCentBS_SP.push_back (new TH1F (Form ("hR%iyaCentBS_SP", n), Form ("R_{%i, a}^{y, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRybCentBS_SP.push_back (new TH1F (Form ("hR%iybCentBS_SP", n), Form ("R_{%i, b}^{y, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRycCentBS_SP.push_back (new TH1F (Form ("hR%iycCentBS_SP", n), Form ("R_{%i, c}^{y, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRybCentBS_SP.push_back (new TH1F (Form ("hR%iybCentBS_SP", n), Form ("R_{%i, b}^{y, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRycCentBS_SP.push_back (new TH1F (Form ("hR%iycCentBS_SP", n), Form ("R_{%i, c}^{y, SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
             hRaCentBS_SP.push_back (new TH1F (Form ("hR%iaCentBS_SP", n), Form ("R_{%i, a}^{x+y,SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRbCentBS_SP.push_back (new TH1F (Form ("hR%ibCentBS_SP", n), Form ("R_{%i, b}^{x+y,SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRcCentBS_SP.push_back (new TH1F (Form ("hR%icCentBS_SP", n), Form ("R_{%i, c}^{x+y,SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRbCentBS_SP.push_back (new TH1F (Form ("hR%ibCentBS_SP", n), Form ("R_{%i, b}^{x+y,SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRcCentBS_SP.push_back (new TH1F (Form ("hR%icCentBS_SP", n), Form ("R_{%i, c}^{x+y,SP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
             hRxaCentBS_EP.push_back (new TH1F (Form ("hR%ixaCentBS_EP", n), Form ("R_{%i, a}^{x, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRxbCentBS_EP.push_back (new TH1F (Form ("hR%ixbCentBS_EP", n), Form ("R_{%i, b}^{x, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRxcCentBS_EP.push_back (new TH1F (Form ("hR%ixcCentBS_EP", n), Form ("R_{%i, c}^{x, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRxbCentBS_EP.push_back (new TH1F (Form ("hR%ixbCentBS_EP", n), Form ("R_{%i, b}^{x, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRxcCentBS_EP.push_back (new TH1F (Form ("hR%ixcCentBS_EP", n), Form ("R_{%i, c}^{x, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
             hRyaCentBS_EP.push_back (new TH1F (Form ("hR%iyaCentBS_EP", n), Form ("R_{%i, a}^{y, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRybCentBS_EP.push_back (new TH1F (Form ("hR%iybCentBS_EP", n), Form ("R_{%i, b}^{y, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRycCentBS_EP.push_back (new TH1F (Form ("hR%iycCentBS_EP", n), Form ("R_{%i, c}^{y, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRybCentBS_EP.push_back (new TH1F (Form ("hR%iybCentBS_EP", n), Form ("R_{%i, b}^{y, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRycCentBS_EP.push_back (new TH1F (Form ("hR%iycCentBS_EP", n), Form ("R_{%i, c}^{y, EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
             hRaCentBS_EP.push_back (new TH1F (Form ("hR%iaCentBS_EP", n), Form ("R_{%i, a}^{x+y,EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRbCentBS_EP.push_back (new TH1F (Form ("hR%ibCentBS_EP", n), Form ("R_{%i, b}^{x+y,EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
-			hRcCentBS_EP.push_back (new TH1F (Form ("hR%icCentBS_EP", n), Form ("R_{%i, c}^{x+y,EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRbCentBS_EP.push_back (new TH1F (Form ("hR%ibCentBS_EP", n), Form ("R_{%i, b}^{x+y,EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
+            hRcCentBS_EP.push_back (new TH1F (Form ("hR%icCentBS_EP", n), Form ("R_{%i, c}^{x+y,EP}(sampling);cent", n), nBinsCent_, centMin_, centMax_));
 
-			hRxaMultBS_SP.push_back (new TH1F (Form ("hR%ixaMultBS_SP", n), Form ("R_{%i, a}^{x, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRxbMultBS_SP.push_back (new TH1F (Form ("hR%ixbMultBS_SP", n), Form ("R_{%i, b}^{x, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRxcMultBS_SP.push_back (new TH1F (Form ("hR%ixcMultBS_SP", n), Form ("R_{%i, c}^{x, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxaMultBS_SP.push_back (new TH1F (Form ("hR%ixaMultBS_SP", n), Form ("R_{%i, a}^{x, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxbMultBS_SP.push_back (new TH1F (Form ("hR%ixbMultBS_SP", n), Form ("R_{%i, b}^{x, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxcMultBS_SP.push_back (new TH1F (Form ("hR%ixcMultBS_SP", n), Form ("R_{%i, c}^{x, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
             hRyaMultBS_SP.push_back (new TH1F (Form ("hR%iyaMultBS_SP", n), Form ("R_{%i, a}^{y, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRybMultBS_SP.push_back (new TH1F (Form ("hR%iybMultBS_SP", n), Form ("R_{%i, b}^{y, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRycMultBS_SP.push_back (new TH1F (Form ("hR%iycMultBS_SP", n), Form ("R_{%i, c}^{y, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRybMultBS_SP.push_back (new TH1F (Form ("hR%iybMultBS_SP", n), Form ("R_{%i, b}^{y, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRycMultBS_SP.push_back (new TH1F (Form ("hR%iycMultBS_SP", n), Form ("R_{%i, c}^{y, SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
             hRaMultBS_SP.push_back (new TH1F (Form ("hR%iaMultBS_SP", n), Form ("R_{%i, a}^{x+y,SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRbMultBS_SP.push_back (new TH1F (Form ("hR%ibMultBS_SP", n), Form ("R_{%i, b}^{x+y,SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRcMultBS_SP.push_back (new TH1F (Form ("hR%icMultBS_SP", n), Form ("R_{%i, c}^{x+y,SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRbMultBS_SP.push_back (new TH1F (Form ("hR%ibMultBS_SP", n), Form ("R_{%i, b}^{x+y,SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRcMultBS_SP.push_back (new TH1F (Form ("hR%icMultBS_SP", n), Form ("R_{%i, c}^{x+y,SP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
             hRxaMultBS_EP.push_back (new TH1F (Form ("hR%ixaMultBS_EP", n), Form ("R_{%i, a}^{x, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRxbMultBS_EP.push_back (new TH1F (Form ("hR%ixbMultBS_EP", n), Form ("R_{%i, b}^{x, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRxcMultBS_EP.push_back (new TH1F (Form ("hR%ixcMultBS_EP", n), Form ("R_{%i, c}^{x, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxbMultBS_EP.push_back (new TH1F (Form ("hR%ixbMultBS_EP", n), Form ("R_{%i, b}^{x, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRxcMultBS_EP.push_back (new TH1F (Form ("hR%ixcMultBS_EP", n), Form ("R_{%i, c}^{x, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
             hRyaMultBS_EP.push_back (new TH1F (Form ("hR%iyaMultBS_EP", n), Form ("R_{%i, a}^{y, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRybMultBS_EP.push_back (new TH1F (Form ("hR%iybMultBS_EP", n), Form ("R_{%i, b}^{y, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRycMultBS_EP.push_back (new TH1F (Form ("hR%iycMultBS_EP", n), Form ("R_{%i, c}^{y, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRybMultBS_EP.push_back (new TH1F (Form ("hR%iybMultBS_EP", n), Form ("R_{%i, b}^{y, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRycMultBS_EP.push_back (new TH1F (Form ("hR%iycMultBS_EP", n), Form ("R_{%i, c}^{y, EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
             hRaMultBS_EP.push_back (new TH1F (Form ("hR%iaMultBS_EP", n), Form ("R_{%i, a}^{x+y,EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRbMultBS_EP.push_back (new TH1F (Form ("hR%ibMultBS_EP", n), Form ("R_{%i, b}^{x+y,EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
-			hRcMultBS_EP.push_back (new TH1F (Form ("hR%icMultBS_EP", n), Form ("R_{%i, c}^{x+y,EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRbMultBS_EP.push_back (new TH1F (Form ("hR%ibMultBS_EP", n), Form ("R_{%i, b}^{x+y,EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
+            hRcMultBS_EP.push_back (new TH1F (Form ("hR%icMultBS_EP", n), Form ("R_{%i, c}^{x+y,EP}(sampling);mult", n), nBinsMh_, mhMin_, mhMax_));
 
-			flowDir -> cd ();
+            flowDir -> cd ();
 
             p2VxaCent_SP.push_back (new TProfile2D (Form ("p2V%ixaCent_SP", n), Form ("V_{%i, a}^{x, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
             p2VxbCent_SP.push_back (new TProfile2D (Form ("p2V%ixbCent_SP", n), Form ("V_{%i, b}^{x, SP};cent;sample", n), nBinsCent_, centMin_, centMax_, nBinsBS_, 0, nBinsBS_));
@@ -6160,7 +6148,6 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             ReflectRapidity (hVyXbEtaMult_EP [i], hVyXbEtaReflMult_EP [i], n);
             ReflectRapidity (hVyXcEtaMult_EP [i], hVyXcEtaReflMult_EP [i], n);
 
-
             ReflectRapidity (hVxaEtaCentBS_SP [i], hVxaEtaReflCentBS_SP [i], n);
             ReflectRapidity (hVxbEtaCentBS_SP [i], hVxbEtaReflCentBS_SP [i], n);
             ReflectRapidity (hVxcEtaCentBS_SP [i], hVxcEtaReflCentBS_SP [i], n);
@@ -7646,7 +7633,6 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
 
         }
 
-
         stepDir -> Write ();
         corrDir -> Write ();
         resDir -> Write ();
@@ -7654,68 +7640,69 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
 
 //    testFile -> cd (); // test
 //    testTree -> Write (); // test
-	corrFile -> Close ();
-	flowFile -> Close ();
+//    testFile -> Close (); // test
+    corrFile -> Close ();
+    flowFile -> Close ();
 }
 
 void CFlowReconstructor::FillReferenceHist () {
     //histFile = new TFile (histFileName + ".root", "update");
-	Int_t n, nDiv = 100;
-	map <TString, Float_t> variables;
-	Float_t h1, h2;
-	Float_t pt, eta, v;
-	TH2D* h2VnPtEta;
-	TProfile2D* p2VnPtEta;
-	TProfile *pVnPtRef, *pVnEtaRef;
-	TH1D *hVnPtRef, *hVnEtaRef;
-	variables ["ptMin_"] = ptMin_;
-	variables ["ptMax_"] = ptMax_;
-	variables ["etaMin_"] = etaMin_;
-	variables ["etaMax_"] = etaMax_;
-	TFile *histFile = new TFile (histFileName_ + ".root", "update");
-	TDirectory *histDir = histFile -> mkdir (dirName [4]);
-	histDir -> cd ();
-	h1 = (ptMax_ - ptMin_) / nBinsPt_ / nDiv;
-	h2 = (etaMax_ - etaMin_) / nBinsEta_ / nDiv;
+    Int_t n, nDiv = 100;
+    map <TString, Float_t> variables;
+    Float_t h1, h2;
+    Float_t pt, eta, v;
+    TH2D* h2VnPtEta;
+    TProfile2D* p2VnPtEta;
+    TProfile *pVnPtRef, *pVnEtaRef;
+    TH1D *hVnPtRef, *hVnEtaRef;
+    variables ["ptMin_"] = ptMin_;
+    variables ["ptMax_"] = ptMax_;
+    variables ["etaMin_"] = etaMin_;
+    variables ["etaMax_"] = etaMax_;
+    TFile *histFile = new TFile (histFileName_ + ".root", "update");
+    TDirectory *histDir = histFile -> mkdir (dirName [4]);
+    histDir -> cd ();
+    h1 = (ptMax_ - ptMin_) / nBinsPt_ / nDiv;
+    h2 = (etaMax_ - etaMin_) / nBinsEta_ / nDiv;
 
-	for (Int_t i = 0; i < nHarmonics; i++) {
-		n = harmonicsMap [i];
-		p2VnPtEta = new TProfile2D (Form ("p2V%iPtEtaRef", n), Form ("Reference V_{%i} vs P_{T} and ", n) + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
-		pVnPtRef = new TProfile (Form ("pV%iPtRef", n), Form ("Reference V_{%i} vs P_{T}", n), nBinsPt_, ptMin_, ptMax_);
-		pVnEtaRef = new TProfile (Form ("pV%iEtaRef", n), Form ("Reference V_{%i} vs ", n) + varName_, nBinsEta_, etaMin_, etaMax_);
-		pt = ptMin_ + 0.5 * h1;
-		for (int j = 1; j <= nBinsPt_ * nDiv; j++, pt += h1) {
-			eta = etaMin_ + 0.5 * h2;
-			for (int k = 1; k <= nBinsEta_ * nDiv; k++, eta += h2) {
-				variables ["pt"] = pt;
-				variables ["eta"] = eta;
-				v = harmonicFunctions [n - 1] (variables);
-				p2VnPtEta -> Fill (pt, eta, v);
-				pVnPtRef -> Fill (pt, v);
-				pVnEtaRef -> Fill (eta, v);
-				//cout << "Pt = " << pt << "\tEta = " << eta << "\tV" << n << " = " << v << endl;
-			}
-		}
+    for (Int_t i = 0; i < nHarmonics; i++) {
+        n = harmonicsMap [i];
+        p2VnPtEta = new TProfile2D (Form ("p2V%iPtEtaRef", n), Form ("Reference V_{%i} vs P_{T} and ", n) + varName_, nBinsPt_, ptMin_, ptMax_, nBinsEta_, etaMin_, etaMax_);
+        pVnPtRef = new TProfile (Form ("pV%iPtRef", n), Form ("Reference V_{%i} vs P_{T}", n), nBinsPt_, ptMin_, ptMax_);
+        pVnEtaRef = new TProfile (Form ("pV%iEtaRef", n), Form ("Reference V_{%i} vs ", n) + varName_, nBinsEta_, etaMin_, etaMax_);
+        pt = ptMin_ + 0.5 * h1;
+        for (int j = 1; j <= nBinsPt_ * nDiv; j++, pt += h1) {
+            eta = etaMin_ + 0.5 * h2;
+            for (int k = 1; k <= nBinsEta_ * nDiv; k++, eta += h2) {
+                variables ["pt"] = pt;
+                variables ["eta"] = eta;
+                v = harmonicFunctions [n - 1] (variables);
+                p2VnPtEta -> Fill (pt, eta, v);
+                pVnPtRef -> Fill (pt, v);
+                pVnEtaRef -> Fill (eta, v);
+                //cout << "Pt = " << pt << "\tEta = " << eta << "\tV" << n << " = " << v << endl;
+            }
+        }
 
         h2VnPtEta = p2VnPtEta -> ProjectionXY (Form ("h2V%iPtEtaRef", n));
-		hVnPtRef = pVnPtRef -> ProjectionX (Form ("hV%iPtRef", n));
-		hVnEtaRef = pVnEtaRef -> ProjectionX (Form ("hV%iEtaRef", n));
-		for (int j = 1; j <= nBinsPt_; j++) {
-			hVnPtRef -> SetBinError (j, 0.0);
+        hVnPtRef = pVnPtRef -> ProjectionX (Form ("hV%iPtRef", n));
+        hVnEtaRef = pVnEtaRef -> ProjectionX (Form ("hV%iEtaRef", n));
+        for (int j = 1; j <= nBinsPt_; j++) {
+            hVnPtRef -> SetBinError (j, 0.0);
             for (int k = 1; k <= nBinsEta_; k++) {
                 hVnEtaRef -> SetBinError (j, 0.0);
                 h2VnPtEta -> SetBinError (j, k, 0.0);
             }
-		}
+        }
 
-		hVnPtRef -> SetTitle (Form ("Reference V_{%i} averaged over ", n) + varName_ + " vs P_{T}");
-		hVnEtaRef -> SetTitle (Form ("Reference V_{%i} averaged over P_{T} vs ", n) + varName_);
-		hVnPtRef -> Write ();
-		hVnEtaRef -> Write ();
-		h2VnPtEta -> Write ();
-	}
-	//histFile -> Close ();
-	cout << "Reference histograms built!" << endl;
+        hVnPtRef -> SetTitle (Form ("Reference V_{%i} averaged over ", n) + varName_ + " vs P_{T}");
+        hVnEtaRef -> SetTitle (Form ("Reference V_{%i} averaged over P_{T} vs ", n) + varName_);
+        hVnPtRef -> Write ();
+        hVnEtaRef -> Write ();
+        h2VnPtEta -> Write ();
+    }
+    //histFile -> Close ();
+    cout << "Reference histograms built!" << endl;
 }
 
 
@@ -7725,493 +7712,493 @@ void CFlowReconstructor::SetReferenceOption (Int_t harmonic, TString option) {
 
 
 void CFlowReconstructor::Reference (Float_t ptLow, Float_t ptHigh, Float_t etaLow, Float_t etaHigh) {
-	Float_t shift1 [5] = {0.4, 0.3, 0.2, 0.1, 0.15}; // SP, x & SP, y
-	Float_t shift2 [5] = {0.35, 0.25, 0.15, 0.05, 0.15}; // EP & RP
-	Int_t markerStyle [5] = {24, 25, 26, 27, 20};
-	Float_t markerSize [5] = {1.0, 0.5, 1.0, 1.0, 0.75};
-	Color_t yColor = kGreen;
-	Color_t xColor = kBlue;
-	Color_t refColor = kRed;
-	Color_t RPColor = kRed;
-	Color_t EPColor = kViolet;
+    Float_t shift1 [5] = {0.4, 0.3, 0.2, 0.1, 0.15}; // SP, x & SP, y
+    Float_t shift2 [5] = {0.35, 0.25, 0.15, 0.05, 0.15}; // EP & RP
+    Int_t markerStyle [5] = {24, 25, 26, 27, 20};
+    Float_t markerSize [5] = {1.0, 0.5, 1.0, 1.0, 0.75};
+    Color_t yColor = kGreen;
+    Color_t xColor = kBlue;
+    Color_t refColor = kRed;
+    Color_t RPColor = kRed;
+    Color_t EPColor = kViolet;
 
-	TCanvas* c1;
-	TDirectory* dir [4];
+    TCanvas* c1;
+    TDirectory* dir [4];
 
-	Int_t n, size, minPtBin, minEtaBin, maxPtBin, maxEtaBin, nSteps = 3;
-	TH2D *h2x, *h2y, *h2RP, *h2EP, *h2Ref;
-	TH1D *hRefPt, *hRefEta, *hx, *hy, *hEP, *hRP, *newHist;
-	vector <TH1D*> *allStepsPt, *allStepsEta, *allStepsPtDiv, *allStepsEtaDiv;
-	TLegend *leg1, *leg2;
-	THStack *histStack;
-	TH1F* servHist [4];
-	TF1* unityPt = new TF1 ("unityPt", "1", ptMin_, ptMax_);
-	TF1* unityEta = new TF1 ("unityEta", "1", etaMin_, etaMax_);
-	if (uniformSet) nSteps = 4;
+    Int_t n, size, minPtBin, minEtaBin, maxPtBin, maxEtaBin, nSteps = 3;
+    TH2D *h2x, *h2y, *h2RP, *h2EP, *h2Ref;
+    TH1D *hRefPt, *hRefEta, *hx, *hy, *hEP, *hRP, *newHist;
+    vector <TH1D*> *allStepsPt, *allStepsEta, *allStepsPtDiv, *allStepsEtaDiv;
+    TLegend *leg1, *leg2;
+    THStack *histStack;
+    TH1F* servHist [4];
+    TF1* unityPt = new TF1 ("unityPt", "1", ptMin_, ptMax_);
+    TF1* unityEta = new TF1 ("unityEta", "1", etaMin_, etaMax_);
+    if (uniformSet) nSteps = 4;
 
-	allStepsPt = new vector <TH1D*> [nHarmonics];
-	allStepsEta = new vector <TH1D*> [nHarmonics];
-	allStepsPtDiv = new vector <TH1D*> [nHarmonics];
-	allStepsEtaDiv = new vector <TH1D*> [nHarmonics];
-//	c1 = new TCanvas ("c1","c1", 800, 600);
-	c1 = new TCanvas ("c1","c1", 640, 480);
-	gStyle -> SetLegendBorderSize (0);
+    allStepsPt = new vector <TH1D*> [nHarmonics];
+    allStepsEta = new vector <TH1D*> [nHarmonics];
+    allStepsPtDiv = new vector <TH1D*> [nHarmonics];
+    allStepsEtaDiv = new vector <TH1D*> [nHarmonics];
+//  c1 = new TCanvas ("c1","c1", 800, 600);
+    c1 = new TCanvas ("c1","c1", 640, 480);
+    gStyle -> SetLegendBorderSize (0);
 
 
-	TFile *histFile = new TFile (histFileName_ + "_flow.root", "READ");
-	TFile *outputFile = new TFile (histFileName_ + "_ref.root", "RECREATE");
+    TFile *histFile = new TFile (histFileName_ + "_flow.root", "READ");
+    TFile *outputFile = new TFile (histFileName_ + "_ref.root", "RECREATE");
 
-	for (Int_t i = 0; i < nSteps; i++) {
-		dir [i] = outputFile -> mkdir (dirName [i]);
-		servHist [i] = new TH1F ();
-		servHist [i] -> SetMarkerStyle (markerStyle [i]);
-		servHist [i] -> SetMarkerSize (markerSize [i]);
-		servHist [i] -> SetMarkerColor (kBlack);
-	}
+    for (Int_t i = 0; i < nSteps; i++) {
+        dir [i] = outputFile -> mkdir (dirName [i]);
+        servHist [i] = new TH1F ();
+        servHist [i] -> SetMarkerStyle (markerStyle [i]);
+        servHist [i] -> SetMarkerSize (markerSize [i]);
+        servHist [i] -> SetMarkerColor (kBlack);
+    }
 
-	for (Int_t i = 0; i < nHarmonics; i++) {
-		n = harmonicsMap [i];
-		TString option = refOptions [n];
-		cout << "Reference option " << n << ": " << option << endl;
-		if (harmonicFunctionSet) {
-//			h2Ref = (TH2D*) histFile -> Get (dirName [4] + Form ("/h2V%iPtEtaRef", n));
-//			minPtBin = h2Ref -> GetXaxis () -> FindBin (ptLow);
-//			maxPtBin = h2Ref -> GetXaxis () -> FindBin (ptHigh);
-//			minEtaBin = h2Ref -> GetYaxis () -> FindBin (etaLow);
-//			maxEtaBin = h2Ref -> GetYaxis () -> FindBin (etaHigh);
-//			h2Ref -> SetFillColor (refColor);
-//			h2Ref -> SetMarkerStyle (markerStyle [4]);
-//			h2Ref -> SetMarkerSize (markerSize [4]);
-//			h2Ref -> SetMarkerColor (refColor);
-			hRefPt = (TH1D*) histFile -> Get (dirName [4] + Form ("/hV%iPtRef", n));
-			//hRefPt = h2Ref -> ProjectionX ("hRefPt", minEtaBin, maxEtaBin);
-			//hRefPt -> Scale (1.0 / (maxEtaBin - minEtaBin));
-			hRefPt -> Sumw2 ();
-			hRefPt -> SetMarkerStyle (markerStyle [4]);
-			hRefPt -> SetMarkerSize (markerSize [4]);
-			hRefPt -> SetMarkerColor (refColor);
-			hRefPt -> SetLineColor (refColor);
-			allStepsPt [i].push_back (hRefPt);
-			hRefEta = (TH1D*) histFile -> Get (dirName [4] + Form ("/hV%iEtaRef", n));
-			//hRefEta = h2Ref -> ProjectionY ("hRefEta", minPtBin, maxPtBin);
-			//hRefEta -> Scale (1.0 / (maxPtBin - minPtBin));
-			hRefEta -> Sumw2 ();
-			hRefEta -> SetMarkerStyle (markerStyle [4]);
-			hRefEta -> SetMarkerSize (markerSize [4]);
-			hRefEta -> SetMarkerColor (refColor);
-			hRefEta -> SetLineColor (refColor);
-			allStepsEta [i].push_back (hRefEta);
-		}
+    for (Int_t i = 0; i < nHarmonics; i++) {
+        n = harmonicsMap [i];
+        TString option = refOptions [n];
+        cout << "Reference option " << n << ": " << option << endl;
+        if (harmonicFunctionSet) {
+//          h2Ref = (TH2D*) histFile -> Get (dirName [4] + Form ("/h2V%iPtEtaRef", n));
+//          minPtBin = h2Ref -> GetXaxis () -> FindBin (ptLow);
+//          maxPtBin = h2Ref -> GetXaxis () -> FindBin (ptHigh);
+//          minEtaBin = h2Ref -> GetYaxis () -> FindBin (etaLow);
+//          maxEtaBin = h2Ref -> GetYaxis () -> FindBin (etaHigh);
+//          h2Ref -> SetFillColor (refColor);
+//          h2Ref -> SetMarkerStyle (markerStyle [4]);
+//          h2Ref -> SetMarkerSize (markerSize [4]);
+//          h2Ref -> SetMarkerColor (refColor);
+            hRefPt = (TH1D*) histFile -> Get (dirName [4] + Form ("/hV%iPtRef", n));
+            //hRefPt = h2Ref -> ProjectionX ("hRefPt", minEtaBin, maxEtaBin);
+            //hRefPt -> Scale (1.0 / (maxEtaBin - minEtaBin));
+            hRefPt -> Sumw2 ();
+            hRefPt -> SetMarkerStyle (markerStyle [4]);
+            hRefPt -> SetMarkerSize (markerSize [4]);
+            hRefPt -> SetMarkerColor (refColor);
+            hRefPt -> SetLineColor (refColor);
+            allStepsPt [i].push_back (hRefPt);
+            hRefEta = (TH1D*) histFile -> Get (dirName [4] + Form ("/hV%iEtaRef", n));
+            //hRefEta = h2Ref -> ProjectionY ("hRefEta", minPtBin, maxPtBin);
+            //hRefEta -> Scale (1.0 / (maxPtBin - minPtBin));
+            hRefEta -> Sumw2 ();
+            hRefEta -> SetMarkerStyle (markerStyle [4]);
+            hRefEta -> SetMarkerSize (markerSize [4]);
+            hRefEta -> SetMarkerColor (refColor);
+            hRefEta -> SetLineColor (refColor);
+            allStepsEta [i].push_back (hRefEta);
+        }
 
-		else {
-//			h2x = (TH2D*) histFile -> Get (dirName [0] + Form ("/h2V%ixPtEta_SP", n));
-//			minPtBin = h2x -> GetXaxis () -> FindBin (ptLow);
-//			maxPtBin = h2x -> GetXaxis () -> FindBin (ptHigh);
-//			minEtaBin = h2x -> GetYaxis () -> FindBin (etaLow);
-//			maxEtaBin = h2x -> GetYaxis () -> FindBin (etaHigh);
-		}
-		//printf ("%i\t%i\t%i\t%i\n", minPtBin, maxPtBin, minEtaBin, maxEtaBin); // test
-		//Loop over correction steps
-		for (int j = 0; j < nSteps; j++) {
-			dir [j] -> cd ();
-//			h2x = (TH2D*) histFile -> Get (dirName [j] + Form ("/h2V%ixPtEta_SP", n));
-//			h2y = (TH2D*) histFile -> Get (dirName [j] + Form ("/h2V%iyPtEta_SP", n));
-//			h2EP = (TH2D*) histFile -> Get (dirName [j] + Form ("/h2V%iPtEta_EP", n));
+        else {
+//          h2x = (TH2D*) histFile -> Get (dirName [0] + Form ("/h2V%ixPtEta_SP", n));
+//          minPtBin = h2x -> GetXaxis () -> FindBin (ptLow);
+//          maxPtBin = h2x -> GetXaxis () -> FindBin (ptHigh);
+//          minEtaBin = h2x -> GetYaxis () -> FindBin (etaLow);
+//          maxEtaBin = h2x -> GetYaxis () -> FindBin (etaHigh);
+        }
+        //printf ("%i\t%i\t%i\t%i\n", minPtBin, maxPtBin, minEtaBin, maxEtaBin); // test
+        //Loop over correction steps
+        for (int j = 0; j < nSteps; j++) {
+            dir [j] -> cd ();
+//          h2x = (TH2D*) histFile -> Get (dirName [j] + Form ("/h2V%ixPtEta_SP", n));
+//          h2y = (TH2D*) histFile -> Get (dirName [j] + Form ("/h2V%iyPtEta_SP", n));
+//          h2EP = (TH2D*) histFile -> Get (dirName [j] + Form ("/h2V%iPtEta_EP", n));
 
-			hx = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%ixPt_SP", n));
-//			hx = h2x -> ProjectionX ("hx", minEtaBin, maxEtaBin, "e");
-//			hx -> Scale (1.0 / (maxEtaBin - minEtaBin));
-			hy = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iyPt_SP", n));
-//			hy = h2y -> ProjectionX ("hy", minEtaBin, maxEtaBin, "e");
-//			hy -> Scale (1.0 / (maxEtaBin - minEtaBin));
-			hEP = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iPt_EP", n));
-//			hEP = h2EP -> ProjectionX ("hEP", minEtaBin, maxEtaBin, "e");
-//			hEP -> Scale (1.0 / (maxEtaBin - minEtaBin));
+            hx = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%ixPt_SP", n));
+//          hx = h2x -> ProjectionX ("hx", minEtaBin, maxEtaBin, "e");
+//          hx -> Scale (1.0 / (maxEtaBin - minEtaBin));
+            hy = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iyPt_SP", n));
+//          hy = h2y -> ProjectionX ("hy", minEtaBin, maxEtaBin, "e");
+//          hy -> Scale (1.0 / (maxEtaBin - minEtaBin));
+            hEP = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iPt_EP", n));
+//          hEP = h2EP -> ProjectionX ("hEP", minEtaBin, maxEtaBin, "e");
+//          hEP -> Scale (1.0 / (maxEtaBin - minEtaBin));
 
             if (option == "average") hx -> Add (hx, hy, 0.5, 0.5);
 
-			if (uniformSet) {
-				hRP = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iPt_RP", n));
-//				h2RP = (TH2D*) histFile -> Get (dirName [j] + Form ("/h2V%iPtEta_RP", n));
-//				hRP = h2RP -> ProjectionX ("hRP", minEtaBin, maxEtaBin, "e");
-//				hRP -> Scale (1.0 / (maxEtaBin - minEtaBin));
-				hRP -> SetMarkerColor (RPColor);
-				hRP -> SetLineColor (RPColor);
-				hRP -> SetMarkerStyle (markerStyle [j]);
-				hRP -> SetMarkerSize (markerSize [j]);
-			}
+            if (uniformSet) {
+                hRP = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iPt_RP", n));
+//              h2RP = (TH2D*) histFile -> Get (dirName [j] + Form ("/h2V%iPtEta_RP", n));
+//              hRP = h2RP -> ProjectionX ("hRP", minEtaBin, maxEtaBin, "e");
+//              hRP -> Scale (1.0 / (maxEtaBin - minEtaBin));
+                hRP -> SetMarkerColor (RPColor);
+                hRP -> SetLineColor (RPColor);
+                hRP -> SetMarkerStyle (markerStyle [j]);
+                hRP -> SetMarkerSize (markerSize [j]);
+            }
 
-			gStyle -> SetOptStat (0);
-			hx -> SetLineColor (xColor);
-			hx -> SetMarkerColor (xColor);
-			hx -> SetMarkerStyle (markerStyle [j]);
-			hx -> SetMarkerSize (markerSize [j]);
-			hy -> SetLineColor (yColor);
-			hy -> SetMarkerColor (yColor);
-			hy -> SetMarkerStyle (markerStyle [j]);
-			hy -> SetMarkerSize (markerSize [j]);
-			hEP -> SetMarkerColor (EPColor);
-			hEP -> SetLineColor (EPColor);
-			hEP -> SetMarkerStyle (markerStyle [j]);
-			hEP -> SetMarkerSize (markerSize [j]);
+            gStyle -> SetOptStat (0);
+            hx -> SetLineColor (xColor);
+            hx -> SetMarkerColor (xColor);
+            hx -> SetMarkerStyle (markerStyle [j]);
+            hx -> SetMarkerSize (markerSize [j]);
+            hy -> SetLineColor (yColor);
+            hy -> SetMarkerColor (yColor);
+            hy -> SetMarkerStyle (markerStyle [j]);
+            hy -> SetMarkerSize (markerSize [j]);
+            hEP -> SetMarkerColor (EPColor);
+            hEP -> SetLineColor (EPColor);
+            hEP -> SetMarkerStyle (markerStyle [j]);
+            hEP -> SetMarkerSize (markerSize [j]);
 
-			leg1 = new TLegend (0.7, 0.2, 0.85, 0.5);
-			leg1 -> SetFillColor (0);
-			leg1 -> SetTextSize(0.04);
+            leg1 = new TLegend (0.7, 0.2, 0.85, 0.5);
+            leg1 -> SetFillColor (0);
+            leg1 -> SetTextSize(0.04);
             if (option == "" || option == "x") leg1 -> AddEntry (hx, methodName [1], "p");
             if (option == "" || option == "y") leg1 -> AddEntry (hy, methodName [2], "p");
-			if (option == "average") leg1 -> AddEntry (hx, methodName [5], "p");
-			leg1 -> AddEntry (hEP, methodName [3], "p");
-			if (uniformSet) leg1 -> AddEntry (hRP, methodName [4], "p");
-			if (harmonicFunctionSet) leg1 -> AddEntry (hRefPt, methodName [0], "p");
+            if (option == "average") leg1 -> AddEntry (hx, methodName [5], "p");
+            leg1 -> AddEntry (hEP, methodName [3], "p");
+            if (uniformSet) leg1 -> AddEntry (hRP, methodName [4], "p");
+            if (harmonicFunctionSet) leg1 -> AddEntry (hRefPt, methodName [0], "p");
 
-			newHist = (TH1D*) hx -> Clone("hV%ixPt_");
-			HistShift (newHist, shift1 [j]);
-			if (option == "" || option == "average" || option == "x") allStepsPt [i].push_back (newHist);
-			newHist = (TH1D*) hy -> Clone("hV%iyPt_");
-			HistShift (newHist, -shift1 [j]);
-			if (option == "" || option == "y") allStepsPt [i].push_back (newHist);
-			newHist = (TH1D*) hEP -> Clone("hV%iPt_EP_");
-			HistShift (newHist, -shift2 [j]);
-			allStepsPt [i].push_back (newHist);
-			if (uniformSet) {
-				if (j == 0 || j == 3) {
-					newHist = (TH1D*) hRP -> Clone("hV%iPt_RP_");
-					HistShift (newHist, shift2 [j]);
-					allStepsPt [i].push_back (newHist);
-				}
-				HistShift (hRP, 0.5 * shift2 [4]);
-			}
-			HistShift (hx, shift1 [4]);
-			HistShift (hy, -shift1 [4]);
-			HistShift (hEP, -0.5 * shift2 [4]);
+            newHist = (TH1D*) hx -> Clone("hV%ixPt_");
+            HistShift (newHist, shift1 [j]);
+            if (option == "" || option == "average" || option == "x") allStepsPt [i].push_back (newHist);
+            newHist = (TH1D*) hy -> Clone("hV%iyPt_");
+            HistShift (newHist, -shift1 [j]);
+            if (option == "" || option == "y") allStepsPt [i].push_back (newHist);
+            newHist = (TH1D*) hEP -> Clone("hV%iPt_EP_");
+            HistShift (newHist, -shift2 [j]);
+            allStepsPt [i].push_back (newHist);
+            if (uniformSet) {
+                if (j == 0 || j == 3) {
+                    newHist = (TH1D*) hRP -> Clone("hV%iPt_RP_");
+                    HistShift (newHist, shift2 [j]);
+                    allStepsPt [i].push_back (newHist);
+                }
+                HistShift (hRP, 0.5 * shift2 [4]);
+            }
+            HistShift (hx, shift1 [4]);
+            HistShift (hy, -shift1 [4]);
+            HistShift (hEP, -0.5 * shift2 [4]);
 
-			histStack = new THStack("histStack", Form ("V_{%i} averaged over ", n) + varName_ + Form (" #in [%.1f,%.1f] versus P_{T} (", etaLow, etaHigh) + stepName [j] + Form (");P_{T} [GeV/c];V_{%i}", n));
-			if (option == "" || option == "average" || option == "x") histStack -> Add (hx);
-			if (option == "" || option == "y") histStack -> Add (hy);
-			histStack -> Add (hEP);
-			if (uniformSet) histStack -> Add (hRP);
-			if (harmonicFunctionSet) histStack -> Add (hRefPt);
-			histStack -> Draw ("nostack p e1X0");
-			leg1 -> Draw ();
-			c1 -> Write (Form ("hV%iPt", n));
-			delete histStack;
+            histStack = new THStack("histStack", Form ("V_{%i} averaged over ", n) + varName_ + Form (" #in [%.1f,%.1f] versus P_{T} (", etaLow, etaHigh) + stepName [j] + Form (");P_{T} [GeV/c];V_{%i}", n));
+            if (option == "" || option == "average" || option == "x") histStack -> Add (hx);
+            if (option == "" || option == "y") histStack -> Add (hy);
+            histStack -> Add (hEP);
+            if (uniformSet) histStack -> Add (hRP);
+            if (harmonicFunctionSet) histStack -> Add (hRefPt);
+            histStack -> Draw ("nostack p e1X0");
+            leg1 -> Draw ();
+            c1 -> Write (Form ("hV%iPt", n));
+            delete histStack;
 
-			if (harmonicFunctionSet) {
-				HistShift (hx, -shift1 [4]);
-				HistShift (hy, shift1 [4]);
-				HistShift (hRP, -0.5 * shift2 [4]);
-				HistShift (hEP, 0.5 * shift2 [4]);
+            if (harmonicFunctionSet) {
+                HistShift (hx, -shift1 [4]);
+                HistShift (hy, shift1 [4]);
+                HistShift (hRP, -0.5 * shift2 [4]);
+                HistShift (hEP, 0.5 * shift2 [4]);
 
-				hx -> Divide (hRefPt);
-				hy -> Divide (hRefPt);
-				hEP -> Divide (hRefPt);
-				hRP -> Divide (hRefPt);
+                hx -> Divide (hRefPt);
+                hy -> Divide (hRefPt);
+                hEP -> Divide (hRefPt);
+                hRP -> Divide (hRefPt);
 
-				leg2 = new TLegend (0.7, 0.2, 0.85, 0.5);
-				leg2 -> SetTextSize(0.04);
-				if (option == "" || option == "x") leg2 -> AddEntry (hx, methodName [1], "p");
-				if (option == "" || option == "y") leg2 -> AddEntry (hy, methodName [2], "p");
+                leg2 = new TLegend (0.7, 0.2, 0.85, 0.5);
+                leg2 -> SetTextSize(0.04);
+                if (option == "" || option == "x") leg2 -> AddEntry (hx, methodName [1], "p");
+                if (option == "" || option == "y") leg2 -> AddEntry (hy, methodName [2], "p");
                 if (option == "average") leg2 -> AddEntry (hx, methodName [5], "p");
-				leg2 -> AddEntry (hEP, methodName [3], "p");
-				leg2 -> AddEntry (hRP, methodName [4], "p");
-				leg2 -> SetFillColor (0);
+                leg2 -> AddEntry (hEP, methodName [3], "p");
+                leg2 -> AddEntry (hRP, methodName [4], "p");
+                leg2 -> SetFillColor (0);
 
-				newHist = (TH1D*) hx -> Clone("hV%ixPt/Ref_");
-				HistShift (newHist, shift1 [j]);
-				if (option == "" || option == "average" || option == "x") allStepsPtDiv [i].push_back (newHist);
-				newHist = (TH1D*) hy -> Clone("hV%iyPt/Ref_");
-				HistShift (newHist, -shift1 [j]);
-				if (option == "" || option == "y") allStepsPtDiv [i].push_back (newHist);
-				newHist = (TH1D*) hEP -> Clone("hV%iPt_EP/Ref_");
-				HistShift (newHist, -shift2 [j]);
-				allStepsPtDiv [i].push_back (newHist);
-				if (j == 0 || j == 3) {
-					newHist = (TH1D*) hRP -> Clone("hV%iPt_RP/Ref_");
-					HistShift (newHist, shift2 [j]);
-					allStepsPtDiv [i].push_back (newHist);
-				}
-				HistShift (hx, shift1 [4]);
-				HistShift (hy, -shift1 [4]);
-				HistShift (hRP, 0.5 * shift2 [4]);
-				HistShift (hEP, -0.5 * shift2 [4]);
+                newHist = (TH1D*) hx -> Clone("hV%ixPt/Ref_");
+                HistShift (newHist, shift1 [j]);
+                if (option == "" || option == "average" || option == "x") allStepsPtDiv [i].push_back (newHist);
+                newHist = (TH1D*) hy -> Clone("hV%iyPt/Ref_");
+                HistShift (newHist, -shift1 [j]);
+                if (option == "" || option == "y") allStepsPtDiv [i].push_back (newHist);
+                newHist = (TH1D*) hEP -> Clone("hV%iPt_EP/Ref_");
+                HistShift (newHist, -shift2 [j]);
+                allStepsPtDiv [i].push_back (newHist);
+                if (j == 0 || j == 3) {
+                    newHist = (TH1D*) hRP -> Clone("hV%iPt_RP/Ref_");
+                    HistShift (newHist, shift2 [j]);
+                    allStepsPtDiv [i].push_back (newHist);
+                }
+                HistShift (hx, shift1 [4]);
+                HistShift (hy, -shift1 [4]);
+                HistShift (hRP, 0.5 * shift2 [4]);
+                HistShift (hEP, -0.5 * shift2 [4]);
 
-				histStack = new THStack ("histStack", Form ("V_{%i} to V_{%i}^{ref} ratio versus P_{T} (", n, n) + stepName [j] + ")");
-				if (option == "" || option == "average" || option == "x") histStack -> Add (hx);
-				if (option == "" || option == "y") histStack -> Add (hy);
-				histStack -> Add (hRP);
-				histStack -> Add (hEP);
-				histStack -> Draw ("nostack p e1X0");
-				histStack -> GetXaxis () -> SetTitle ("P_{T} [GeV/c]");
-				histStack -> GetYaxis () -> SetTitle (Form ("V_{%i} / V_{%i}^{ref}", n, n));
-				leg2 -> Draw ();
-				unityPt -> Draw ("same");
-				c1 -> Write (Form ("hV%iPt/Ref", n));
-				delete histStack;
-			}
+                histStack = new THStack ("histStack", Form ("V_{%i} to V_{%i}^{ref} ratio versus P_{T} (", n, n) + stepName [j] + ")");
+                if (option == "" || option == "average" || option == "x") histStack -> Add (hx);
+                if (option == "" || option == "y") histStack -> Add (hy);
+                histStack -> Add (hRP);
+                histStack -> Add (hEP);
+                histStack -> Draw ("nostack p e1X0");
+                histStack -> GetXaxis () -> SetTitle ("P_{T} [GeV/c]");
+                histStack -> GetYaxis () -> SetTitle (Form ("V_{%i} / V_{%i}^{ref}", n, n));
+                leg2 -> Draw ();
+                unityPt -> Draw ("same");
+                c1 -> Write (Form ("hV%iPt/Ref", n));
+                delete histStack;
+            }
 
-			hx = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%ixEta_SP", n));
-			hy = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iyEta_SP", n));
-			hEP = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iEta_EP", n));
+            hx = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%ixEta_SP", n));
+            hy = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iyEta_SP", n));
+            hEP = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iEta_EP", n));
 
-//			hx = h2x -> ProjectionY ("hx", minPtBin, maxPtBin, "e");
-//			hx -> Scale (1.0 / (maxPtBin - minPtBin));
-//			hy = h2y -> ProjectionY ("hy", minPtBin, maxPtBin, "e");
-//			hy -> Scale (1.0 / (maxPtBin - minPtBin));
-//			hEP = h2EP -> ProjectionY ("hEP", minPtBin, maxPtBin, "e");
-//			hEP -> Scale (1.0 / (maxPtBin - minPtBin));
+//          hx = h2x -> ProjectionY ("hx", minPtBin, maxPtBin, "e");
+//          hx -> Scale (1.0 / (maxPtBin - minPtBin));
+//          hy = h2y -> ProjectionY ("hy", minPtBin, maxPtBin, "e");
+//          hy -> Scale (1.0 / (maxPtBin - minPtBin));
+//          hEP = h2EP -> ProjectionY ("hEP", minPtBin, maxPtBin, "e");
+//          hEP -> Scale (1.0 / (maxPtBin - minPtBin));
 
-			if (option == "average") hx -> Add (hx, hy, 0.5, 0.5);
+            if (option == "average") hx -> Add (hx, hy, 0.5, 0.5);
 
-			if (uniformSet) {
-//				hRP = h2RP -> ProjectionY ("hRP", minPtBin, maxPtBin, "e");
-//				hRP -> Scale (1.0 / (maxPtBin - minPtBin));
-//				hRP -> SetMarkerColor (RPColor);
-//				hRP -> SetLineColor (RPColor);
-//				hRP -> SetMarkerStyle (markerStyle [j]);
-//				hRP -> SetMarkerSize (markerSize [j]);
+            if (uniformSet) {
+//              hRP = h2RP -> ProjectionY ("hRP", minPtBin, maxPtBin, "e");
+//              hRP -> Scale (1.0 / (maxPtBin - minPtBin));
+//              hRP -> SetMarkerColor (RPColor);
+//              hRP -> SetLineColor (RPColor);
+//              hRP -> SetMarkerStyle (markerStyle [j]);
+//              hRP -> SetMarkerSize (markerSize [j]);
 
-				hRP = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iEta_RP", n));
-				hRP -> SetMarkerColor (RPColor);
-				hRP -> SetLineColor (RPColor);
-				hRP -> SetMarkerStyle (markerStyle [j]);
-				hRP -> SetMarkerSize (markerSize [j]);
-			}
+                hRP = (TH1D*) histFile -> Get (dirName [j] + Form ("/hV%iEta_RP", n));
+                hRP -> SetMarkerColor (RPColor);
+                hRP -> SetLineColor (RPColor);
+                hRP -> SetMarkerStyle (markerStyle [j]);
+                hRP -> SetMarkerSize (markerSize [j]);
+            }
 
-			gStyle -> SetOptStat (0);
-			hx -> SetLineColor (xColor);
-			hx -> SetMarkerColor (xColor);
-			hx -> SetMarkerStyle (markerStyle [j]);
-			hx -> SetMarkerSize (markerSize [j]);
-			hy -> SetLineColor (yColor);
-			hy -> SetMarkerColor (yColor);
-			hy -> SetMarkerStyle (markerStyle [j]);
-			hy -> SetMarkerSize (markerSize [j]);
-			hEP -> SetMarkerColor (EPColor);
-			hEP -> SetLineColor (EPColor);
-			hEP -> SetMarkerStyle (markerStyle [j]);
-			hEP -> SetMarkerSize (markerSize [j]);
+            gStyle -> SetOptStat (0);
+            hx -> SetLineColor (xColor);
+            hx -> SetMarkerColor (xColor);
+            hx -> SetMarkerStyle (markerStyle [j]);
+            hx -> SetMarkerSize (markerSize [j]);
+            hy -> SetLineColor (yColor);
+            hy -> SetMarkerColor (yColor);
+            hy -> SetMarkerStyle (markerStyle [j]);
+            hy -> SetMarkerSize (markerSize [j]);
+            hEP -> SetMarkerColor (EPColor);
+            hEP -> SetLineColor (EPColor);
+            hEP -> SetMarkerStyle (markerStyle [j]);
+            hEP -> SetMarkerSize (markerSize [j]);
 
-			newHist = (TH1D*) hx -> Clone("hV%ixEta_");
-			HistShift (newHist, shift1 [j]);
-			if (option == "" || option == "average" || option == "x") allStepsEta [i].push_back (newHist);
-			newHist = (TH1D*) hy -> Clone("hV%iyEta_");
-			HistShift (newHist, -shift1 [j]);
-			if (option == "" || option == "y") allStepsEta [i].push_back (newHist);
-			newHist = (TH1D*) hEP -> Clone("hV%iEta_EP_");
-			HistShift (newHist, -shift2 [j]);
-			allStepsEta [i].push_back (newHist);
-			if (uniformSet) {
-				if (j == 0 || j == 3) {
-					newHist = (TH1D*) hRP -> Clone("hV%iEta_RP_");
-					HistShift (newHist, shift2 [j]);
-					allStepsEta [i].push_back (newHist);
-				}
-				HistShift (hRP, 0.5 * shift2 [4]);
-			}
-			HistShift (hx, shift1 [4]);
-			HistShift (hy, -shift1 [4]);
-			HistShift (hEP, -0.5 * shift2 [4]);
+            newHist = (TH1D*) hx -> Clone("hV%ixEta_");
+            HistShift (newHist, shift1 [j]);
+            if (option == "" || option == "average" || option == "x") allStepsEta [i].push_back (newHist);
+            newHist = (TH1D*) hy -> Clone("hV%iyEta_");
+            HistShift (newHist, -shift1 [j]);
+            if (option == "" || option == "y") allStepsEta [i].push_back (newHist);
+            newHist = (TH1D*) hEP -> Clone("hV%iEta_EP_");
+            HistShift (newHist, -shift2 [j]);
+            allStepsEta [i].push_back (newHist);
+            if (uniformSet) {
+                if (j == 0 || j == 3) {
+                    newHist = (TH1D*) hRP -> Clone("hV%iEta_RP_");
+                    HistShift (newHist, shift2 [j]);
+                    allStepsEta [i].push_back (newHist);
+                }
+                HistShift (hRP, 0.5 * shift2 [4]);
+            }
+            HistShift (hx, shift1 [4]);
+            HistShift (hy, -shift1 [4]);
+            HistShift (hEP, -0.5 * shift2 [4]);
 
-			histStack = new THStack("histStack", Form ("V_{%i} averaged over P_{T} #in [%.1f,%.1f] versus ", n, ptLow, ptHigh) + varName_ + " (" + stepName [j] + ");" + varName_ + Form (";V_{%i}", n));
-			if (option == "" || option == "average" || option == "x") histStack -> Add (hx);
-			if (option == "" || option == "y") histStack -> Add (hy);
-			if (uniformSet) histStack -> Add (hRP);
-			histStack -> Add (hEP);
-			if (harmonicFunctionSet) histStack -> Add (hRefEta);
-			histStack -> Draw ("nostack p e1X0");
-			leg1 -> Draw ();
-			c1 -> Write (Form ("hV%iEta", n));
-			delete histStack;
-			delete leg1;
+            histStack = new THStack("histStack", Form ("V_{%i} averaged over P_{T} #in [%.1f,%.1f] versus ", n, ptLow, ptHigh) + varName_ + " (" + stepName [j] + ");" + varName_ + Form (";V_{%i}", n));
+            if (option == "" || option == "average" || option == "x") histStack -> Add (hx);
+            if (option == "" || option == "y") histStack -> Add (hy);
+            if (uniformSet) histStack -> Add (hRP);
+            histStack -> Add (hEP);
+            if (harmonicFunctionSet) histStack -> Add (hRefEta);
+            histStack -> Draw ("nostack p e1X0");
+            leg1 -> Draw ();
+            c1 -> Write (Form ("hV%iEta", n));
+            delete histStack;
+            delete leg1;
 
-			if (harmonicFunctionSet) {
-				HistShift (hx, -shift1 [4]);
-				HistShift (hy, shift1 [4]);
-				HistShift (hRP, -0.5 * shift2 [4]);
-				HistShift (hEP, 0.5 * shift2 [4]);
+            if (harmonicFunctionSet) {
+                HistShift (hx, -shift1 [4]);
+                HistShift (hy, shift1 [4]);
+                HistShift (hRP, -0.5 * shift2 [4]);
+                HistShift (hEP, 0.5 * shift2 [4]);
 
-				hx -> Divide (hRefEta);
-				hy -> Divide (hRefEta);
-				hEP -> Divide (hRefEta);
-				hRP -> Divide (hRefEta);
+                hx -> Divide (hRefEta);
+                hy -> Divide (hRefEta);
+                hEP -> Divide (hRefEta);
+                hRP -> Divide (hRefEta);
 
-				newHist = (TH1D*) hx -> Clone("hV%ixEta_");
-				HistShift (newHist, shift1 [j]);
-				if (option == "" || option == "average" || option == "x") allStepsEtaDiv [i].push_back (newHist);
-				newHist = (TH1D*) hy -> Clone("hV%iyEta_");
-				HistShift (newHist, -shift1 [j]);
-				if (option == "" || option == "y") allStepsEtaDiv [i].push_back (newHist);
-				newHist = (TH1D*) hEP -> Clone("hV%iEta_EP_");
-				HistShift (newHist, -shift2 [j]);
-				allStepsEtaDiv [i].push_back (newHist);
-				if (j == 0 || j == 3) {
-					newHist = (TH1D*) hRP -> Clone("hV%iEta_RP_");
-					HistShift (newHist, shift2 [j]);
-					allStepsEtaDiv [i].push_back (newHist);
-				}
-				HistShift (hx, shift1 [4]);
-				HistShift (hy, -shift1 [4]);
-				HistShift (hRP, 0.5 * shift2 [4]);
-				HistShift (hEP, -0.5 * shift2 [4]);
+                newHist = (TH1D*) hx -> Clone("hV%ixEta_");
+                HistShift (newHist, shift1 [j]);
+                if (option == "" || option == "average" || option == "x") allStepsEtaDiv [i].push_back (newHist);
+                newHist = (TH1D*) hy -> Clone("hV%iyEta_");
+                HistShift (newHist, -shift1 [j]);
+                if (option == "" || option == "y") allStepsEtaDiv [i].push_back (newHist);
+                newHist = (TH1D*) hEP -> Clone("hV%iEta_EP_");
+                HistShift (newHist, -shift2 [j]);
+                allStepsEtaDiv [i].push_back (newHist);
+                if (j == 0 || j == 3) {
+                    newHist = (TH1D*) hRP -> Clone("hV%iEta_RP_");
+                    HistShift (newHist, shift2 [j]);
+                    allStepsEtaDiv [i].push_back (newHist);
+                }
+                HistShift (hx, shift1 [4]);
+                HistShift (hy, -shift1 [4]);
+                HistShift (hRP, 0.5 * shift2 [4]);
+                HistShift (hEP, -0.5 * shift2 [4]);
 
-				histStack = new THStack("histStack", Form ("V_{%i} to V_{%i}^{ref} ratio versus " + varName_ + " (", n, n) + stepName [j] + Form (");P_{T} [GeV/c];V_{%i} / V_{%i}^{ref}", n, n));
-				if (option == "" || option == "average" || option == "x") histStack -> Add (hx);
-				if (option == "" || option == "y") histStack -> Add (hy);
-				histStack -> Add (hRP);
-				histStack -> Add (hEP);
-				histStack -> Draw ("nostack p e1X0");
-				leg2 -> Draw ();
-				unityEta -> Draw ("same");
-				c1 -> Write (Form ("hV%iEta/Ref", n));
-				delete histStack;
-				delete leg2;
-			}
+                histStack = new THStack("histStack", Form ("V_{%i} to V_{%i}^{ref} ratio versus " + varName_ + " (", n, n) + stepName [j] + Form (");P_{T} [GeV/c];V_{%i} / V_{%i}^{ref}", n, n));
+                if (option == "" || option == "average" || option == "x") histStack -> Add (hx);
+                if (option == "" || option == "y") histStack -> Add (hy);
+                histStack -> Add (hRP);
+                histStack -> Add (hEP);
+                histStack -> Draw ("nostack p e1X0");
+                leg2 -> Draw ();
+                unityEta -> Draw ("same");
+                c1 -> Write (Form ("hV%iEta/Ref", n));
+                delete histStack;
+                delete leg2;
+            }
 
-			/*
-			histStack = new THStack ("histStack", Form ("V_{%i} versus P_{T} and " + varName_ + " (", n) + stepName [j] + ")");
-			h2x -> SetFillColor (xColor);
-			h2x -> SetLineColor (xColor);
-			h2x -> SetMarkerColor (xColor);
-			h2x -> SetMarkerStyle (markerStyle [j]);
-			h2y -> SetFillColor (yColor);
-			h2y -> SetLineColor (yColor);
-			h2y -> SetMarkerColor (yColor);
-			h2y -> SetMarkerStyle (markerStyle [j]);
+            /*
+            histStack = new THStack ("histStack", Form ("V_{%i} versus P_{T} and " + varName_ + " (", n) + stepName [j] + ")");
+            h2x -> SetFillColor (xColor);
+            h2x -> SetLineColor (xColor);
+            h2x -> SetMarkerColor (xColor);
+            h2x -> SetMarkerStyle (markerStyle [j]);
+            h2y -> SetFillColor (yColor);
+            h2y -> SetLineColor (yColor);
+            h2y -> SetMarkerColor (yColor);
+            h2y -> SetMarkerStyle (markerStyle [j]);
 
-			histStack -> Add (h2x);
-			histStack -> Add (h2y);
-			histStack -> Add (h2Ref);
-			histStack -> Draw ("p e1X0");
-			histStack -> GetXaxis () -> SetTitle ("P_{T}");
-			histStack -> GetYaxis () -> SetTitle (varName_);
+            histStack -> Add (h2x);
+            histStack -> Add (h2y);
+            histStack -> Add (h2Ref);
+            histStack -> Draw ("p e1X0");
+            histStack -> GetXaxis () -> SetTitle ("P_{T}");
+            histStack -> GetYaxis () -> SetTitle (varName_);
 
-			leg1 = new TLegend (0.7, 0.2, 0.85, 0.4);
-			leg1 -> SetTextSize (0.035);
-			leg1 -> SetFillColor (0);
-			leg1 -> AddEntry (h2x, Form ("V_{%i}^{x}", n), "pe");
-			leg1 -> AddEntry (h2y, Form ("V_{%i}^{y}", n), "pe");
-			leg1 -> AddEntry (h2Ref, Form ("V_{%i}^{ref}", n), "pe");
-			leg1 -> Draw ();
-			c1 -> Write (Form ("h2V%ixyPtEta_p", n));
-			delete histStack;
-			delete leg1;
+            leg1 = new TLegend (0.7, 0.2, 0.85, 0.4);
+            leg1 -> SetTextSize (0.035);
+            leg1 -> SetFillColor (0);
+            leg1 -> AddEntry (h2x, Form ("V_{%i}^{x}", n), "pe");
+            leg1 -> AddEntry (h2y, Form ("V_{%i}^{y}", n), "pe");
+            leg1 -> AddEntry (h2Ref, Form ("V_{%i}^{ref}", n), "pe");
+            leg1 -> Draw ();
+            c1 -> Write (Form ("h2V%ixyPtEta_p", n));
+            delete histStack;
+            delete leg1;
 
-			histStack = new THStack ("histStack", Form ("V_{%i} versus P_{T} and " + varName_ + " (", n) + stepName [j] + ")");
-			histStack -> Add (h2x);
-			histStack -> Add (h2y);
-			histStack -> Add (h2Ref);
-			histStack -> Draw ();
-			histStack -> GetXaxis () -> SetTitle ("P_{T}");
-			histStack -> GetYaxis () -> SetTitle (varName_);
-			histStack -> Draw ();
+            histStack = new THStack ("histStack", Form ("V_{%i} versus P_{T} and " + varName_ + " (", n) + stepName [j] + ")");
+            histStack -> Add (h2x);
+            histStack -> Add (h2y);
+            histStack -> Add (h2Ref);
+            histStack -> Draw ();
+            histStack -> GetXaxis () -> SetTitle ("P_{T}");
+            histStack -> GetYaxis () -> SetTitle (varName_);
+            histStack -> Draw ();
 
-			leg1 = new TLegend (0.7, 0.2, 0.85, 0.4);
-			leg1 -> SetTextSize (0.035);
-			leg1 -> SetFillColor (0);
-			leg1 -> AddEntry (h2x, Form ("V_{%i}^{x}", n), "f");
-			leg1 -> AddEntry (h2y, Form ("V_{%i}^{y}", n), "f");
-			leg1 -> AddEntry (h2Ref, Form ("V_{%i}^{ref}", n), "f");
-			leg1 -> Draw ();
+            leg1 = new TLegend (0.7, 0.2, 0.85, 0.4);
+            leg1 -> SetTextSize (0.035);
+            leg1 -> SetFillColor (0);
+            leg1 -> AddEntry (h2x, Form ("V_{%i}^{x}", n), "f");
+            leg1 -> AddEntry (h2y, Form ("V_{%i}^{y}", n), "f");
+            leg1 -> AddEntry (h2Ref, Form ("V_{%i}^{ref}", n), "f");
+            leg1 -> Draw ();
 
-			c1 -> Write (Form ("h2V%ixyPtEta_lego", n));
-			delete histStack;
-			delete leg1;
+            c1 -> Write (Form ("h2V%ixyPtEta_lego", n));
+            delete histStack;
+            delete leg1;
 
-			h2x -> Divide (h2Ref);
-			h2x -> SetTitle (Form ("V_{%i}^{x} to V_{%i}^{ref} ratio versus P_{T} and " + varName_ + " (", n, n) + stepName [j] + ")");
-			h2x -> GetYaxis () -> SetTitle (varName_);
-			h2x -> GetXaxis () -> SetTitle ("P_{T}");
-			//h2x -> Fit (func);
-			h2x -> Draw ("COLZ");
-			//c1 -> Update();
-			//stats_ = (TPaveStats*) h2x -> GetListOfFunctions () -> FindObject ("stats");
-			//stats_ -> SetOptFit (1);
-			c1 -> Write (Form ("h2V%ixPtEta/Ref", n));
+            h2x -> Divide (h2Ref);
+            h2x -> SetTitle (Form ("V_{%i}^{x} to V_{%i}^{ref} ratio versus P_{T} and " + varName_ + " (", n, n) + stepName [j] + ")");
+            h2x -> GetYaxis () -> SetTitle (varName_);
+            h2x -> GetXaxis () -> SetTitle ("P_{T}");
+            //h2x -> Fit (func);
+            h2x -> Draw ("COLZ");
+            //c1 -> Update();
+            //stats_ = (TPaveStats*) h2x -> GetListOfFunctions () -> FindObject ("stats");
+            //stats_ -> SetOptFit (1);
+            c1 -> Write (Form ("h2V%ixPtEta/Ref", n));
 
-			h2y -> Divide (h2Ref);
-			h2y -> Draw ("COLZ");
-			c1 -> Write (Form ("h2V%iyPtEta/Ref", n));
-			*/
-		}
+            h2y -> Divide (h2Ref);
+            h2y -> Draw ("COLZ");
+            c1 -> Write (Form ("h2V%iyPtEta/Ref", n));
+            */
+        }
 
-		outputFile -> cd ();
+        outputFile -> cd ();
 
-		leg1 = new TLegend (0.6, 0.2, 0.8, 0.6);
-		leg1 -> SetFillColor (0);
-		leg1 -> SetTextSize (0.04);
+        leg1 = new TLegend (0.6, 0.2, 0.8, 0.6);
+        leg1 -> SetFillColor (0);
+        leg1 -> SetTextSize (0.04);
         if (option == "" || option == "x") leg1 -> AddEntry (hx, methodName [1], "p");
         if (option == "" || option == "y") leg1 -> AddEntry (hy, methodName [2], "p");
         if (option == "average") leg1 -> AddEntry (hx, methodName [5], "p");
-		leg1 -> AddEntry (hEP, methodName [3], "l");
-		if (uniformSet) leg1 -> AddEntry (hRP, methodName [4], "l");
-		if (harmonicFunctionSet) leg1 -> AddEntry (hRefPt, methodName [0], "p");
-		for (int j = 0; j < nSteps; j++) {
-			leg1 -> AddEntry (servHist [j], stepName [j], "p");
-		}
+        leg1 -> AddEntry (hEP, methodName [3], "l");
+        if (uniformSet) leg1 -> AddEntry (hRP, methodName [4], "l");
+        if (harmonicFunctionSet) leg1 -> AddEntry (hRefPt, methodName [0], "p");
+        for (int j = 0; j < nSteps; j++) {
+            leg1 -> AddEntry (servHist [j], stepName [j], "p");
+        }
 
-		histStack = new THStack ("histStack", Form ("V_{%i} averaged over ", n) + varName_ + Form (" #in [%.1f,%.1f] versus P_{T} for all correction steps;P_{T} [GeV/c];V_{%i}", etaLow, etaHigh, n));
-		size = allStepsPt [i].size ();
-		for (int j = 0; j < size; j++) {
-			histStack -> Add (allStepsPt [i][j]);
-		}
-		histStack -> Draw ("nostack p e1X0");
-		leg1 -> Draw ();
-		c1 -> Write (Form ("allStepsV%iPt", n));
-		delete histStack;
+        histStack = new THStack ("histStack", Form ("V_{%i} averaged over ", n) + varName_ + Form (" #in [%.1f,%.1f] versus P_{T} for all correction steps;P_{T} [GeV/c];V_{%i}", etaLow, etaHigh, n));
+        size = allStepsPt [i].size ();
+        for (int j = 0; j < size; j++) {
+            histStack -> Add (allStepsPt [i][j]);
+        }
+        histStack -> Draw ("nostack p e1X0");
+        leg1 -> Draw ();
+        c1 -> Write (Form ("allStepsV%iPt", n));
+        delete histStack;
 
-		histStack = new THStack ("histStack", Form ("V_{%i} averaged over P_{T} #in [%.1f,%.1f] versus ", n, ptLow, ptHigh) + varName_ + " for all correction steps;" + varName_ + Form (";V_{%i}", n));
-		size = allStepsEta [i].size ();
-		for (int j = 0; j < size; j++) {
-			histStack -> Add (allStepsEta [i][j]);
-		}
-		histStack -> Draw ("nostack p e1X0");
-		leg1 -> Draw ();
-		c1 -> Write (Form ("allStepsV%iEta", n));
-		delete histStack;
-		delete leg1;
+        histStack = new THStack ("histStack", Form ("V_{%i} averaged over P_{T} #in [%.1f,%.1f] versus ", n, ptLow, ptHigh) + varName_ + " for all correction steps;" + varName_ + Form (";V_{%i}", n));
+        size = allStepsEta [i].size ();
+        for (int j = 0; j < size; j++) {
+            histStack -> Add (allStepsEta [i][j]);
+        }
+        histStack -> Draw ("nostack p e1X0");
+        leg1 -> Draw ();
+        c1 -> Write (Form ("allStepsV%iEta", n));
+        delete histStack;
+        delete leg1;
 
-		if (harmonicFunctionSet) {
-			leg2 = new TLegend (0.6, 0.2, 0.8, 0.6);
-			leg2 -> SetFillColor (0);
-			leg2 -> SetTextSize (0.04);
-			if (option == "" || option == "x") leg2 -> AddEntry (hx, methodName [1], "l");
-			if (option == "" || option == "y") leg2 -> AddEntry (hy, methodName [2], "l");
+        if (harmonicFunctionSet) {
+            leg2 = new TLegend (0.6, 0.2, 0.8, 0.6);
+            leg2 -> SetFillColor (0);
+            leg2 -> SetTextSize (0.04);
+            if (option == "" || option == "x") leg2 -> AddEntry (hx, methodName [1], "l");
+            if (option == "" || option == "y") leg2 -> AddEntry (hy, methodName [2], "l");
             if (option == "average") leg2 -> AddEntry (hx, methodName [5], "p");
-			leg2 -> AddEntry (hEP, methodName [3], "l");
-			leg2 -> AddEntry (hRP, methodName [4], "l");
-			for (int j = 0; j < nSteps; j++) {
-				leg2 -> AddEntry (servHist [j], stepName [j], "p");
-			}
+            leg2 -> AddEntry (hEP, methodName [3], "l");
+            leg2 -> AddEntry (hRP, methodName [4], "l");
+            for (int j = 0; j < nSteps; j++) {
+                leg2 -> AddEntry (servHist [j], stepName [j], "p");
+            }
 
-			histStack = new THStack ("histStack", Form ("V_{%i} to V_{%i}^{ref} ratio versus P_{T} for all correction steps;P_{T} [GeV/c];V_{%i} / V_{%i}^{ref}", n, n, n, n));
-			size = allStepsPtDiv [i].size ();
-			for (int j = 0; j < size; j++) {
-				histStack -> Add (allStepsPtDiv [i][j]);
-			}
-			histStack -> Draw ("nostack p e1X0");
-			leg2 -> Draw ();
-			unityPt -> Draw ("same");
-			c1 -> Write (Form ("allStepsV%iPt/Ref", n));
-			delete histStack;
+            histStack = new THStack ("histStack", Form ("V_{%i} to V_{%i}^{ref} ratio versus P_{T} for all correction steps;P_{T} [GeV/c];V_{%i} / V_{%i}^{ref}", n, n, n, n));
+            size = allStepsPtDiv [i].size ();
+            for (int j = 0; j < size; j++) {
+                histStack -> Add (allStepsPtDiv [i][j]);
+            }
+            histStack -> Draw ("nostack p e1X0");
+            leg2 -> Draw ();
+            unityPt -> Draw ("same");
+            c1 -> Write (Form ("allStepsV%iPt/Ref", n));
+            delete histStack;
 
-			histStack = new THStack ("histStack", Form ("V_{%i} to V_{%i}^{ref} ratio versus ", n, n) + varName_ + " for all correction steps;" + varName_ + Form (";V_{%i} / V_{%i}^{ref}", n, n));
-			size = allStepsEtaDiv [i].size ();
-			for (int j = 0; j < size; j++) {
-				histStack -> Add (allStepsEtaDiv [i][j]);
-			}
-			histStack -> Draw ("nostack p e1X0");
-			leg2 -> Draw ();
-			unityEta -> Draw ("same");
-			c1 -> Write (Form ("allStepsV%iEta/Ref", n));
-			delete histStack;
-			delete leg2;
-		}
-	}
-	gStyle -> SetOptStat (1);
-	histFile -> Close ();
-	outputFile -> Close ();
-	cout << "Reconstructed and reference values compared!" << endl;
+            histStack = new THStack ("histStack", Form ("V_{%i} to V_{%i}^{ref} ratio versus ", n, n) + varName_ + " for all correction steps;" + varName_ + Form (";V_{%i} / V_{%i}^{ref}", n, n));
+            size = allStepsEtaDiv [i].size ();
+            for (int j = 0; j < size; j++) {
+                histStack -> Add (allStepsEtaDiv [i][j]);
+            }
+            histStack -> Draw ("nostack p e1X0");
+            leg2 -> Draw ();
+            unityEta -> Draw ("same");
+            c1 -> Write (Form ("allStepsV%iEta/Ref", n));
+            delete histStack;
+            delete leg2;
+        }
+    }
+    gStyle -> SetOptStat (1);
+    histFile -> Close ();
+    outputFile -> Close ();
+    cout << "Reconstructed and reference values compared!" << endl;
 }
 
 #endif // CFLOWRECONSTRUCTOR_CXX
