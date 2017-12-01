@@ -147,6 +147,8 @@ private:
 	Bool_t resChargeSet;
 	Bool_t mhRangeForFlowSet_;
 	Bool_t centRangeForFlowSet_;
+	Bool_t calculateEP_;
+	Bool_t mhON_;
 	void GetVariableRanges (TTree *inputTree);
 	void SetupQnCorrectionsManager (TFile *qnInputFile, TFile *qnPtInputFile, TFile *qnEtaInputFile, QnCorrectionsManager *QnMan, QnCorrectionsManager *QnManPt, QnCorrectionsManager *QnManEta);
 	void GetCorrelationsLoop (Int_t step);
