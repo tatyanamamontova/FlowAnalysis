@@ -120,7 +120,7 @@ Bool_t CTreeConverter::Init (){
    inputTree_->SetBranchAddress("vZ", &vZ, &b_vZ);
    inputTree_->SetBranchAddress("vX", &vX, &b_vX);
    inputTree_->SetBranchAddress("vY", &vY, &b_vY);
-   inputTree_->SetBranchAddress("vCi2", &vChi2, &b_vChi2);
+   inputTree_->SetBranchAddress("vChi2", &vChi2, &b_vChi2);
    inputTree_->SetBranchAddress("pid", pid, &b_pid);
    inputTree_->SetBranchAddress("p", p, &b_p);
    inputTree_->SetBranchAddress("phi", phi, &b_phi);
@@ -144,7 +144,7 @@ Bool_t CTreeConverter::CheckEventCuts () {
     for (Int_t i = 0; i < 8; i++){
     	if (!cuts[i]) return 0;
     }
-    if (vZ<0 || vZ > 60) return 0;
+    if (vZ>0 || vZ <-60) return 0;
     if(vChi2 < 0.5 || vChi2 > 40) return 0;
     if (TMath::Sqrt(vX*vX+vY*vY)>3) return 0;
     return 1;
@@ -217,17 +217,15 @@ Bool_t CTreeConverter::ConvertTree () {
 
     cout << "Converting Tree: " << inputFileName_ << endl;
 	Long64_t nentries = inputTree_ -> GetEntries ();
-//	Long64_t nentries = 10000;
 	for (Long64_t jentry = 0; jentry < nentries; jentry++) {
 		cout << "\rEvent " << jentry + 1 << " from " << nentries;
 		inputTree_ -> GetEntry (jentry);
 		if (!CheckEventCuts ()) continue;
 		mh = nTracks;
 		mh_cut = 0;
-
 		for (Int_t itrack = 0; itrack < mh; itrack++) {
 		    if (!CheckTrackCuts (itrack)) continue;
-            mh_cut++;
+	            mh_cut++;
 		}
 		//std::cout<<"multiplicity"<< mh_cut<<std::endl;
 		if (mh_cut < 10) continue;
@@ -253,8 +251,8 @@ Bool_t CTreeConverter::ConvertTree () {
 		    if (phi[itrack] > PI) phi[itrack] -= 2 * PI;
 		    pid_ = GetTrackPid (itrack);
 
-        event_ -> AddTrack (pt[itrack]/1000., eta[itrack], phi[itrack], charge[itrack], pid_);
-        event_ -> GetTrack (trackIndex) -> SetP (p[itrack]/1000.);
+        event_ -> AddTrack (pt_corr[itrack]/1000., eta[itrack], phi[itrack], charge[itrack], pid_);
+        event_ -> GetTrack (trackIndex) -> SetP (pCorr[itrack]/1000.);
         event_ -> GetTrack (trackIndex) -> SetRap (rapidity[itrack]);
       }
 	   //END track loop;
@@ -269,7 +267,6 @@ Bool_t CTreeConverter::ConvertTree () {
       event_ -> GetTrack(trackIndex) ->SetRap(wallHitDistance[j]);
     }
       //END FW hits loop
-
 
 		outputTree_ -> Fill ();
 		event_ -> Clear ();

@@ -54,9 +54,9 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 
 	flowReconstructor.SetMhRange (10, 120);
 	flowReconstructor.SetNbinsMh (10);
-	flowReconstructor.SetCentRange (10, 120);
+	flowReconstructor.SetCentRange (0, 50);
 	flowReconstructor.SetNbinsCent (10);
-	flowReconstructor.SetCentRangeForFlow (30, 80);
+	flowReconstructor.SetCentRangeForFlow (10, 40);
 	flowReconstructor.SetMhRangeForFlow (30, 80);
 
 	flowReconstructor.SetPtRange (0.0, 2.5);
@@ -71,8 +71,8 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 	flowReconstructor.SetPtSubeventsLimits (2, 0.1, 2.0, 0.1, 2.0, 0.1, 2.0);
 //	flowReconstructor.SetEtaSubeventsLimits (1, 1.0, 3.0, 1.0, 3.0, 1.0, 3.0);
 //    flowReconstructor.SetEtaSubeventsLimits (2, -1.0, 1.0, -1.0, 1.0, -1.0, 0.0);
-	flowReconstructor.SetEtaSubeventsLimits (1, -0.5, 0.0, 0.2, 1.0, 0.5, 3.0);
-   flowReconstructor.SetEtaSubeventsLimits (2, -0.5, 0.0, 0.2, 1.0, 0.5, 3.0);
+	flowReconstructor.SetEtaSubeventsLimits (1, -0.5, -0.2, 0.2, 1.0, 0.5, 3.0);
+   flowReconstructor.SetEtaSubeventsLimits (2, -0.5, -0.2, 0.2, 1.0, 0.5, 3.0);
    flowReconstructor.AddResolutionParticle (1, 1, kProton);
    flowReconstructor.AddResolutionParticle (1, 2, kProton);
    flowReconstructor.AddResolutionParticle (1, 3, kFW);
