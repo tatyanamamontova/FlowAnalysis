@@ -4,16 +4,18 @@
 user=$(whoami)   
 currentDir=$(pwd)
 
-jobscript=${currentDir}/convertTree.sh
+jobScript=${currentDir}/convertTree.sh
 input=${1}
-outputdir=${1}/Convert
+output=${2}
 
-ls $input/*.root>$outputdir/filelist.txt
-filelist=$outputdir/filelist.txt
-logdir=$outputdir/log
+ls $input/*.root>$OUTPUT/filelist.txt
+filelist=$OUTPUT/filelist.txt
+logdir=$output/log
 echo "$filelist is created"
 
-env=/cvmfs/hades.gsi.de/install/5.34.34/hydra2-4.9u/defall.sh
+env = ${currentDir}/env.sh
+. ${env}
+root -l -b -q 'compileLib.C'
 
 
 if [ "$#" -ne "3" ]
@@ -32,10 +34,10 @@ fi
 
 if [ ! -d $outputdir ]
 then
-   echo "===> CREATE OUTPUTDIR : $outputdir"
-   mkdir -p $outputdir
+   echo "===> CREATE OUTPUTDIR : $output"
+   mkdir -p $output
 else
-   echo "===> USE OUTPUTDIR : $outputdir"
+   echo "===> USE OUTPUTDIR : $output"
 fi
 
 if [ ! -d $logdir ]
@@ -53,11 +55,11 @@ do
     runnumber=$(echo $file | sort| sed -r 's/.*\/tree_//'| sed -r 's/.root//')
     log_err=${logdir}/${runnumber}.err
     log_out=${logdir}/${runnumber}.out
-    command="sbatch --error=${log_err} --output=${log_out} ${jobscript} ${env} ${file} ${outputdir}/tree_${runnumber}"
+    command="sbatch --error=${log_err} --output=${log_out} ${jobscript} ${env} ${file} ${outputdir}/tree_${runnumber}.root"
     echo " "
     echo "sbatch"
     echo "-error=${log_err} --output=${log_out}"
-    echo "${jobscript} ${env}"
+    echo "${jobscript} ${env} ${exe}"
     echo "${runnumber}"
     echo "${outputdir}/tree_${runnumber}.root -1"
     $command
