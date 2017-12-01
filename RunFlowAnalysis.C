@@ -24,8 +24,8 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 //	flowReconstructor.SetUniformInputFileName (uniformInputFileName);
 	flowReconstructor.SetHistFileName (histFileName);
 	flowReconstructor.UseZeroSubevents (0); // do not touch
-	flowReconstructor.SetSamplingMethod (kBootStrapping);
-//	flowReconstructor.SetSamplingMethod (kSubsampling);
+//	flowReconstructor.SetSamplingMethod (kBootStrapping);
+	flowReconstructor.SetSamplingMethod (kSubsampling);
 	flowReconstructor.PropagateResolutionSign ();
     flowReconstructor.SetNsteps (kTwistAndRescale);
 //	flowReconstructor.SetComment (comment); // not implemented
@@ -71,7 +71,6 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 	flowReconstructor.SetPtSubeventsLimits (2, 0.1, 2.0, 0.1, 2.0, 0.1, 2.0);
 //	flowReconstructor.SetEtaSubeventsLimits (1, 1.0, 3.0, 1.0, 3.0, 1.0, 3.0);
 //    flowReconstructor.SetEtaSubeventsLimits (2, -1.0, 1.0, -1.0, 1.0, -1.0, 0.0);
-
 	flowReconstructor.SetEtaSubeventsLimits (1, -0.5, -0.2, 0.2, 1.0, 0.5, 3.0);
    flowReconstructor.SetEtaSubeventsLimits (2, -0.5, -0.2, 0.2, 1.0, 0.5, 3.0);
    flowReconstructor.AddResolutionParticle (1, 1, kProton);
@@ -152,31 +151,6 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 	// flowReconstructor.SetEtaAveragingRange (2, 0.0, 1.8);
  //    flowReconstructor.SetResolutionSigns(1, -1, -1, -1);
  //    flowReconstructor.SetResolutionSigns(2, 1, 1, 1);
-//	flowReconstructor.SetResolutionMethod (kRandomSubevent);
-//	flowReconstructor.SetPtSubeventsLimits (1, 0.0, 1.0, 0.0, 1.0);
-//	flowReconstructor.SetPtSubeventsLimits (2, 0.0, 1.0, 0.0, 1.0);
-//	flowReconstructor.SetEtaSubeventsLimits (1, 0.8, 2.8, 0.8, 2.8);
-//    flowReconstructor.SetEtaSubeventsLimits (2, -0.4, 1.8, -0.4, 1.8);
-//    flowReconstructor.AddResolutionParticle (1, 1, kPionMinus);
-//    flowReconstructor.AddResolutionParticle (1, 1, kPionPlus);
-//    flowReconstructor.AddResolutionParticle (1, 1, kProton);
-//    flowReconstructor.AddResolutionParticle (1, 2, kPionMinus);
-//    flowReconstructor.AddResolutionParticle (1, 2, kPionPlus);
-//    flowReconstructor.AddResolutionParticle (1, 2, kProton);
-//    flowReconstructor.AddResolutionParticle (2, 1, kPionMinus);
-//    flowReconstructor.AddResolutionParticle (2, 1, kPionPlus);
-//    flowReconstructor.AddResolutionParticle (2, 1, kProton);
-//    flowReconstructor.AddResolutionParticle (2, 2, kPionMinus);
-//    flowReconstructor.AddResolutionParticle (2, 2, kPionPlus);
-//    flowReconstructor.AddResolutionParticle (2, 2, kProton);
-//
-//	flowReconstructor.AddFlowParticle (kPionMinus);
-//	flowReconstructor.SetPtAveragingRange (1, 0.0, 2.0);
-//	flowReconstructor.SetPtAveragingRange (2, 0.0, 2.0);
-//	flowReconstructor.SetEtaAveragingRange (1, 0.0, 1.8);
-//	flowReconstructor.SetEtaAveragingRange (2, 0.0, 1.8);
-//    flowReconstructor.SetResolutionSigns(1, -1, -1, -1);
-//    flowReconstructor.SetResolutionSigns(2, 1, 1, 1);
 // END RANDOM SUBEVENT
 
     TStopwatch timer;
