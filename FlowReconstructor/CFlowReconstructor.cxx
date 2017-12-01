@@ -1629,7 +1629,7 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
                     if (resMethod_ == kRandomSubevent && subeventIndex >= 0.5) break;
                     if (pid == resParticles [i][0][j]) {
                         if (eta > etaLim_ [i][0] && eta < etaLim_ [i][1] && pt > ptLim_ [i][0] && pt < ptLim_ [i][1]) {
-                            if (n == 1 && pid == kProton) phi += TMath::Pi (); // patch
+                            //if (n == 1 && pid == kProton) phi += TMath::Pi (); // patch
                             QnMan -> AddDataVector (kNDetectors * i + kDetector1A, phi, weight);
                             subeventFlag [i][itrack - 1] = 1;
                             mha [i] ++;
@@ -1645,7 +1645,7 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
                     if (resMethod_ == kRandomSubevent && subeventIndex < 0.5) break;
                     if (pid == resParticles [i][1][j]) {
                         if (eta > etaLim_ [i][2] && eta < etaLim_ [i][3] && pt > ptLim_ [i][2] && pt < ptLim_ [i][3]) {
-                            if (n == 1 && pid == kProton) phi += TMath::Pi (); // patch
+                            //if (n == 1 && pid == kProton) phi += TMath::Pi (); // patch
                             QnMan -> AddDataVector (kNDetectors * i + kDetector1B, phi, weight);
                             subeventFlag [i][itrack - 1] = 2;
                             mhb [i] ++;
@@ -1661,7 +1661,7 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
                     if (resMethod_ == kRandomSubevent) break;
                     if (pid == resParticles [i][2][j]) {
                         //if (eta > etaLim_ [i][4] && eta < etaLim_ [i][5] && pt > ptLim_ [i][4] && pt < ptLim_ [i][5]) {
-                            if (n == 1 && pid == kProton) phi += TMath::Pi (); // patch
+                            //if (n == 1 && pid == kProton) phi += TMath::Pi (); // patch
                             QnMan -> AddDataVector (kNDetectors * i + kDetector1C, phi, weight);
                             subeventFlag [i][itrack - 1] = 3;
                             mhc [i] ++;
