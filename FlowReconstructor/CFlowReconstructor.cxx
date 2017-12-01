@@ -1744,12 +1744,12 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
             h2mhaCent [i] -> Fill (cent, mha [i]);
             h2mhbCent [i] -> Fill (cent, mhb [i]);
             h2mhcCent [i] -> Fill (cent, mhc [i]);
-
+        if (mhON_) {
             h2mhMult [i] -> Fill (mh, mh);
             h2mhaMult [i] -> Fill (mh, mha [i]);
             h2mhbMult [i] -> Fill (mh, mhb [i]);
             h2mhcMult [i] -> Fill (mh, mhc [i]);
-
+        }
             //psiEP [i] = TMath::ATan2 (Y [i], X [i]) / n;
             psiEPa [i] = TMath::ATan2 (Ya [i], Xa [i]) / n;
             psiEPb [i] = TMath::ATan2 (Yb [i], Xb [i]) / n;
@@ -3460,6 +3460,7 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             pyYcCent_SP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iY%icCent_SP", n, n)));
             pyXcCent_SP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iX%icCent_SP", n, n)));
             pxYcCent_SP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("px%iY%icCent_SP", n, n)));
+        if (calculateEP_) {
             pxXaCent_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("px%iX%iaCent_EP", n, n)));
             pyYaCent_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iY%iaCent_EP", n, n)));
             pyXaCent_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iX%iaCent_EP", n, n)));
@@ -3472,7 +3473,8 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             pyYcCent_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iY%icCent_EP", n, n)));
             pyXcCent_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iX%icCent_EP", n, n)));
             pxYcCent_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("px%iY%icCent_EP", n, n)));
-
+        }
+        if (mhON_) {
             pxXaMult_SP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("px%iX%iaMult_SP", n, n)));
             pyYaMult_SP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iY%iaMult_SP", n, n)));
             pyXaMult_SP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iX%iaMult_SP", n, n)));
@@ -3485,6 +3487,7 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             pyYcMult_SP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iY%icMult_SP", n, n)));
             pyXcMult_SP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iX%icMult_SP", n, n)));
             pxYcMult_SP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("px%iY%icMult_SP", n, n)));
+        if (calculateEP_) {
             pxXaMult_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("px%iX%iaMult_EP", n, n)));
             pyYaMult_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iY%iaMult_EP", n, n)));
             pyXaMult_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iX%iaMult_EP", n, n)));
@@ -3497,7 +3500,8 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             pyYcMult_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iY%icMult_EP", n, n)));
             pyXcMult_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("py%iX%icMult_EP", n, n)));
             pxYcMult_EP.push_back ((TProfile*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("px%iY%icMult_EP", n, n)));
-
+        }
+        }
             p2xXaCent_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iX%iaCent_SP", n, n)));
             p2yYaCent_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iY%iaCent_SP", n, n)));
             p2yXaCent_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iX%iaCent_SP", n, n)));
@@ -3510,6 +3514,7 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             p2yYcCent_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iY%icCent_SP", n, n)));
             p2yXcCent_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iX%icCent_SP", n, n)));
             p2xYcCent_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iY%icCent_SP", n, n)));
+        if (calculateEP_) {
             p2xXaCent_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iX%iaCent_EP", n, n)));
             p2yYaCent_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iY%iaCent_EP", n, n)));
             p2yXaCent_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iX%iaCent_EP", n, n)));
@@ -3522,7 +3527,8 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             p2yYcCent_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iY%icCent_EP", n, n)));
             p2yXcCent_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iX%icCent_EP", n, n)));
             p2xYcCent_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iY%icCent_EP", n, n)));
-
+        }
+        if (mhON_) {
             p2xXaMult_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iX%iaMult_SP", n, n)));
             p2yYaMult_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iY%iaMult_SP", n, n)));
             p2yXaMult_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iX%iaMult_SP", n, n)));
@@ -3535,6 +3541,7 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             p2yYcMult_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iY%icMult_SP", n, n)));
             p2yXcMult_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iX%icMult_SP", n, n)));
             p2xYcMult_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iY%icMult_SP", n, n)));
+        if (calculateEP_) {
             p2xXaMult_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iX%iaMult_EP", n, n)));
             p2yYaMult_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iY%iaMult_EP", n, n)));
             p2yXaMult_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iX%iaMult_EP", n, n)));
@@ -3547,7 +3554,8 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             p2yYcMult_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iY%icMult_EP", n, n)));
             p2yXcMult_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iX%icMult_EP", n, n)));
             p2xYcMult_EP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iY%icMult_EP", n, n)));
-
+        }
+        }
             p2xXaPtCent_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iX%iaPtCent_SP", n, n)));
             p2xYaPtCent_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2x%iY%iaPtCent_SP", n, n)));
             p2yXaPtCent_SP.push_back ((TProfile2D*) corrFile -> Get (dirName [step] + "/Source Histograms/" + Form ("p2y%iX%iaPtCent_SP", n, n)));
