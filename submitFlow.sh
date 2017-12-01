@@ -5,8 +5,17 @@ user=$(whoami)
 currentDir=$(pwd)
 
 jobscript=${currentDir}/getFlow.sh
-input=${1}/Convert
+input=${1}/Converted
 outputdir=${input}/getFlow
+
+if [ ! -d $outputdir ]
+then
+   echo "===> CREATE OUTPUTDIR : $outputdir"
+   mkdir -p $outputdir
+else
+   echo "===> USE OUTPUTDIR : $outputdir"
+fi
+
 
 ls $input/*.root>${outputdir}/filelist.txt
 filelist=$outputdir/filelist.txt
@@ -14,9 +23,6 @@ logdir=$outputdir/log
 echo "$filelist is created"
 
 env=/cvmfs/hades.gsi.de/install/5.34.34/hydra2-4.9u/defall.sh
-
-. ${env}
-root -l -b -q 'compileLib_flow.C'
 
 if [ "$#" -ne "3" ]
 then
@@ -32,13 +38,6 @@ else
     maxNumberOfRuns=${3}
 fi
 
-if [ ! -d $outputdir ]
-then
-   echo "===> CREATE OUTPUTDIR : $outputdir"
-   mkdir -p $outputdir
-else
-   echo "===> USE OUTPUTDIR : $outputdir"
-fi
 
 if [ ! -d $logdir ]
 then

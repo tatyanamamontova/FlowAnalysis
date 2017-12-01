@@ -24,7 +24,7 @@ int RunFlowAnalysis (TString option = "all", TString histFileName = "", TString 
 //	flowReconstructor.SetUniformInputFileName (uniformInputFileName);
 	flowReconstructor.SetHistFileName (histFileName);
 	flowReconstructor.UseZeroSubevents (0); // do not touch
-	flowReconstructor.SetSamplingMethod (kBootStrapping);
+//	flowReconstructor.SetSamplingMethod (kBootStrapping);
 	flowReconstructor.SetSamplingMethod (kSubsampling);
 	flowReconstructor.PropagateResolutionSign ();
     flowReconstructor.SetNsteps (kTwistAndRescale);

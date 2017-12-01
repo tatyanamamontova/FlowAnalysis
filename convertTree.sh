@@ -15,7 +15,10 @@ echo "==> running enironment script ${par1}"
 . $1
 
 echo "==> root"
-root.exe -b -l -q 'RunConvertation("'$2'","'$3'")'
+root.exe << EOF
+.x compileLib.C
+RunConvertation("$2","$3")
+EOF
 status=$?
 
 if [ $status -ne 0 ]

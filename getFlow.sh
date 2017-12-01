@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J convertTree
+#SBATCH -J getCorrelation
 #SBATCH --time=1:00:00
 #SBATCH -D /lustre/nyx/hades/user/tmamont/gitDir/FlowAnalysis
 
@@ -15,7 +15,10 @@ echo "==> running enironment script ${par1}"
 . $1
 
 echo "==> root"
-root.exe -b -l -q 'RunFlowAnalysis.C("correlations","'$2'","'$3'")'
+root.exe << EOF
+.x compileLib_flow.C
+RunFlowAnalysis("correlations","$2","$3")
+EOF
 status=$?
 
 if [ $status -ne 0 ]
