@@ -146,7 +146,7 @@ Bool_t CTreeConverter::CheckEventCuts () {
     }
     if (vZ<0 || vZ > 60) return 0;
     if(vChi2 < 0.5 || vChi2 > 40) return 0;
-    if (TMath::Sqrt(vX*vX+vY*vY))>3) return 0;
+    if (TMath::Sqrt(vX*vX+vY*vY)>3) return 0;
     return 1;
 }
 
