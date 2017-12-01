@@ -3070,31 +3070,10 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
 	Float_t R, Rerr, cent, pt, eta, bsIndex, shift, sign;
 
 // test
-<<<<<<< HEAD
+
 
 //    Float_t QQ [3][2][2]; // [AB, AC, BC][x, y][x, y]
-=======
-<<<<<<< HEAD
-    Float_t QQ [3][2][2]; // [AB, AC, BC][x, y][x, y]
-	TFile *testFile = new TFile (histFileName_ + "QQ.root", "RECREATE");
-    TTree *testTree = new TTree ("testTree", "Test tree");
-	testTree -> Branch ("QQ", &QQ, "QQ[3][2][2]/F");
-	testTree -> Branch ("Nsub", &nBinsBS_, 32000, 4);
-	testTree -> Branch ("Cent", &cent, 32000, 4);
-	testTree -> Branch ("Harm", &n, 32000, 4);
-=======
-//    Float_t QQ [3][2][2]; // [AB, AC, BC][x, y][x, y]
->>>>>>> OlegGolosov-master
-//	TFile *testFile = new TFile (histFileName_ + "QQ.root", "RECREATE");
-//    TTree *testTree = new TTree ("testTree", "Test tree");
-//	testTree -> Branch ("QQ", &QQ, "QQ[3][2][2]/F");
-//	testTree -> Branch ("Nsub", &nBinsBS_, 32000, 4);
-//	testTree -> Branch ("Cent", &cent, 32000, 4);
-//	testTree -> Branch ("Harm", &n, 32000, 4);
-<<<<<<< HEAD
-=======
->>>>>>> 980278127e2a40ad30bf8be23de71301d1cdd2fb
->>>>>>> OlegGolosov-master
+
 // test
 
     TH1 *hList1 [12], *hList2 [12], *hList3 [12], *hList4 [12];
@@ -6181,15 +6160,7 @@ void CFlowReconstructor::GetFlowLoop (Int_t step) {
             ReflectRapidity (hVyXbEtaMult_EP [i], hVyXbEtaReflMult_EP [i], n);
             ReflectRapidity (hVyXcEtaMult_EP [i], hVyXcEtaReflMult_EP [i], n);
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-            if (uniformSet) { // make something with Monte-Carlo
-//                pCosnPhi_PsiRPPt [i] -> SetTitle (Form ("V_{%i} versus P_{T} (reaction plane method)", n));
-//                pCosnPhi_PsiRPPt [i] -> ProjectionX () -> Write (Form ("hV%iPt_RP", n));
-//                pCosnPhi_PsiRPEta [i] -> SetTitle (Form ("V_{%i} versus " + varName_ + " (reaction plane method)", n));
-=======
->>>>>>> OlegGolosov-master
+
             ReflectRapidity (hVxaEtaCentBS_SP [i], hVxaEtaReflCentBS_SP [i], n);
             ReflectRapidity (hVxbEtaCentBS_SP [i], hVxbEtaReflCentBS_SP [i], n);
             ReflectRapidity (hVxcEtaCentBS_SP [i], hVxcEtaReflCentBS_SP [i], n);
