@@ -874,7 +874,7 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
     inputTree -> SetBranchAddress ("Event", &event);
     if (useAutoHistRanges_ == 1) GetVariableRanges (inputTree);
     TFile *histFile = new TFile (histFileName_ + "_corr.root", option [step]);
-    if (samplingMethod_ == kBootStrapping && step == kNoCorrections) BuildSampleTree (inputTree);
+    if (samplingMethod_ == kBootStrapping) BuildSampleTree (inputTree);
 
     TFile *qnInputFile = new TFile (histFileName_ + Form ("_%i.root", step), "read");
     TFile *qnPtInputFile = new TFile (histFileName_ + Form ("Pt_%i.root", step), "read");
