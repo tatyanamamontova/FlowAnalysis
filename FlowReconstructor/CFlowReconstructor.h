@@ -48,7 +48,7 @@ enum SamplingMethods {
 };
 
 enum CorrectionSteps {
-    kNoCorrections = 1,
+    kNoCorrections = 0,
     kRecentering,
     kTwistAndRescale,
     kNCorrectionSteps

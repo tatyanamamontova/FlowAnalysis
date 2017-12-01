@@ -703,7 +703,7 @@ void CFlowReconstructor::TH2toTH1withSampling (TH2 *h2In, TH1 *hOut, TDirectory 
 
 
 void CFlowReconstructor::GetCorrelations () {
-    for (Int_t i = 0; i < nSteps_; i++) {
+    for (Int_t i = 0; i <= nSteps_; i++) {
         GetCorrelationsLoop (i);
     }
 }
@@ -874,7 +874,7 @@ void CFlowReconstructor::GetCorrelationsLoop (Int_t step) {
     inputTree -> SetBranchAddress ("Event", &event);
     if (useAutoHistRanges_ == 1) GetVariableRanges (inputTree);
     TFile *histFile = new TFile (histFileName_ + "_corr.root", option [step]);
-    if (samplingMethod_ == kBootStrapping) BuildSampleTree (inputTree);
+    if (samplingMethod_ == kBootStrapping && step == kNoCorrections) BuildSampleTree (inputTree);
 
     TFile *qnInputFile = new TFile (histFileName_ + Form ("_%i.root", step), "read");
     TFile *qnPtInputFile = new TFile (histFileName_ + Form ("Pt_%i.root", step), "read");
@@ -2855,7 +2855,7 @@ void CFlowReconstructor::PlotFlow (TH1 *hList1 [5], TH1 *hList2 [5], TH1 *hList3
 }
 
 void CFlowReconstructor::GetFlow () {
-    for (Int_t i = 0; i < nSteps_; i++) {
+    for (Int_t i = 0; i <= nSteps_; i++) {
         GetFlowLoop (i);
     }
 }
@@ -8202,3 +8202,4 @@ void CFlowReconstructor::Reference (Float_t ptLow, Float_t ptHigh, Float_t etaLo
 }
 
 #endif // CFLOWRECONSTRUCTOR_CXX
+
