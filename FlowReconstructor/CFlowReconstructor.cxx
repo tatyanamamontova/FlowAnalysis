@@ -2839,7 +2839,7 @@ void CFlowReconstructor::PlotFlow (TH1 *hList1 [5], TH1 *hList2 [5], TH1 *hList3
         hList1 [i] -> SetMarkerColor (markerColors [i]);
         hList1 [i] -> SetLineColor (markerColors [i]);
         HistShift (hList1 [i], shift);
-//        hs -> Add (hList1 [i]);
+        hs -> Add (hList1 [i]);
 //        HistShift (hList1 [i], -shift);
 
         if (hList3 != 0) { // reflected
