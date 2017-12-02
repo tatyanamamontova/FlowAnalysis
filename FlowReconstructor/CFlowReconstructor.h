@@ -107,6 +107,7 @@ public:
     void ExcludeRun (Int_t nRun);
     void SetResolutionMethod (Int_t resMethod = 0);
     void SetNsteps (Int_t nSteps = 3);
+    void CalculateEP (Bool_t calculateEP = 1);
 
 private:
 	Int_t nHarmonics;

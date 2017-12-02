@@ -92,6 +92,10 @@ void CFlowReconstructor::SetHistFileName (TString histFileName) {
     histFileName_ = histFileName;
 }
 
+void CFlowReconstructor::CalculateEP (Bool_t calculateEP) {
+    calculateEP_ = calculateEP;
+}
+
 void CFlowReconstructor::SetNsteps (Int_t nSteps) {
     nSteps_ = nSteps;
 }
